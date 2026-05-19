@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-05-19T02:14:49.727744+00:00",
+  "corpus": "data/processed/bioasq_corpus.jsonl",
+  "output": "data/external_knowledge/pubmed_mesh.jsonl",
+  "limit": null,
+  "batch_size": 200,
+  "num_pmids_requested": 40221,
+  "num_existing_records": 50,
+  "num_pending_at_start": 40171,
+  "num_fetched_this_run": 40171,
+  "num_failed_batches": 0,
+  "failed_batches": []
+}

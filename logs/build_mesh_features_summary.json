@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-19T02:17:35.082066+00:00",
+  "pubmed_mesh": "data/external_knowledge/pubmed_mesh.jsonl",
+  "questions": "data/processed/bioasq_questions.jsonl",
+  "passage_output": "data/processed/bioasq_passage_mesh.jsonl",
+  "question_output": "data/processed/bioasq_question_mesh.jsonl",
+  "num_pubmed_records": 40221,
+  "num_passage_records": 40221,
+  "num_descriptors": 16951,
+  "num_descriptors_after_frequency_filter": 13102,
+  "min_descriptor_frequency": 2,
+  "include_generic": false,
+  "passages_with_mesh": 37356,
+  "avg_mesh_per_passage": 9.940901519106934,
+  "questions_with_mesh": 3375,
+  "avg_mesh_per_question": 1.564526382708201
+}

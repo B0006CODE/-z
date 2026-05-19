@@ -36,6 +36,14 @@ def _type_node(entity_type: str) -> str:
     return f"concept:{entity_type}"
 
 
+def _mesh_node(mesh_ui: str) -> str:
+    return f"mesh:{mesh_ui}"
+
+
+def _document_node(document_id: str) -> str:
+    return f"document:{document_id}"
+
+
 def _entity_ids(entity_rows: list[dict[str, Any]], max_entities: int | None = None) -> list[str]:
     ids = []
     seen = set()
@@ -50,17 +58,35 @@ def _entity_ids(entity_rows: list[dict[str, Any]], max_entities: int | None = No
     return ids
 
 
+def _mesh_ids(mesh_rows: list[dict[str, Any]], max_terms: int | None = None) -> list[str]:
+    ids = []
+    seen = set()
+    for term in mesh_rows:
+        mesh_ui = str(term.get("mesh_ui", ""))
+        if not mesh_ui or mesh_ui in seen:
+            continue
+        seen.add(mesh_ui)
+        ids.append(mesh_ui)
+        if max_terms is not None and len(ids) >= max_terms:
+            break
+    return ids
+
+
 def build_local_hypergraph(
     question_id: str,
     candidates: list[dict[str, Any]],
     question_entities: list[dict[str, Any]],
     passage_entities: dict[str, list[dict[str, Any]]],
+    question_mesh: list[dict[str, Any]] | None = None,
+    passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
     max_passage_entities: int = 48,
+    max_passage_mesh: int = 32,
     max_shared_entities: int = 128,
     candidate_edge_weight: float = 0.15,
     type_edge_weight: float = 0.2,
+    mesh_edge_weight: float = 0.9,
 ) -> LocalHypergraph:
     if structure not in {"knowledge_hypergraph", "no_knowledge_hypergraph", "pairwise_graph"}:
         raise ValueError(f"Unsupported local graph structure: {structure}")
@@ -69,6 +95,8 @@ def build_local_hypergraph(
     node_types: dict[str, str] = {}
     hyperedges: list[Hyperedge] = []
     passage_nodes: dict[str, str] = {}
+    question_mesh = question_mesh or []
+    passage_mesh = passage_mesh or {}
 
     def add_node(node_id: str, node_type: str) -> None:
         if node_id not in node_types:
@@ -91,10 +119,14 @@ def build_local_hypergraph(
     add_node(question_node, "question")
 
     q_entity_ids = _entity_ids(question_entities)
+    q_mesh_ids = _mesh_ids(question_mesh)
     if structure != "no_knowledge_hypergraph":
         for entity_id in q_entity_ids:
             add_node(_entity_node(entity_id), "entity")
         add_edge(f"qe:{question_id}", "question_entity", [question_node, *(_entity_node(eid) for eid in q_entity_ids)], 1.25)
+        for mesh_ui in q_mesh_ids:
+            add_node(_mesh_node(mesh_ui), "mesh")
+        add_edge(f"qm:{question_id}", "question_mesh", [question_node, *(_mesh_node(ui) for ui in q_mesh_ids)], 1.1)
 
     entity_to_passages: dict[str, list[str]] = defaultdict(list)
     entity_types: dict[str, str] = {}
@@ -103,12 +135,26 @@ def build_local_hypergraph(
     for row in candidates:
         passage_id = str(row["passage_id"])
         p_node = _passage_node(passage_id)
+        d_node = _document_node(passage_id)
         passage_nodes[passage_id] = p_node
         add_node(p_node, "passage")
         add_edge(f"qp:{question_id}:{passage_id}", "question_passage_candidate", [question_node, p_node], candidate_edge_weight)
 
         if structure == "no_knowledge_hypergraph":
             continue
+
+        p_mesh_ids = _mesh_ids(passage_mesh.get(passage_id, []), max_terms=max_passage_mesh)
+        if p_mesh_ids:
+            add_node(d_node, "document")
+            add_edge(f"pd:{passage_id}", "passage_document", [p_node, d_node], 0.5)
+            for mesh_ui in p_mesh_ids:
+                add_node(_mesh_node(mesh_ui), "mesh")
+            add_edge(
+                f"dm:{passage_id}",
+                "document_mesh",
+                [d_node, *(_mesh_node(ui) for ui in p_mesh_ids)],
+                mesh_edge_weight,
+            )
 
         p_entities = passage_entities.get(passage_id, [])[:max_passage_entities]
         p_entity_ids = _entity_ids(p_entities, max_entities=max_passage_entities)
@@ -230,40 +276,61 @@ def hypergraph_features(
     candidates: list[dict[str, Any]],
     question_entities: list[dict[str, Any]],
     passage_entities: dict[str, list[dict[str, Any]]],
+    question_mesh: list[dict[str, Any]] | None = None,
+    passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
     iterations: int = 3,
     damping: float = 0.85,
     max_passage_entities: int = 48,
+    max_passage_mesh: int = 32,
 ) -> dict[str, dict[str, float]]:
     graph = build_local_hypergraph(
         question_id,
         candidates,
         question_entities,
         passage_entities,
+        question_mesh=question_mesh,
+        passage_mesh=passage_mesh,
         structure=structure,
         max_passage_entities=max_passage_entities,
+        max_passage_mesh=max_passage_mesh,
     )
     q_entity_ids = _entity_ids(question_entities)
-    seed_nodes = [graph.question_node, *(_entity_node(entity_id) for entity_id in q_entity_ids)]
+    q_mesh_ids = _mesh_ids(question_mesh or [])
+    seed_nodes = [
+        graph.question_node,
+        *(_entity_node(entity_id) for entity_id in q_entity_ids),
+        *(_mesh_node(mesh_ui) for mesh_ui in q_mesh_ids),
+    ]
     node_scores = diffuse(graph, seed_nodes, iterations=iterations, damping=damping)
 
     q_entity_set = set(q_entity_ids)
+    q_mesh_set = set(q_mesh_ids)
     edge_type_counts = Counter(edge.edge_type for edge in graph.hyperedges)
     features: dict[str, dict[str, float]] = {}
     for passage_id, p_node in graph.passage_nodes.items():
         p_entity_ids = set(_entity_ids(passage_entities.get(passage_id, []), max_entities=max_passage_entities))
         overlap = q_entity_set & p_entity_ids
         union = q_entity_set | p_entity_ids
+        p_mesh_ids = set(_mesh_ids((passage_mesh or {}).get(passage_id, []), max_terms=max_passage_mesh))
+        mesh_overlap = q_mesh_set & p_mesh_ids
+        mesh_union = q_mesh_set | p_mesh_ids
         features[passage_id] = {
             "hypergraph_score": node_scores.get(p_node, 0.0),
             "entity_overlap_count": float(len(overlap)),
             "entity_jaccard": len(overlap) / len(union) if union else 0.0,
             "question_entity_coverage": len(overlap) / len(q_entity_set) if q_entity_set else 0.0,
             "passage_entity_count": float(len(p_entity_ids)),
+            "mesh_overlap_count": float(len(mesh_overlap)),
+            "mesh_jaccard": len(mesh_overlap) / len(mesh_union) if mesh_union else 0.0,
+            "question_mesh_coverage": len(mesh_overlap) / len(q_mesh_set) if q_mesh_set else 0.0,
+            "passage_mesh_count": float(len(p_mesh_ids)),
             "local_num_nodes": float(len(graph.nodes)),
             "local_num_hyperedges": float(len(graph.hyperedges)),
             "local_shared_entity_edges": float(edge_type_counts.get("shared_entity_passages", 0)),
+            "local_question_mesh_edges": float(edge_type_counts.get("question_mesh", 0)),
+            "local_document_mesh_edges": float(edge_type_counts.get("document_mesh", 0)),
             "local_structure_is_pairwise": float(structure == "pairwise_graph"),
             "local_structure_no_knowledge": float(structure == "no_knowledge_hypergraph"),
         }

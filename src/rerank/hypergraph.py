@@ -19,6 +19,10 @@ def entity_map(rows: list[dict[str, Any]], id_key: str) -> dict[str, list[dict[s
     return {str(row[id_key]): list(row.get("entities", [])) for row in rows}
 
 
+def mesh_map(rows: list[dict[str, Any]], id_key: str) -> dict[str, list[dict[str, Any]]]:
+    return {str(row[id_key]): list(row.get("mesh_terms", [])) for row in rows}
+
+
 def minmax(values: list[float]) -> list[float]:
     if not values:
         return []
@@ -33,6 +37,8 @@ def build_feature_rows(
     predictions: list[dict[str, Any]],
     question_entities: dict[str, list[dict[str, Any]]],
     passage_entities: dict[str, list[dict[str, Any]]],
+    question_mesh: dict[str, list[dict[str, Any]]] | None = None,
+    passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
     top_k: int = 100,
@@ -40,9 +46,12 @@ def build_feature_rows(
     iterations: int = 3,
     damping: float = 0.85,
     max_passage_entities: int = 48,
+    max_passage_mesh: int = 32,
 ) -> dict[str, list[dict[str, Any]]]:
     preds_by_qid = group_predictions(predictions)
     features_by_qid: dict[str, list[dict[str, Any]]] = {}
+    question_mesh = question_mesh or {}
+    passage_mesh = passage_mesh or {}
 
     for qid in sorted(preds_by_qid):
         candidates = preds_by_qid[qid][:top_k]
@@ -51,10 +60,13 @@ def build_feature_rows(
             candidates,
             question_entities.get(qid, []),
             passage_entities,
+            question_mesh=question_mesh.get(qid, []),
+            passage_mesh=passage_mesh,
             structure=structure,
             iterations=iterations,
             damping=damping,
             max_passage_entities=max_passage_entities,
+            max_passage_mesh=max_passage_mesh,
         )
         base_rank_scores = [1.0 / (rrf_k + int(row["rank"])) for row in candidates]
         base_norm = minmax(base_rank_scores)
@@ -84,6 +96,7 @@ def rerank_from_features(
     base_weight: float = 1.0,
     hypergraph_weight: float = 0.0,
     entity_weight: float = 0.0,
+    mesh_weight: float = 0.0,
     retriever_name: str = "local_hypergraph_rerank",
 ) -> list[dict[str, Any]]:
     reranked: list[dict[str, Any]] = []
@@ -95,6 +108,7 @@ def rerank_from_features(
                 base_weight * float(features.get("base_rank_score", 0.0))
                 + hypergraph_weight * float(features.get("hypergraph_score_norm", 0.0))
                 + entity_weight * float(features.get("question_entity_coverage", 0.0))
+                + mesh_weight * float(features.get("question_mesh_coverage", 0.0))
             )
             scored.append((score, item))
 
@@ -119,6 +133,7 @@ def rerank_from_features(
                         "base_weight": base_weight,
                         "hypergraph_weight": hypergraph_weight,
                         "entity_weight": entity_weight,
+                        "mesh_weight": mesh_weight,
                         "features": item["features"],
                         "source_metadata": row.get("metadata", {}),
                     },

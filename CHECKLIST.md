@@ -98,8 +98,11 @@ Status legend:
 - [x] Implement biomedical entity extraction for questions and passages.
 - [x] Implement simple normalization for entity strings.
 - [x] Add MeSH concept or dictionary-based mapping if available.
+- [x] Fetch PubMed MeSH metadata for corpus passages using passage ids as PMIDs.
+- [x] Build question and passage MeSH feature files.
 - [ ] Load PrimeKG or a small relation table only when license and source are clear.
 - [x] Save extracted entity features under `data/processed/`.
+- [x] Save MeSH features under `data/processed/`.
 - [ ] Save relation features under `data/external_knowledge/` or `data/processed/`.
 - [x] Measure feature sparsity for question entities, passage entities, MeSH overlap, and PrimeKG expansion.
 
@@ -109,7 +112,7 @@ Status legend:
 - [x] Include question nodes, passage nodes, entity nodes, concept nodes, and document nodes where available.
 - [x] Implement question-entity hyperedges.
 - [x] Implement passage-entity hyperedges.
-- [ ] Implement document-MeSH hyperedges when MeSH labels are available.
+- [x] Implement document-MeSH hyperedges when MeSH labels are available.
 - [ ] Implement PrimeKG relation hyperedges when relation data is available.
 - [x] Implement question-passage candidate hyperedges.
 - [x] Implement shared-entity hyperedges among candidate passages.
@@ -124,10 +127,11 @@ Status legend:
 - [x] Dense-only baseline.
 - [x] Hybrid BM25 + dense baseline.
 - [x] Medical entity overlap reranker baseline.
+- [x] MeSH overlap reranker baseline.
 - [x] Pairwise graph reranker without hyperedges.
 - [x] Hypergraph reranker without medical knowledge constraints.
 - [x] Proposed knowledge-constrained hypergraph reranker.
-- [ ] Ablation: remove MeSH constraint.
+- [x] Ablation: remove MeSH constraint.
 - [ ] Ablation: remove PrimeKG relation expansion.
 - [x] Ablation: remove biomedical entity overlap.
 - [x] Ablation: remove hypergraph diffusion.
@@ -167,6 +171,7 @@ Status legend:
 
 - [ ] Main retrieval result table.
 - [ ] Ablation table.
+- [x] Reranking diagnostic table.
 - [ ] Top-M and top-k sensitivity table or figure.
 - [ ] Case study with interpretable entity or evidence path.
 - [ ] Failure analysis.

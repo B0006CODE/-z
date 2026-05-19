@@ -29,6 +29,10 @@ paths:
   entity_overlap_metrics: results/metrics/entity_overlap_full_top100_metrics.json
   hypergraph_predictions: outputs/rerank/hypergraph_full_top100.jsonl
   hypergraph_metrics: results/metrics/hypergraph_full_top100_metrics.json
+  pubmed_mesh: data/external_knowledge/pubmed_mesh.jsonl
+  question_mesh: data/processed/bioasq_question_mesh.jsonl
+  passage_mesh: data/processed/bioasq_passage_mesh.jsonl
+  rerank_diagnostics: results/metrics/rerank_diagnostics_hybrid_top100.json
 
 retrieval:
   top_k: 100
@@ -60,6 +64,8 @@ rerank:
     iterations: 3
     damping: 0.85
     max_passage_entities: 48
+    max_passage_mesh: 32
     base_weight: 1.0
     hypergraph_weight: 0.0
     entity_weight: 0.0
+    mesh_weight: 0.0

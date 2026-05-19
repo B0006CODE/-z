@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.evaluation.retrieval_metrics import evaluate_retrieval
-from src.rerank.hypergraph import build_feature_rows, entity_map, rerank_from_features
+from src.rerank.hypergraph import build_feature_rows, entity_map, mesh_map, rerank_from_features
 from src.utils import load_config, read_jsonl, set_seed, write_json, write_jsonl
 
 
@@ -27,6 +27,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--predictions", default="outputs/retrieval/hybrid_full_top100.jsonl")
     parser.add_argument("--question-entities", default=None)
     parser.add_argument("--passage-entities", default=None)
+    parser.add_argument("--question-mesh", default=None)
+    parser.add_argument("--passage-mesh", default=None)
+    parser.add_argument("--disable-mesh", action="store_true", help="Do not load MeSH features; used for remove-MeSH ablations.")
     parser.add_argument("--qrels", default=None)
     parser.add_argument("--output", default=None)
     parser.add_argument("--metrics-output", default=None)
@@ -41,12 +44,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--iterations", type=int, default=3)
     parser.add_argument("--damping", type=float, default=0.85)
     parser.add_argument("--max-passage-entities", type=int, default=48)
+    parser.add_argument("--max-passage-mesh", type=int, default=32)
     parser.add_argument("--base-weight", type=float, default=1.0)
     parser.add_argument("--hypergraph-weight", type=float, default=0.0)
     parser.add_argument("--entity-weight", type=float, default=0.0)
+    parser.add_argument("--mesh-weight", type=float, default=0.0)
     parser.add_argument("--tune-weights", action="store_true", help="Tune weights on a deterministic validation split.")
     parser.add_argument("--hypergraph-grid", type=parse_float_grid, default=parse_float_grid("0,0.02,0.05,0.1,0.2,0.4"))
     parser.add_argument("--entity-grid", type=parse_float_grid, default=parse_float_grid("0,0.02,0.05,0.1,0.2"))
+    parser.add_argument("--mesh-grid", type=parse_float_grid, default=parse_float_grid("0,0.02,0.05,0.1,0.2"))
     parser.add_argument("--validation-modulo", type=int, default=5)
     parser.add_argument("--validation-remainder", type=int, default=0)
     parser.add_argument(
@@ -89,6 +95,7 @@ def tune_weights(
     base_weight: float,
     hypergraph_grid: list[float],
     entity_grid: list[float],
+    mesh_grid: list[float],
 ) -> dict[str, Any]:
     validation_features = filter_feature_rows(features_by_qid, validation_qids)
     validation_qrels = filter_qrels(qrels, validation_qids)
@@ -96,28 +103,38 @@ def tune_weights(
     trials = []
     for hypergraph_weight in hypergraph_grid:
         for entity_weight in entity_grid:
-            predictions = rerank_from_features(
-                validation_features,
-                top_k=top_k,
-                base_weight=base_weight,
-                hypergraph_weight=hypergraph_weight,
-                entity_weight=entity_weight,
-                retriever_name="local_hypergraph_rerank_validation",
-            )
-            metrics = evaluate_retrieval(validation_qrels, predictions, sorted(set(ks)))
-            trial = {
-                "base_weight": base_weight,
-                "hypergraph_weight": hypergraph_weight,
-                "entity_weight": entity_weight,
-                "mrr@10": metrics.get("mrr@10", 0.0),
-                "recall@10": metrics.get("recall@10", 0.0),
-                "recall@5": metrics.get("recall@5", 0.0),
-                "ndcg@10": metrics.get("ndcg@10", 0.0),
-            }
-            trials.append(trial)
-            key = (trial["mrr@10"], trial["recall@10"], trial["ndcg@10"], -hypergraph_weight, -entity_weight)
-            if best is None or key > best["key"]:
-                best = {"key": key, "trial": trial}
+            for mesh_weight in mesh_grid:
+                predictions = rerank_from_features(
+                    validation_features,
+                    top_k=top_k,
+                    base_weight=base_weight,
+                    hypergraph_weight=hypergraph_weight,
+                    entity_weight=entity_weight,
+                    mesh_weight=mesh_weight,
+                    retriever_name="local_hypergraph_rerank_validation",
+                )
+                metrics = evaluate_retrieval(validation_qrels, predictions, sorted(set(ks)))
+                trial = {
+                    "base_weight": base_weight,
+                    "hypergraph_weight": hypergraph_weight,
+                    "entity_weight": entity_weight,
+                    "mesh_weight": mesh_weight,
+                    "mrr@10": metrics.get("mrr@10", 0.0),
+                    "recall@10": metrics.get("recall@10", 0.0),
+                    "recall@5": metrics.get("recall@5", 0.0),
+                    "ndcg@10": metrics.get("ndcg@10", 0.0),
+                }
+                trials.append(trial)
+                key = (
+                    trial["mrr@10"],
+                    trial["recall@10"],
+                    trial["ndcg@10"],
+                    -hypergraph_weight,
+                    -entity_weight,
+                    -mesh_weight,
+                )
+                if best is None or key > best["key"]:
+                    best = {"key": key, "trial": trial}
 
     assert best is not None
     return {
@@ -134,6 +151,8 @@ def main() -> None:
 
     question_entities_path = args.question_entities or paths.get("question_entities", "data/processed/bioasq_question_entities.jsonl")
     passage_entities_path = args.passage_entities or paths.get("passage_entities", "data/processed/bioasq_passage_entities.jsonl")
+    question_mesh_path = args.question_mesh or paths.get("question_mesh", "data/processed/bioasq_question_mesh.jsonl")
+    passage_mesh_path = args.passage_mesh or paths.get("passage_mesh", "data/processed/bioasq_passage_mesh.jsonl")
     qrels_path = args.qrels or paths.get("qrels", "data/processed/bioasq_qrels.jsonl")
     output_path = args.output or paths.get("hypergraph_predictions", "outputs/rerank/hypergraph_full_top100.jsonl")
     metrics_output_path = args.metrics_output or paths.get("hypergraph_metrics", "results/metrics/hypergraph_full_top100_metrics.json")
@@ -142,17 +161,30 @@ def main() -> None:
     qrels = read_jsonl(qrels_path)
     question_entities = entity_map(read_jsonl(question_entities_path), "question_id")
     passage_entities = entity_map(read_jsonl(passage_entities_path), "passage_id")
+    question_mesh = (
+        {}
+        if args.disable_mesh
+        else mesh_map(read_jsonl(question_mesh_path), "question_id") if Path(question_mesh_path).exists() else {}
+    )
+    passage_mesh = (
+        {}
+        if args.disable_mesh
+        else mesh_map(read_jsonl(passage_mesh_path), "passage_id") if Path(passage_mesh_path).exists() else {}
+    )
 
     features_by_qid = build_feature_rows(
         predictions,
         question_entities,
         passage_entities,
+        question_mesh,
+        passage_mesh,
         structure=args.structure,
         top_k=args.top_k,
         rrf_k=args.rrf_k,
         iterations=args.iterations,
         damping=args.damping,
         max_passage_entities=args.max_passage_entities,
+        max_passage_mesh=args.max_passage_mesh,
     )
     all_qids = sorted(features_by_qid)
     validation_qids, test_qids = split_qids(all_qids, args.validation_modulo, args.validation_remainder)
@@ -161,6 +193,7 @@ def main() -> None:
         "base_weight": args.base_weight,
         "hypergraph_weight": args.hypergraph_weight,
         "entity_weight": args.entity_weight,
+        "mesh_weight": args.mesh_weight,
     }
     tuning: dict[str, Any] | None = None
     if args.tune_weights:
@@ -173,11 +206,13 @@ def main() -> None:
             base_weight=args.base_weight,
             hypergraph_grid=args.hypergraph_grid,
             entity_grid=args.entity_grid,
+            mesh_grid=args.mesh_grid,
         )
         selected = {
             "base_weight": float(tuning["selected"]["base_weight"]),
             "hypergraph_weight": float(tuning["selected"]["hypergraph_weight"]),
             "entity_weight": float(tuning["selected"]["entity_weight"]),
+            "mesh_weight": float(tuning["selected"]["mesh_weight"]),
         }
 
     if args.target_split == "validation":
@@ -194,6 +229,7 @@ def main() -> None:
         base_weight=selected["base_weight"],
         hypergraph_weight=selected["hypergraph_weight"],
         entity_weight=selected["entity_weight"],
+        mesh_weight=selected["mesh_weight"],
         retriever_name=args.structure,
     )
     write_jsonl(output_path, reranked)
@@ -206,6 +242,9 @@ def main() -> None:
             "qrels": qrels_path,
             "predictions": output_path,
             "source_predictions": args.predictions,
+            "question_mesh": question_mesh_path,
+            "passage_mesh": passage_mesh_path,
+            "mesh_enabled": not args.disable_mesh,
             "structure": args.structure,
             "target_split": args.target_split,
             "num_validation_qids": len(validation_qids),
@@ -221,6 +260,9 @@ def main() -> None:
         "predictions": args.predictions,
         "question_entities": question_entities_path,
         "passage_entities": passage_entities_path,
+        "question_mesh": question_mesh_path,
+        "passage_mesh": passage_mesh_path,
+        "mesh_enabled": not args.disable_mesh,
         "output": output_path,
         "metrics_output": metrics_output_path,
         "structure": args.structure,

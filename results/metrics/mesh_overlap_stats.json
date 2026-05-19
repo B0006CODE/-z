@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-05-19T02:18:10.870776+00:00",
+  "predictions": "outputs\\retrieval\\hybrid_full_top100.jsonl",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "question_mesh": "data/processed/bioasq_question_mesh.jsonl",
+  "passage_mesh": "data/processed/bioasq_passage_mesh.jsonl",
+  "top_m": 100,
+  "num_questions": 4719,
+  "questions_with_mesh": 3375,
+  "questions_with_any_candidate_mesh_overlap": 2835,
+  "feature_separability": {
+    "mesh_jaccard": {
+      "num_gold": 27347,
+      "num_non_gold": 444553,
+      "gold_mean": 0.045251537646423444,
+      "non_gold_mean": 0.01485529798247645,
+      "gold_positive_rate": 0.3890737558050243,
+      "non_gold_positive_rate": 0.15393440152242815,
+      "auc": 0.6228251090969893
+    },
+    "mesh_overlap_count": {
+      "num_gold": 27347,
+      "num_non_gold": 444553,
+      "gold_mean": 0.4649870186857791,
+      "non_gold_mean": 0.1648217422894458,
+      "gold_positive_rate": 0.3890737558050243,
+      "non_gold_positive_rate": 0.15393440152242815,
+      "auc": 0.6209185349790194
+    },
+    "passage_mesh_count": {
+      "num_gold": 27347,
+      "num_non_gold": 444553,
+      "gold_mean": 9.908106922148681,
+      "non_gold_mean": 9.83240468515565,
+      "gold_positive_rate": 0.9312173181701832,
+      "non_gold_positive_rate": 0.9314030048160736,
+      "auc": 0.5053335143440086
+    },
+    "question_mesh_coverage": {
+      "num_gold": 27347,
+      "num_non_gold": 444553,
+      "gold_mean": 0.21250144381932146,
+      "non_gold_mean": 0.07628050225355833,
+      "gold_positive_rate": 0.3890737558050243,
+      "non_gold_positive_rate": 0.15393440152242815,
+      "auc": 0.6210469985372544
+    }
+  }
+}

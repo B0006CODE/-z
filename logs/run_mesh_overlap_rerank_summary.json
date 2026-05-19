@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-05-19T02:20:06.307834+00:00",
+  "output": "outputs\\rerank\\mesh_overlap_test_top100.jsonl",
+  "metrics_output": "results\\metrics\\mesh_overlap_test_top100_metrics.json",
+  "target_split": "test",
+  "selected_weights": {
+    "base_weight": 1.0,
+    "mesh_weight": 0.02
+  },
+  "num_questions": 3775,
+  "num_predictions": 377500
+}

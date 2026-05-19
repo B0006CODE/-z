@@ -1,10 +1,13 @@
 {
-  "timestamp": "2026-05-19T01:50:21.789189+00:00",
-  "predictions": "outputs\\retrieval\\hybrid_full_top100.jsonl",
+  "timestamp": "2026-05-19T02:32:24.571447+00:00",
+  "predictions": "outputs/retrieval/hybrid_full_top100.jsonl",
   "question_entities": "data/processed/bioasq_question_entities.jsonl",
   "passage_entities": "data/processed/bioasq_passage_entities.jsonl",
-  "output": "outputs\\rerank\\ablation_no_entity_overlap_test_top100.jsonl",
-  "metrics_output": "results\\metrics\\ablation_no_entity_overlap_test_top100_metrics.json",
+  "question_mesh": "data/processed/bioasq_question_mesh.jsonl",
+  "passage_mesh": "data/processed/bioasq_passage_mesh.jsonl",
+  "mesh_enabled": false,
+  "output": "outputs/rerank/no_mesh_hypergraph_test_top100.jsonl",
+  "metrics_output": "results/metrics/no_mesh_hypergraph_test_top100_metrics.json",
   "structure": "knowledge_hypergraph",
   "top_k": 100,
   "iterations": 3,
@@ -13,7 +16,8 @@
   "selected_weights": {
     "base_weight": 1.0,
     "hypergraph_weight": 0.02,
-    "entity_weight": 0.0
+    "entity_weight": 0.02,
+    "mesh_weight": 0.0
   },
   "num_questions": 3775,
   "num_predictions": 377500

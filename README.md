@@ -88,7 +88,7 @@ python scripts/run_hypergraph_rerank.py --config configs/default.yaml --predicti
 python scripts/evaluate_retrieval.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_test_top100.jsonl --output results/metrics/hybrid_test_top100_metrics.json --ks 1 3 5 10 20 50 100 --only-predicted-qids
 ```
 
-Current diagnostic result: validation selected small weights (`hypergraph_weight=0.02`, `entity_weight=0.02`), but test MRR@10 and nDCG@10 are slightly below Hybrid RRF. Treat this as a failure signal, not a positive result. The likely causes are sparse question-entity coverage, weak dictionary-only MeSH approximation, and no PrimeKG relation expansion yet.
+Current diagnostic result: validation selected small weights (`hypergraph_weight=0.02`, `entity_weight=0.02`), but test MRR@10 and nDCG@10 are slightly below Hybrid RRF. Treat this as a failure signal, not a positive result. The likely causes are sparse question-entity coverage, weak lexical concept mapping, and no PrimeKG relation expansion yet.
 
 Additional ablations:
 
@@ -98,3 +98,31 @@ python scripts/run_hypergraph_rerank.py --config configs/default.yaml --predicti
 ```
 
 The ablation summary is saved to `results/tables/ablation_retrieval.md`. It shows that the current best held-out behavior is essentially Hybrid RRF plus a tiny entity-coverage term. The next technical priority is better medical concept mapping and relation expansion, not generation.
+
+## Diagnostics And PubMed MeSH
+
+Reranking diagnostics show substantial oracle headroom inside Hybrid top100, but weak dictionary entity separability:
+
+```powershell
+python scripts/analyze_rerank_diagnostics.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_full_top100.jsonl --output results/metrics/rerank_diagnostics_hybrid_top100.json --top-m 100
+```
+
+PubMed MeSH metadata can be fetched reproducibly from NCBI E-utilities using passage ids as PMIDs. The script resumes from existing output and does not require an API key.
+
+```powershell
+python scripts/fetch_pubmed_mesh.py --config configs/default.yaml --batch-size 200 --sleep 0.5
+python scripts/build_mesh_features.py --config configs/default.yaml
+python scripts/analyze_mesh_overlap.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_full_top100.jsonl --output results/metrics/mesh_overlap_stats.json --top-m 100
+python scripts/run_mesh_overlap_rerank.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_full_top100.jsonl --output outputs/rerank/mesh_overlap_test_top100.jsonl --metrics-output results/metrics/mesh_overlap_test_top100_metrics.json --top-k 100 --tune-weights --target-split test
+python scripts/run_hypergraph_rerank.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_full_top100.jsonl --output outputs/rerank/hypergraph_mesh_test_top100.jsonl --metrics-output results/metrics/hypergraph_mesh_test_top100_metrics.json --top-k 100 --tune-weights --target-split test
+python scripts/run_hypergraph_rerank.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_full_top100.jsonl --output outputs/rerank/no_mesh_hypergraph_test_top100.jsonl --metrics-output results/metrics/no_mesh_hypergraph_test_top100_metrics.json --top-k 100 --tune-weights --target-split test --disable-mesh
+```
+
+Current MeSH status:
+
+- PubMed MeSH fetched for all 40221 corpus passages.
+- 37356 passages have non-generic MeSH terms.
+- 3375 / 4719 questions have lexical MeSH matches.
+- MeSH overlap AUC is about 0.621, better than dictionary entity overlap AUC about 0.576.
+- Simple MeSH overlap reranking gives only tiny held-out changes.
+- Adding MeSH as question-MeSH and document-MeSH hyperedges selects `mesh_weight=0.02`, but still does not beat Hybrid RRF on held-out MRR@10 or nDCG@10.
