@@ -17,7 +17,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.evaluation.retrieval_metrics import evaluate_retrieval
 from src.retrieval.dense import passage_text
-from src.utils import load_config, read_jsonl, set_seed, write_json, write_jsonl
+from src.utils import load_config, read_jsonl, resolve_torch_device, set_seed, write_json, write_jsonl
 
 
 def parse_args() -> argparse.Namespace:
@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
         default="sentence_transformers",
         help="Model loading/scoring backend. Use transformers_sequence_classification for models such as ncbi/MedCPT-Cross-Encoder.",
     )
-    parser.add_argument("--device", default=None, help="Torch device, e.g. cpu or cuda.")
+    parser.add_argument("--device", default=None, help="Torch device: auto, cpu, cuda, or cuda:0.")
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--max-length", type=int, default=None)
     parser.add_argument("--top-m", type=int, default=100, help="Number of input candidates per question to score.")
@@ -132,6 +132,7 @@ def main() -> None:
     batch_size = args.batch_size or int(cross_encoder_cfg.get("batch_size", 32))
     max_length = args.max_length or int(cross_encoder_cfg.get("max_length", 512))
     backend = resolve_backend(model_name, args.backend)
+    actual_device = resolve_torch_device(args.device or cross_encoder_cfg.get("device", "auto"))
 
     questions = read_jsonl(questions_path)
     corpus = read_jsonl(corpus_path)
@@ -158,16 +159,12 @@ def main() -> None:
             pair_rows.append(row)
             pairs.append([question, passage_text(passage)])
 
-    actual_device = args.device
     if backend == "sentence_transformers":
         model_kwargs: dict[str, Any] = {"max_length": max_length}
-        if args.device:
-            model_kwargs["device"] = args.device
+        model_kwargs["device"] = actual_device
         model = CrossEncoder(model_name, **model_kwargs)
         cross_scores = score_pairs(model, pairs, batch_size=batch_size, show_progress_bar=True)
-        actual_device = args.device
     else:
-        actual_device = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForSequenceClassification.from_pretrained(model_name).to(actual_device)
         cross_scores = score_pairs_with_transformers(
@@ -233,6 +230,7 @@ def main() -> None:
             "model_name": model_name,
             "backend": backend,
             "device": actual_device,
+            "cuda_device_name": torch.cuda.get_device_name(0) if actual_device.startswith("cuda") and torch.cuda.is_available() else None,
             "batch_size": batch_size,
             "max_length": max_length,
             "top_m": args.top_m,

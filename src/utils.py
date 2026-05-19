@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import numpy as np
+import torch
 import yaml
 
 
@@ -48,3 +49,12 @@ def write_json(path: str | Path, payload: dict[str, Any]) -> None:
 def set_seed(seed: int) -> None:
     random.seed(seed)
     np.random.seed(seed)
+
+
+def resolve_torch_device(requested: str | None = "auto") -> str:
+    """Resolve a torch device string with CUDA preferred for reproducible local runs."""
+    if requested is None or requested == "auto":
+        return "cuda" if torch.cuda.is_available() else "cpu"
+    if requested == "cuda" and not torch.cuda.is_available():
+        raise ValueError("Requested --device cuda, but torch.cuda.is_available() is false.")
+    return requested

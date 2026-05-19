@@ -29,7 +29,7 @@ python scripts/evaluate_retrieval.py --config configs/default.yaml --ks 1 3 5 10
 
 ## Dense And Hybrid Retrieval
 
-The default dense model is `abhinand/MedEmbed-small-v0.1`, chosen as a lightweight medical retrieval baseline. Replace it with another sentence-transformers compatible model by passing `--model-name`.
+The default dense model is `abhinand/MedEmbed-small-v0.1`, chosen as a lightweight medical retrieval baseline. Replace it with another sentence-transformers compatible model by passing `--model-name`. Dense retrieval and cross-encoder reranking use `device: auto` from `configs/default.yaml`, which resolves to CUDA when a compatible GPU is available and otherwise falls back to CPU. Pass `--device cpu` only for CPU-only timing or debugging.
 
 ```powershell
 python scripts/run_dense.py --config configs/default.yaml --sample-limit 10 --top-k 100
@@ -174,10 +174,10 @@ BioASQ full held-out cross-encoder scoring with `cross-encoder/ms-marco-MiniLM-L
 Biomedical reranker candidates are summarized in `results/tables/biomedical_reranker_candidates.md`. The cross-encoder script now also supports Hugging Face `AutoModelForSequenceClassification` rerankers:
 
 ```powershell
-python scripts/run_cross_encoder_rerank.py --config configs/default.yaml --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --qrels data/processed/pubmedqa_pqa_labeled_qrels.jsonl --predictions outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --output outputs/rerank/pubmedqa_medcpt_cross_encoder_sample2_top5.jsonl --metrics-output results/metrics/pubmedqa_medcpt_cross_encoder_sample2_top5_metrics.json --model-name ncbi/MedCPT-Cross-Encoder --backend transformers_sequence_classification --top-m 5 --top-k 5 --sample-limit 2 --batch-size 4 --max-length 256 --device cpu --only-predicted-qids
+python scripts/run_cross_encoder_rerank.py --config configs/default.yaml --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --qrels data/processed/pubmedqa_pqa_labeled_qrels.jsonl --predictions outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --output outputs/rerank/pubmedqa_medcpt_cross_encoder_sample2_top5.jsonl --metrics-output results/metrics/pubmedqa_medcpt_cross_encoder_sample2_top5_metrics.json --model-name ncbi/MedCPT-Cross-Encoder --backend transformers_sequence_classification --top-m 5 --top-k 5 --sample-limit 2 --batch-size 4 --max-length 256 --device auto --only-predicted-qids
 ```
 
-Current CPU status: this MedCPT smoke test did not finish within 300 seconds in the local environment, before writing metrics. Keep biomedical cross-encoder runs to tiny timing tests on CPU, or move BioASQ/PubMedQA full reranking to GPU.
+Current CPU status: this MedCPT smoke test did not finish within 300 seconds in the local environment, before writing metrics. Biomedical cross-encoder experiments should use GPU whenever available; keep CPU runs to tiny timing tests only.
 
 ## PubMedQA Answer Selection
 

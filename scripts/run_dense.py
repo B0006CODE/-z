@@ -9,7 +9,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.retrieval.dense import DenseRetriever
-from src.utils import load_config, read_jsonl, set_seed, write_json, write_jsonl
+from src.utils import load_config, read_jsonl, resolve_torch_device, set_seed, write_json, write_jsonl
 
 
 def parse_args() -> argparse.Namespace:
@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-name", default=None, help="SentenceTransformer model name.")
     parser.add_argument("--batch-size", type=int, default=None, help="Embedding batch size.")
     parser.add_argument("--score-batch-size", type=int, default=None, help="Number of queries per dense scoring batch.")
-    parser.add_argument("--device", default=None, help="Torch device, e.g. cpu or cuda.")
+    parser.add_argument("--device", default=None, help="Torch device: auto, cpu, cuda, or cuda:0.")
     parser.add_argument("--top-k", type=int, default=None, help="Number of candidates per question.")
     parser.add_argument("--sample-limit", type=int, default=None, help="Limit questions for sanity runs.")
     parser.add_argument("--rebuild-index", action="store_true", help="Force rebuilding dense index.")
@@ -44,6 +44,7 @@ def main() -> None:
     batch_size = args.batch_size or int(dense_cfg.get("batch_size", 64))
     score_batch_size = args.score_batch_size or int(dense_cfg.get("score_batch_size", 128))
     normalize_embeddings = bool(dense_cfg.get("normalize_embeddings", True))
+    device = resolve_torch_device(args.device or dense_cfg.get("device", "auto"))
     top_k = args.top_k or int(config["retrieval"].get("top_k", 100))
 
     corpus = read_jsonl(corpus_path)
@@ -53,7 +54,7 @@ def main() -> None:
 
     index_file = Path(index_path)
     if index_file.exists() and not args.rebuild_index:
-        retriever = DenseRetriever.load(index_file, batch_size=batch_size, device=args.device)
+        retriever = DenseRetriever.load(index_file, batch_size=batch_size, device=device)
         index_action = "loaded"
         if retriever.model_name != model_name:
             raise ValueError(
@@ -65,7 +66,7 @@ def main() -> None:
             model_name=model_name,
             batch_size=batch_size,
             normalize_embeddings=normalize_embeddings,
-            device=args.device,
+            device=device,
         )
         retriever.fit(corpus)
         retriever.save(index_file)
@@ -101,7 +102,7 @@ def main() -> None:
         "model_name": retriever.model_name,
         "batch_size": batch_size,
         "score_batch_size": score_batch_size,
-        "device": args.device,
+        "device": device,
         "num_questions": len(questions),
         "num_corpus_passages": len(corpus),
         "top_k": top_k,

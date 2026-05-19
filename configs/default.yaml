@@ -53,6 +53,7 @@ retrieval:
     b: 0.75
   dense:
     model_name: abhinand/MedEmbed-small-v0.1
+    device: auto
     batch_size: 64
     score_batch_size: 128
     normalize_embeddings: true
@@ -62,6 +63,7 @@ retrieval:
     dense_weight: 1.0
   cross_encoder:
     model_name: cross-encoder/ms-marco-MiniLM-L-6-v2
+    device: auto
     biomedical_candidate_models:
       - ncbi/MedCPT-Cross-Encoder
       - IEETA/BioASQ-14B
