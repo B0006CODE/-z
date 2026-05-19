@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-05-18T10:44:51.196305+00:00",
+  "predictions": "outputs\\retrieval\\hybrid_full_top100.jsonl",
+  "question_entities": "data/processed/bioasq_question_entities.jsonl",
+  "passage_entities": "data/processed/bioasq_passage_entities.jsonl",
+  "output": "outputs/rerank/entity_overlap_full_top100.jsonl",
+  "top_k": 100,
+  "rrf_k": 60,
+  "base_weight": 1.0,
+  "entity_weight": 1.0,
+  "num_questions": 4719,
+  "num_predictions": 471900
+}

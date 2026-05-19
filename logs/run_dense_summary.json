@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-05-18T10:26:21.088324+00:00",
+  "index_action": "loaded",
+  "index_path": "indexes\\dense\\bioasq_medembed_small.npz",
+  "model_name": "abhinand/MedEmbed-small-v0.1",
+  "batch_size": 64,
+  "score_batch_size": 128,
+  "device": null,
+  "num_questions": 4719,
+  "num_corpus_passages": 40221,
+  "top_k": 100,
+  "num_predictions": 471900,
+  "output": "outputs\\retrieval\\dense_full_top100.jsonl"
+}

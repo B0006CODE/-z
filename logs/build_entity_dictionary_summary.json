@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-05-18T10:44:01.141947+00:00",
+  "corpus": "data/processed/bioasq_corpus.jsonl",
+  "questions": "data/processed/bioasq_questions.jsonl",
+  "output": "data/processed/entity_dictionary.jsonl",
+  "min_count": 3,
+  "max_terms": 50000,
+  "max_ngram": 5,
+  "num_corpus_records": 40221,
+  "num_questions": 4719,
+  "num_required_question_terms": 8805,
+  "num_dictionary_terms": 50000,
+  "entity_type_counts": {
+    "biomedical_concept": 27644,
+    "disease": 5405,
+    "drug_or_therapy": 2833,
+    "gene_or_genetic": 4369,
+    "gene_or_protein": 4998,
+    "protein_or_pathway": 4751
+  }
+}

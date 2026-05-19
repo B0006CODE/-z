@@ -1,0 +1,72 @@
+{
+  "timestamp": "2026-05-18T09:55:29.338346+00:00",
+  "dataset": "rag-datasets/rag-mini-bioasq",
+  "available_configs": [
+    "text-corpus",
+    "question-answer-passages"
+  ],
+  "qa_config": "question-answer-passages",
+  "qa_split": "test",
+  "corpus_config": "text-corpus",
+  "corpus_split": "passages",
+  "sample_size": null,
+  "num_raw_questions": 4719,
+  "num_raw_corpus_rows": 40221,
+  "num_processed_questions": 4719,
+  "num_processed_passages": 40221,
+  "num_qrels": 42608,
+  "num_questions_with_qrels": 4719,
+  "qa_schema": {
+    "columns": [
+      "answer",
+      "id",
+      "question",
+      "relevant_passage_ids"
+    ],
+    "preview_types": [
+      {
+        "question": "str",
+        "answer": "str",
+        "relevant_passage_ids": "str",
+        "id": "int"
+      },
+      {
+        "question": "str",
+        "answer": "str",
+        "relevant_passage_ids": "str",
+        "id": "int"
+      },
+      {
+        "question": "str",
+        "answer": "str",
+        "relevant_passage_ids": "str",
+        "id": "int"
+      }
+    ]
+  },
+  "corpus_schema": {
+    "columns": [
+      "id",
+      "passage"
+    ],
+    "preview_types": [
+      {
+        "passage": "str",
+        "id": "int"
+      },
+      {
+        "passage": "str",
+        "id": "int"
+      },
+      {
+        "passage": "str",
+        "id": "int"
+      }
+    ]
+  },
+  "outputs": {
+    "questions": "data/processed/bioasq_questions.jsonl",
+    "corpus": "data/processed/bioasq_corpus.jsonl",
+    "qrels": "data/processed/bioasq_qrels.jsonl"
+  }
+}

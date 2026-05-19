@@ -1,0 +1,36 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local machine/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Reproducible generated data and indexes
+data/raw/**
+data/processed/**
+data/external_knowledge/**
+indexes/**
+
+# Large generated prediction artifacts
+outputs/retrieval/*.jsonl
+outputs/rerank/*.jsonl
+outputs/generation/*.jsonl
+outputs/generation/*.csv
+
+# Keep lightweight result summaries, metrics, logs, and directory placeholders
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external_knowledge/.gitkeep
+!indexes/bm25/.gitkeep
+!indexes/dense/.gitkeep
+!outputs/retrieval/.gitkeep
+!outputs/rerank/.gitkeep
+!outputs/generation/.gitkeep

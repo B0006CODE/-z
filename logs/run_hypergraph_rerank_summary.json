@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-05-19T01:50:21.789189+00:00",
+  "predictions": "outputs\\retrieval\\hybrid_full_top100.jsonl",
+  "question_entities": "data/processed/bioasq_question_entities.jsonl",
+  "passage_entities": "data/processed/bioasq_passage_entities.jsonl",
+  "output": "outputs\\rerank\\ablation_no_entity_overlap_test_top100.jsonl",
+  "metrics_output": "results\\metrics\\ablation_no_entity_overlap_test_top100_metrics.json",
+  "structure": "knowledge_hypergraph",
+  "top_k": 100,
+  "iterations": 3,
+  "damping": 0.85,
+  "target_split": "test",
+  "selected_weights": {
+    "base_weight": 1.0,
+    "hypergraph_weight": 0.02,
+    "entity_weight": 0.0
+  },
+  "num_questions": 3775,
+  "num_predictions": 377500
+}

@@ -1,0 +1,65 @@
+seed: 42
+
+dataset:
+  name: rag-datasets/rag-mini-bioasq
+  qa_config: question-answer-passages
+  corpus_config: text-corpus
+  split: null
+
+paths:
+  processed_dir: data/processed
+  logs_dir: logs
+  bm25_index: indexes/bm25/bioasq_bm25.pkl
+  dense_index: indexes/dense/bioasq_medembed_small.npz
+  questions: data/processed/bioasq_questions.jsonl
+  corpus: data/processed/bioasq_corpus.jsonl
+  qrels: data/processed/bioasq_qrels.jsonl
+  bm25_predictions: outputs/retrieval/bm25_sample.jsonl
+  dense_predictions: outputs/retrieval/dense_sample.jsonl
+  hybrid_predictions: outputs/retrieval/hybrid_sample.jsonl
+  bm25_metrics: results/metrics/bm25_sample_metrics.json
+  dense_metrics: results/metrics/dense_sample_metrics.json
+  hybrid_metrics: results/metrics/hybrid_sample_metrics.json
+  entity_dictionary: data/processed/entity_dictionary.jsonl
+  question_entities: data/processed/bioasq_question_entities.jsonl
+  passage_entities: data/processed/bioasq_passage_entities.jsonl
+  entity_stats: results/metrics/entity_feature_stats.json
+  entity_overlap_stats: results/metrics/entity_overlap_stats.json
+  entity_overlap_predictions: outputs/rerank/entity_overlap_full_top100.jsonl
+  entity_overlap_metrics: results/metrics/entity_overlap_full_top100_metrics.json
+  hypergraph_predictions: outputs/rerank/hypergraph_full_top100.jsonl
+  hypergraph_metrics: results/metrics/hypergraph_full_top100_metrics.json
+
+retrieval:
+  top_k: 100
+  bm25:
+    k1: 1.5
+    b: 0.75
+  dense:
+    model_name: abhinand/MedEmbed-small-v0.1
+    batch_size: 64
+    score_batch_size: 128
+    normalize_embeddings: true
+  hybrid:
+    rrf_k: 60
+    bm25_weight: 1.0
+    dense_weight: 1.0
+
+knowledge:
+  entity_dictionary:
+    min_count: 3
+    max_terms: 50000
+    max_ngram: 5
+  entity_extraction:
+    max_matches: 128
+
+rerank:
+  hypergraph:
+    top_k: 100
+    rrf_k: 60
+    iterations: 3
+    damping: 0.85
+    max_passage_entities: 48
+    base_weight: 1.0
+    hypergraph_weight: 0.0
+    entity_weight: 0.0

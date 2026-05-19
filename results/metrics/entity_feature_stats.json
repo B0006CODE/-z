@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-05-18T10:44:32.748826+00:00",
+  "dictionary": "data/processed/entity_dictionary.jsonl",
+  "num_dictionary_terms": 50000,
+  "questions": "data/processed/bioasq_questions.jsonl",
+  "corpus": "data/processed/bioasq_corpus.jsonl",
+  "question_output": "data/processed/bioasq_question_entities.jsonl",
+  "passage_output": "data/processed/bioasq_passage_entities.jsonl",
+  "max_matches": 128,
+  "question_entities": {
+    "id_key": "question_id",
+    "num_records": 4719,
+    "records_with_entities": 3061,
+    "record_coverage": 0.6486543759271032,
+    "avg_entities_per_record": 0.8787878787878788,
+    "max_entities_per_record": 5,
+    "num_unique_entities": 2926,
+    "entity_type_mentions": {
+      "biomedical_concept": 1582,
+      "disease": 572,
+      "drug_or_therapy": 208,
+      "gene_or_genetic": 420,
+      "gene_or_protein": 1012,
+      "protein_or_pathway": 353
+    }
+  },
+  "passage_entities": {
+    "id_key": "passage_id",
+    "num_records": 40221,
+    "records_with_entities": 27959,
+    "record_coverage": 0.695134382536486,
+    "avg_entities_per_record": 14.028368265334029,
+    "max_entities_per_record": 128,
+    "num_unique_entities": 34433,
+    "entity_type_mentions": {
+      "biomedical_concept": 155282,
+      "disease": 33721,
+      "drug_or_therapy": 18104,
+      "gene_or_genetic": 29021,
+      "gene_or_protein": 310102,
+      "protein_or_pathway": 18005
+    }
+  }
+}

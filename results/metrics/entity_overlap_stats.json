@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-05-18T10:44:38.754855+00:00",
+  "predictions": "outputs\\retrieval\\hybrid_full_top100.jsonl",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "question_entities": "data/processed/bioasq_question_entities.jsonl",
+  "passage_entities": "data/processed/bioasq_passage_entities.jsonl",
+  "top_m_stats": {
+    "20": {
+      "num_questions": 4719,
+      "total_candidates": 94380,
+      "candidate_overlap_rate": 0.16066963339690613,
+      "question_any_overlap_rate": 0.4261496079677898,
+      "total_gold_retrieved": 22377,
+      "gold_retrieved_overlap_rate": 0.2535192385038209
+    },
+    "50": {
+      "num_questions": 4719,
+      "total_candidates": 235950,
+      "candidate_overlap_rate": 0.12311082856537402,
+      "question_any_overlap_rate": 0.4462809917355372,
+      "total_gold_retrieved": 26114,
+      "gold_retrieved_overlap_rate": 0.24458145056291644
+    },
+    "100": {
+      "num_questions": 4719,
+      "total_candidates": 471900,
+      "candidate_overlap_rate": 0.09885568976478068,
+      "question_any_overlap_rate": 0.452638270820089,
+      "total_gold_retrieved": 27347,
+      "gold_retrieved_overlap_rate": 0.2401360295462025
+    }
+  },
+  "primekg_status": "not_loaded_no_local_source_configured",
+  "mesh_status": "dictionary_concepts_only_no_external_mesh_mapping"
+}
