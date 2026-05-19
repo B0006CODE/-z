@@ -536,3 +536,37 @@ prepare data -> BM25 retrieval -> retrieval metrics on sample
 
 Do not implement the hypergraph module until the first-stage retrieval baseline is working and measured.
 
+## 19. Version Management
+
+This project is version-managed with GitHub:
+
+```text
+Remote repository: https://github.com/B0006CODE/-z.git
+Default branch: main
+```
+
+When Codex completes a major functional or experimental change, it must:
+
+1. run the relevant sanity checks or tests;
+2. review `git status`;
+3. stage only appropriate files;
+4. commit with a concise, meaningful message;
+5. push to `origin main`;
+6. report the commit hash and push status to the user.
+
+Tracked files should include:
+
+- source code under `src/`;
+- runnable scripts under `scripts/`;
+- configuration files under `configs/`;
+- documentation and checklists;
+- lightweight logs, metrics, and result tables.
+
+Do not commit large reproducible artifacts unless the user explicitly asks for Git LFS handling:
+
+- raw or processed dataset files under `data/`;
+- retrieval or rerank indexes under `indexes/`;
+- large prediction JSONL files under `outputs/`;
+- Python caches or local virtual environments.
+
+The repository contains `.gitignore` rules for these generated artifacts. Preserve those rules unless the user explicitly changes the versioning policy.
