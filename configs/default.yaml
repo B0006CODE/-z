@@ -32,6 +32,7 @@ paths:
   pubmed_mesh: data/external_knowledge/pubmed_mesh.jsonl
   question_mesh: data/processed/bioasq_question_mesh.jsonl
   passage_mesh: data/processed/bioasq_passage_mesh.jsonl
+  primekg_relations: data/external_knowledge/primekg_project_relations.jsonl
   rerank_diagnostics: results/metrics/rerank_diagnostics_hybrid_top100.json
 
 retrieval:
@@ -56,6 +57,17 @@ knowledge:
     max_ngram: 5
   entity_extraction:
     max_matches: 128
+  primekg:
+    url: https://dataverse.harvard.edu/api/access/datafile/6180620
+    allowed_relations:
+      - contraindication
+      - disease_protein
+      - drug_effect
+      - drug_protein
+      - indication
+      - off-label use
+      - phenotype_absent
+      - phenotype_present
 
 rerank:
   hypergraph:
@@ -69,3 +81,4 @@ rerank:
     hypergraph_weight: 0.0
     entity_weight: 0.0
     mesh_weight: 0.0
+    relation_weight: 0.0

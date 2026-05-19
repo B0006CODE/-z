@@ -126,3 +126,21 @@ Current MeSH status:
 - MeSH overlap AUC is about 0.621, better than dictionary entity overlap AUC about 0.576.
 - Simple MeSH overlap reranking gives only tiny held-out changes.
 - Adding MeSH as question-MeSH and document-MeSH hyperedges selects `mesh_weight=0.02`, but still does not beat Hybrid RRF on held-out MRR@10 or nDCG@10.
+
+## PrimeKG Relation Expansion
+
+PrimeKG is used as an optional external knowledge source. The project streams the public CSV from Harvard Dataverse and filters it down to relation rows whose endpoint names exactly match the local entity dictionary. The full PrimeKG CSV is not committed.
+
+```powershell
+python scripts/build_primekg_relations.py --config configs/default.yaml
+python scripts/analyze_primekg_relations.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_full_top100.jsonl --output results/metrics/primekg_relation_stats.json --top-m 100
+python scripts/run_hypergraph_rerank.py --config configs/default.yaml --predictions outputs/retrieval/hybrid_full_top100.jsonl --output outputs/rerank/hypergraph_primekg_test_top100.jsonl --metrics-output results/metrics/hypergraph_primekg_test_top100_metrics.json --top-k 100 --tune-weights --target-split test --hypergraph-grid 0,0.02,0.05 --entity-grid 0,0.02,0.05 --mesh-grid 0,0.02,0.05 --relation-grid 0,0.02,0.05
+```
+
+Current PrimeKG status:
+
+- The stream scan produced 5766 filtered project-local relation rows.
+- The filtered relations cover 1385 local entity ids.
+- Only 330 / 4719 questions have any PrimeKG relation among Hybrid top100 candidates.
+- PrimeKG relation-count AUC is about 0.509, so validation selects `relation_weight=0.0`.
+- This is a useful negative result: exact-name relation expansion is too sparse; better concept normalization is needed before PrimeKG can support a stronger method claim.

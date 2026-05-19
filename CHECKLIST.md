@@ -100,10 +100,10 @@ Status legend:
 - [x] Add MeSH concept or dictionary-based mapping if available.
 - [x] Fetch PubMed MeSH metadata for corpus passages using passage ids as PMIDs.
 - [x] Build question and passage MeSH feature files.
-- [ ] Load PrimeKG or a small relation table only when license and source are clear.
+- [x] Load PrimeKG or a small relation table only when license and source are clear.
 - [x] Save extracted entity features under `data/processed/`.
 - [x] Save MeSH features under `data/processed/`.
-- [ ] Save relation features under `data/external_knowledge/` or `data/processed/`.
+- [x] Save relation features under `data/external_knowledge/` or `data/processed/`.
 - [x] Measure feature sparsity for question entities, passage entities, MeSH overlap, and PrimeKG expansion.
 
 ## 7. Local Hypergraph Reranking
@@ -113,7 +113,7 @@ Status legend:
 - [x] Implement question-entity hyperedges.
 - [x] Implement passage-entity hyperedges.
 - [x] Implement document-MeSH hyperedges when MeSH labels are available.
-- [ ] Implement PrimeKG relation hyperedges when relation data is available.
+- [x] Implement PrimeKG relation hyperedges when relation data is available.
 - [x] Implement question-passage candidate hyperedges.
 - [x] Implement shared-entity hyperedges among candidate passages.
 - [x] Implement hypergraph proximity or diffusion feature.
@@ -132,7 +132,7 @@ Status legend:
 - [x] Hypergraph reranker without medical knowledge constraints.
 - [x] Proposed knowledge-constrained hypergraph reranker.
 - [x] Ablation: remove MeSH constraint.
-- [ ] Ablation: remove PrimeKG relation expansion.
+- [x] Ablation: remove PrimeKG relation expansion.
 - [x] Ablation: remove biomedical entity overlap.
 - [x] Ablation: remove hypergraph diffusion.
 - [x] Ablation: replace hypergraph with ordinary pairwise graph.

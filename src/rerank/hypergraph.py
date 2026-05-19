@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import Any
 
 from src.hypergraph.local import hypergraph_features
+from src.knowledge.relations import relation_adjacency
 
 
 def group_predictions(predictions: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
@@ -23,6 +24,10 @@ def mesh_map(rows: list[dict[str, Any]], id_key: str) -> dict[str, list[dict[str
     return {str(row[id_key]): list(row.get("mesh_terms", [])) for row in rows}
 
 
+def relations_map(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    return relation_adjacency(rows)
+
+
 def minmax(values: list[float]) -> list[float]:
     if not values:
         return []
@@ -39,6 +44,7 @@ def build_feature_rows(
     passage_entities: dict[str, list[dict[str, Any]]],
     question_mesh: dict[str, list[dict[str, Any]]] | None = None,
     passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
+    entity_relations: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
     top_k: int = 100,
@@ -52,6 +58,7 @@ def build_feature_rows(
     features_by_qid: dict[str, list[dict[str, Any]]] = {}
     question_mesh = question_mesh or {}
     passage_mesh = passage_mesh or {}
+    entity_relations = entity_relations or {}
 
     for qid in sorted(preds_by_qid):
         candidates = preds_by_qid[qid][:top_k]
@@ -62,6 +69,7 @@ def build_feature_rows(
             passage_entities,
             question_mesh=question_mesh.get(qid, []),
             passage_mesh=passage_mesh,
+            entity_relations=entity_relations,
             structure=structure,
             iterations=iterations,
             damping=damping,
@@ -97,6 +105,7 @@ def rerank_from_features(
     hypergraph_weight: float = 0.0,
     entity_weight: float = 0.0,
     mesh_weight: float = 0.0,
+    relation_weight: float = 0.0,
     retriever_name: str = "local_hypergraph_rerank",
 ) -> list[dict[str, Any]]:
     reranked: list[dict[str, Any]] = []
@@ -109,6 +118,7 @@ def rerank_from_features(
                 + hypergraph_weight * float(features.get("hypergraph_score_norm", 0.0))
                 + entity_weight * float(features.get("question_entity_coverage", 0.0))
                 + mesh_weight * float(features.get("question_mesh_coverage", 0.0))
+                + relation_weight * float(features.get("question_relation_coverage", 0.0))
             )
             scored.append((score, item))
 
@@ -134,6 +144,7 @@ def rerank_from_features(
                         "hypergraph_weight": hypergraph_weight,
                         "entity_weight": entity_weight,
                         "mesh_weight": mesh_weight,
+                        "relation_weight": relation_weight,
                         "features": item["features"],
                         "source_metadata": row.get("metadata", {}),
                     },

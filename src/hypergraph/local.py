@@ -44,6 +44,11 @@ def _document_node(document_id: str) -> str:
     return f"document:{document_id}"
 
 
+def _relation_node(relation: str) -> str:
+    safe_relation = relation.replace(" ", "_").replace("/", "_")
+    return f"relation:{safe_relation}"
+
+
 def _entity_ids(entity_rows: list[dict[str, Any]], max_entities: int | None = None) -> list[str]:
     ids = []
     seen = set()
@@ -79,6 +84,7 @@ def build_local_hypergraph(
     passage_entities: dict[str, list[dict[str, Any]]],
     question_mesh: list[dict[str, Any]] | None = None,
     passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
+    entity_relations: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
     max_passage_entities: int = 48,
@@ -87,6 +93,7 @@ def build_local_hypergraph(
     candidate_edge_weight: float = 0.15,
     type_edge_weight: float = 0.2,
     mesh_edge_weight: float = 0.9,
+    relation_edge_weight: float = 0.65,
 ) -> LocalHypergraph:
     if structure not in {"knowledge_hypergraph", "no_knowledge_hypergraph", "pairwise_graph"}:
         raise ValueError(f"Unsupported local graph structure: {structure}")
@@ -97,6 +104,7 @@ def build_local_hypergraph(
     passage_nodes: dict[str, str] = {}
     question_mesh = question_mesh or []
     passage_mesh = passage_mesh or {}
+    entity_relations = entity_relations or {}
 
     def add_node(node_id: str, node_type: str) -> None:
         if node_id not in node_types:
@@ -131,6 +139,7 @@ def build_local_hypergraph(
     entity_to_passages: dict[str, list[str]] = defaultdict(list)
     entity_types: dict[str, str] = {}
     type_to_entities: dict[str, list[str]] = defaultdict(list)
+    local_entity_ids: set[str] = set(q_entity_ids)
 
     for row in candidates:
         passage_id = str(row["passage_id"])
@@ -167,6 +176,7 @@ def build_local_hypergraph(
         for entity_id in p_entity_ids:
             e_node = _entity_node(entity_id)
             add_node(e_node, "entity")
+            local_entity_ids.add(entity_id)
             entity_to_passages[entity_id].append(passage_id)
             type_to_entities[entity_types.get(entity_id, "biomedical_concept")].append(entity_id)
         add_edge(
@@ -220,6 +230,26 @@ def build_local_hypergraph(
             [_entity_node(entity_id), *(_passage_node(pid) for pid in unique_passage_ids)],
             0.75,
         )
+
+    relation_seen: set[tuple[str, str, str]] = set()
+    for source_entity_id in sorted(local_entity_ids):
+        for relation in entity_relations.get(source_entity_id, []):
+            target_entity_id = str(relation.get("target_entity_id", ""))
+            relation_name = str(relation.get("relation", "related_to"))
+            if not target_entity_id or target_entity_id not in local_entity_ids:
+                continue
+            edge_key = tuple(sorted((source_entity_id, target_entity_id)) + [relation_name])
+            if edge_key in relation_seen:
+                continue
+            relation_seen.add(edge_key)
+            r_node = _relation_node(relation_name)
+            add_node(r_node, "relation")
+            add_edge(
+                f"relation:{relation_name}:{source_entity_id}:{target_entity_id}",
+                "primekg_relation",
+                [r_node, _entity_node(source_entity_id), _entity_node(target_entity_id)],
+                relation_edge_weight,
+            )
 
     return LocalHypergraph(
         nodes=nodes,
@@ -278,6 +308,7 @@ def hypergraph_features(
     passage_entities: dict[str, list[dict[str, Any]]],
     question_mesh: list[dict[str, Any]] | None = None,
     passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
+    entity_relations: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
     iterations: int = 3,
@@ -292,6 +323,7 @@ def hypergraph_features(
         passage_entities,
         question_mesh=question_mesh,
         passage_mesh=passage_mesh,
+        entity_relations=entity_relations,
         structure=structure,
         max_passage_entities=max_passage_entities,
         max_passage_mesh=max_passage_mesh,
@@ -307,6 +339,12 @@ def hypergraph_features(
 
     q_entity_set = set(q_entity_ids)
     q_mesh_set = set(q_mesh_ids)
+    relation_pairs: set[tuple[str, str]] = set()
+    for source_id in q_entity_set:
+        for relation in (entity_relations or {}).get(source_id, []):
+            target_id = str(relation.get("target_entity_id", ""))
+            if target_id:
+                relation_pairs.add((source_id, target_id))
     edge_type_counts = Counter(edge.edge_type for edge in graph.hyperedges)
     features: dict[str, dict[str, float]] = {}
     for passage_id, p_node in graph.passage_nodes.items():
@@ -316,6 +354,11 @@ def hypergraph_features(
         p_mesh_ids = set(_mesh_ids((passage_mesh or {}).get(passage_id, []), max_terms=max_passage_mesh))
         mesh_overlap = q_mesh_set & p_mesh_ids
         mesh_union = q_mesh_set | p_mesh_ids
+        related_entities = {
+            p_entity_id
+            for p_entity_id in p_entity_ids
+            if any((q_entity_id, p_entity_id) in relation_pairs for q_entity_id in q_entity_set)
+        }
         features[passage_id] = {
             "hypergraph_score": node_scores.get(p_node, 0.0),
             "entity_overlap_count": float(len(overlap)),
@@ -326,11 +369,14 @@ def hypergraph_features(
             "mesh_jaccard": len(mesh_overlap) / len(mesh_union) if mesh_union else 0.0,
             "question_mesh_coverage": len(mesh_overlap) / len(q_mesh_set) if q_mesh_set else 0.0,
             "passage_mesh_count": float(len(p_mesh_ids)),
+            "primekg_relation_count": float(len(related_entities)),
+            "question_relation_coverage": len(related_entities) / len(q_entity_set) if q_entity_set else 0.0,
             "local_num_nodes": float(len(graph.nodes)),
             "local_num_hyperedges": float(len(graph.hyperedges)),
             "local_shared_entity_edges": float(edge_type_counts.get("shared_entity_passages", 0)),
             "local_question_mesh_edges": float(edge_type_counts.get("question_mesh", 0)),
             "local_document_mesh_edges": float(edge_type_counts.get("document_mesh", 0)),
+            "local_primekg_relation_edges": float(edge_type_counts.get("primekg_relation", 0)),
             "local_structure_is_pairwise": float(structure == "pairwise_graph"),
             "local_structure_no_knowledge": float(structure == "no_knowledge_hypergraph"),
         }

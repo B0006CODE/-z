@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-05-19T02:44:11.399559+00:00",
+  "predictions": "outputs/retrieval/hybrid_full_top100.jsonl",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "question_entities": "data/processed/bioasq_question_entities.jsonl",
+  "passage_entities": "data/processed/bioasq_passage_entities.jsonl",
+  "relations": "data/external_knowledge/primekg_project_relations.jsonl",
+  "top_m": 100,
+  "num_questions": 4719,
+  "num_relation_rows": 5766,
+  "num_entities_with_relations": 1385,
+  "questions_with_any_candidate_relation": 330,
+  "candidate_rows_with_relation": 4936,
+  "feature_separability": {
+    "primekg_related_passage_entities": {
+      "num_gold": 27347,
+      "num_non_gold": 444553,
+      "gold_mean": 0.03978498555600249,
+      "non_gold_mean": 0.013894856181377698,
+      "gold_positive_rate": 0.028120086298314258,
+      "non_gold_positive_rate": 0.009373460532264994,
+      "auc": 0.5093699235720918
+    },
+    "primekg_relation_count": {
+      "num_gold": 27347,
+      "num_non_gold": 444553,
+      "gold_mean": 0.03978498555600249,
+      "non_gold_mean": 0.013912851785951282,
+      "gold_positive_rate": 0.028120086298314258,
+      "non_gold_positive_rate": 0.009373460532264994,
+      "auc": 0.5093697712342683
+    },
+    "question_relation_coverage": {
+      "num_gold": 27347,
+      "num_non_gold": 444553,
+      "gold_mean": 0.02659645786862666,
+      "non_gold_mean": 0.00955585348278683,
+      "gold_positive_rate": 0.028120086298314258,
+      "non_gold_positive_rate": 0.009373460532264994,
+      "auc": 0.5093680689084443
+    }
+  }
+}
