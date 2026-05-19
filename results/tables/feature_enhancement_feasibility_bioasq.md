@@ -1,0 +1,5 @@
+| dataset | method | mrr@10 | recall@10 | ndcg@10 | delta_mrr@10 | delta_recall@10 | delta_ndcg@10 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| bioasq | Hybrid source validation | 0.7564 | 0.4907 | 0.6001 |  |  |  |
+| bioasq | Base HGB features validation | 0.7757 | 0.5005 | 0.6166 | +0.0193 | +0.0098 | +0.0166 |
+| bioasq | Enhanced norm+MeSH validation | 0.7788 | 0.5061 | 0.6257 | +0.0224 | +0.0154 | +0.0256 |
