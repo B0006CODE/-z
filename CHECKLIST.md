@@ -136,7 +136,7 @@ Status legend:
 - [x] Ablation: remove biomedical entity overlap.
 - [x] Ablation: remove hypergraph diffusion.
 - [x] Ablation: replace hypergraph with ordinary pairwise graph.
-- [ ] Sensitivity: top-M values 20, 50, 100.
+- [x] Sensitivity: top-M values 20, 50, 100.
 - [ ] Sensitivity: top-k values 1, 3, 5, 10.
 
 ## 9. Generation And Faithfulness
@@ -152,10 +152,18 @@ Status legend:
 
 ## 10. Secondary Dataset Robustness
 
-- [ ] Add PubMedQA only after the full primary pipeline works.
+- [x] Add PubMedQA only after the full primary pipeline works.
 - [ ] Add MedMCQA only if the experiment scope remains manageable.
 - [ ] Add MedQA-USMLE only if multiple-choice QA generation or selection is stable.
-- [ ] Report whether gains are stable across at least two datasets or two splits.
+- [x] Report whether gains are stable across at least two datasets or two splits.
+
+Current PubMedQA status:
+
+- `qiaojin/PubMedQA` / `pqa_labeled` is normalized into compatible questions, corpus, qrels, answer labels, and MeSH feature files.
+- Full PubMedQA first-stage retrieval: Dense MRR@10 `0.9863`, Hybrid RRF MRR@10 `0.9783`.
+- PubMedQA HGB held-out reranking improves same-split Hybrid Recall@10 from `0.8200` to `0.8953`, with MRR@10 from `0.9850` to `0.9861`.
+- PubMedQA full cross-encoder reranking improves Hybrid MRR@10 from `0.9783` to `0.9806`, but Recall@10 slightly decreases from `0.8297` to `0.8268`.
+- BioASQ full held-out cross-encoder timed out on CPU after 2400 seconds; sample10 completed but underperformed Hybrid, so full BioASQ cross-encoder should be rerun on GPU with a biomedical reranker.
 
 ## 11. Literature Verification
 
@@ -169,10 +177,11 @@ Status legend:
 
 ## 12. Paper Assets
 
-- [ ] Main retrieval result table.
-- [ ] Ablation table.
+- [x] Main retrieval result table.
+- [x] Ablation table.
 - [x] Reranking diagnostic table.
-- [ ] Top-M and top-k sensitivity table or figure.
+- [x] Top-M sensitivity table or figure.
+- [ ] Top-k sensitivity table or figure.
 - [ ] Case study with interpretable entity or evidence path.
 - [ ] Failure analysis.
 - [ ] Method diagram.

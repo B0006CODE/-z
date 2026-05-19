@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-05-19T07:30:51.458580+00:00",
+  "task": "BioASQ cross-encoder held-out reranking",
+  "status": "timeout",
+  "timeout_seconds": 2400,
+  "source_predictions": "outputs/retrieval/hybrid_test_top100.jsonl",
+  "intended_output": "outputs/rerank/bioasq_cross_encoder_test_top100.jsonl",
+  "model_name": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+  "max_length": 256,
+  "batch_size": 64,
+  "fallback_completed": "BioASQ sample10 sanity run",
+  "fallback_metrics": "results/metrics/bioasq_cross_encoder_sample10_top100_metrics.json",
+  "note": "CPU full held-out scoring did not finish within the allotted runtime; use GPU or a biomedical reranker for full BioASQ CE evaluation."
+}

@@ -144,3 +144,29 @@ Current PrimeKG status:
 - Only 330 / 4719 questions have any PrimeKG relation among Hybrid top100 candidates.
 - PrimeKG relation-count AUC is about 0.509, so validation selects `relation_weight=0.0`.
 - This is a useful negative result: exact-name relation expansion is too sparse; better concept normalization is needed before PrimeKG can support a stronger method claim.
+
+## PubMedQA And Cross-Encoder Reranking
+
+PubMedQA is added as the second dataset using `qiaojin/PubMedQA` / `pqa_labeled`. Each abstract section is treated as one corpus passage, all sections from the question's source abstract are treated as relevant evidence, and yes/no/maybe labels are saved for later QA accuracy evaluation.
+
+```powershell
+python scripts/prepare_pubmedqa.py --config configs/default.yaml --output-prefix data/processed/pubmedqa_pqa_labeled
+python scripts/run_bm25.py --config configs/default.yaml --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --output outputs/retrieval/pubmedqa_bm25_full_top100.jsonl --index-path indexes/bm25/pubmedqa_bm25.pkl --top-k 100 --rebuild-index
+python scripts/run_dense.py --config configs/default.yaml --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --output outputs/retrieval/pubmedqa_dense_full_top100.jsonl --index-path indexes/dense/pubmedqa_medembed_small.npz --top-k 100 --rebuild-index
+python scripts/run_hybrid.py --config configs/default.yaml --bm25-predictions outputs/retrieval/pubmedqa_bm25_full_top100.jsonl --dense-predictions outputs/retrieval/pubmedqa_dense_full_top100.jsonl --output outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --top-k 100
+python scripts/run_cross_encoder_rerank.py --config configs/default.yaml --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --qrels data/processed/pubmedqa_pqa_labeled_qrels.jsonl --predictions outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --output outputs/rerank/pubmedqa_cross_encoder_full_top100.jsonl --metrics-output results/metrics/pubmedqa_cross_encoder_full_top100_metrics.json --top-m 100 --top-k 100 --max-length 256 --batch-size 64
+```
+
+Current PubMedQA retrieval summary is saved to `results/tables/pubmedqa_retrieval.md`. Dense retrieval is the strongest first-stage baseline on this dataset. Cross-encoder reranking improves Hybrid RRF MRR@10 from `0.9783` to `0.9806`, but slightly reduces Recall@10 from `0.8297` to `0.8268`.
+
+The HGB knowledge reranker can be reused on PubMedQA after building PubMedQA-specific entity files:
+
+```powershell
+python scripts/build_entity_dictionary.py --config configs/default.yaml --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --output data/processed/pubmedqa_entity_dictionary.jsonl --min-count 2
+python scripts/extract_entities.py --config configs/default.yaml --dictionary data/processed/pubmedqa_entity_dictionary.jsonl --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --question-output data/processed/pubmedqa_question_entities.jsonl --passage-output data/processed/pubmedqa_passage_entities.jsonl --stats-output results/metrics/pubmedqa_entity_feature_stats.json
+python scripts/run_learning_rerank.py --config configs/default.yaml --predictions outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --qrels data/processed/pubmedqa_pqa_labeled_qrels.jsonl --question-entities data/processed/pubmedqa_question_entities.jsonl --passage-entities data/processed/pubmedqa_passage_entities.jsonl --question-mesh data/processed/pubmedqa_pqa_labeled_question_mesh.jsonl --passage-mesh data/processed/pubmedqa_pqa_labeled_passage_mesh.jsonl --relations data/external_knowledge/pubmedqa_primekg_relations_missing.jsonl --output outputs/rerank/pubmedqa_learning_hgb_test_top100.jsonl --metrics-output results/metrics/pubmedqa_learning_hgb_test_top100_metrics.json --model hist_gradient --feature-set all --top-k 100
+```
+
+Current PubMedQA HGB held-out result is saved to `results/tables/pubmedqa_hgb_test.md`: same-split Hybrid RRF MRR@10 `0.9850` vs HGB `0.9861`, and Recall@10 `0.8200` vs `0.8953`. This supports the evidence-coverage argument more strongly than a pure MRR argument.
+
+BioASQ full held-out cross-encoder scoring with `cross-encoder/ms-marco-MiniLM-L-6-v2` timed out on CPU after 2400 seconds. The BioASQ 10-question sanity run completed but underperformed Hybrid RRF. Treat this as a warning that a generic MS MARCO cross-encoder is not enough for the biomedical setting; use a biomedical cross-encoder and GPU for the full BioASQ reranking comparison.

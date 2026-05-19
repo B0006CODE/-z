@@ -6,6 +6,11 @@ dataset:
   corpus_config: text-corpus
   split: null
 
+pubmedqa:
+  name: qiaojin/PubMedQA
+  config: pqa_labeled
+  split: train
+
 paths:
   processed_dir: data/processed
   logs_dir: logs
@@ -34,6 +39,12 @@ paths:
   passage_mesh: data/processed/bioasq_passage_mesh.jsonl
   primekg_relations: data/external_knowledge/primekg_project_relations.jsonl
   rerank_diagnostics: results/metrics/rerank_diagnostics_hybrid_top100.json
+  pubmedqa_questions: data/processed/pubmedqa_pqa_labeled_questions.jsonl
+  pubmedqa_corpus: data/processed/pubmedqa_pqa_labeled_corpus.jsonl
+  pubmedqa_qrels: data/processed/pubmedqa_pqa_labeled_qrels.jsonl
+  pubmedqa_answer_labels: data/processed/pubmedqa_pqa_labeled_answer_labels.jsonl
+  pubmedqa_question_mesh: data/processed/pubmedqa_pqa_labeled_question_mesh.jsonl
+  pubmedqa_passage_mesh: data/processed/pubmedqa_pqa_labeled_passage_mesh.jsonl
 
 retrieval:
   top_k: 100
@@ -49,6 +60,10 @@ retrieval:
     rrf_k: 60
     bm25_weight: 1.0
     dense_weight: 1.0
+  cross_encoder:
+    model_name: cross-encoder/ms-marco-MiniLM-L-6-v2
+    batch_size: 32
+    max_length: 512
 
 knowledge:
   entity_dictionary:

@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-05-19T05:57:08.716691+00:00",
+  "dataset": "qiaojin/PubMedQA",
+  "available_configs": [
+    "pqa_artificial",
+    "pqa_labeled",
+    "pqa_unlabeled"
+  ],
+  "dataset_config": "pqa_labeled",
+  "split": "train",
+  "sample_size": null,
+  "num_raw_rows": 1000,
+  "num_questions": 1000,
+  "num_corpus_passages": 3358,
+  "num_qrels": 3358,
+  "num_questions_with_qrels": 1000,
+  "answer_label_counts": {
+    "maybe": 110,
+    "no": 338,
+    "yes": 552
+  },
+  "passages_with_mesh": 3358,
+  "questions_with_mesh": 881,
+  "avg_qrels_per_question": 3.358,
+  "avg_passage_mesh_terms": 9.422275163787969,
+  "avg_question_mesh_terms": 2.236,
+  "outputs": {
+    "questions": "data/processed/pubmedqa_pqa_labeled_questions.jsonl",
+    "corpus": "data/processed/pubmedqa_pqa_labeled_corpus.jsonl",
+    "qrels": "data/processed/pubmedqa_pqa_labeled_qrels.jsonl",
+    "answer_labels": "data/processed/pubmedqa_pqa_labeled_answer_labels.jsonl",
+    "passage_mesh": "data/processed/pubmedqa_pqa_labeled_passage_mesh.jsonl",
+    "question_mesh": "data/processed/pubmedqa_pqa_labeled_question_mesh.jsonl"
+  },
+  "notes": [
+    "Each PubMedQA abstract section is a corpus passage.",
+    "All sections from the question's source abstract are treated as relevant evidence.",
+    "Answer labels are saved separately for later yes/no/maybe QA evaluation."
+  ]
+}

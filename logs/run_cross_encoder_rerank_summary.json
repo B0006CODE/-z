@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-05-19T07:30:21.735849+00:00",
+  "output": "outputs/rerank/bioasq_cross_encoder_sample10_top100.jsonl",
+  "metrics_output": "results/metrics/bioasq_cross_encoder_sample10_top100_metrics.json",
+  "model_name": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+  "num_questions_scored": 10,
+  "num_candidates_scored": 1000,
+  "mrr@10": 0.625,
+  "recall@10": 0.31261904761904763,
+  "ndcg@10": 0.41434162943091557,
+  "source_mrr@10": 0.7833333333333333
+}
