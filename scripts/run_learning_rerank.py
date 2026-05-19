@@ -47,6 +47,42 @@ FEATURE_NAMES = [
     "local_primekg_relation_edges",
 ]
 
+RETRIEVAL_FEATURES = {
+    "base_rank_score",
+    "hybrid_score",
+    "bm25_score",
+    "dense_score",
+    "bm25_rank_score",
+    "dense_rank_score",
+    "rank_percentile",
+}
+ENTITY_FEATURES = {
+    "entity_overlap_count",
+    "entity_jaccard",
+    "question_entity_coverage",
+    "passage_entity_count",
+}
+MESH_FEATURES = {
+    "mesh_overlap_count",
+    "mesh_jaccard",
+    "question_mesh_coverage",
+    "passage_mesh_count",
+    "local_document_mesh_edges",
+}
+PRIMEKG_FEATURES = {
+    "primekg_relation_count",
+    "question_relation_coverage",
+    "local_primekg_relation_edges",
+}
+HYPERGRAPH_FEATURES = {
+    "hypergraph_score_norm",
+    "local_num_nodes",
+    "local_num_hyperedges",
+    "local_shared_entity_edges",
+    "local_document_mesh_edges",
+    "local_primekg_relation_edges",
+}
+
 
 def parse_float_grid(raw: str) -> list[float]:
     values = [float(part.strip()) for part in raw.split(",") if part.strip()]
@@ -77,10 +113,37 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--validation-remainders", type=int, nargs="+", default=[3])
     parser.add_argument("--test-remainders", type=int, nargs="+", default=[4])
     parser.add_argument("--model", choices=["logreg", "hist_gradient"], default="logreg")
+    parser.add_argument(
+        "--feature-set",
+        choices=["all", "retrieval_only", "no_entity", "no_mesh", "no_primekg", "no_hypergraph", "no_medical_knowledge"],
+        default="all",
+        help="Feature ablation setting. Hypergraph construction stays fixed; this controls model inputs.",
+    )
     parser.add_argument("--c-grid", type=parse_float_grid, default=parse_float_grid("0.05,0.1,0.25,0.5,1.0,2.0"))
     parser.add_argument("--blend-grid", type=parse_float_grid, default=parse_float_grid("0,0.1,0.2,0.35,0.5,0.65,0.8,1.0"))
     parser.add_argument("--ks", type=int, nargs="+", default=[1, 3, 5, 10, 20, 50, 100])
     return parser.parse_args()
+
+
+def select_feature_names(feature_set: str) -> list[str]:
+    if feature_set == "all":
+        selected = set(FEATURE_NAMES)
+    elif feature_set == "retrieval_only":
+        selected = set(RETRIEVAL_FEATURES)
+    elif feature_set == "no_entity":
+        selected = set(FEATURE_NAMES) - ENTITY_FEATURES
+    elif feature_set == "no_mesh":
+        selected = set(FEATURE_NAMES) - MESH_FEATURES
+    elif feature_set == "no_primekg":
+        selected = set(FEATURE_NAMES) - PRIMEKG_FEATURES
+    elif feature_set == "no_hypergraph":
+        selected = set(FEATURE_NAMES) - HYPERGRAPH_FEATURES
+    elif feature_set == "no_medical_knowledge":
+        selected = set(FEATURE_NAMES) - ENTITY_FEATURES - MESH_FEATURES - PRIMEKG_FEATURES - HYPERGRAPH_FEATURES
+        selected |= RETRIEVAL_FEATURES
+    else:
+        raise ValueError(f"Unsupported feature set: {feature_set}")
+    return [name for name in FEATURE_NAMES if name in selected]
 
 
 def qid_bucket(qid: str, modulo: int) -> int:
@@ -137,6 +200,7 @@ def build_matrix(
     qids: set[str],
     qrels_by_qid: dict[str, dict[str, float]],
     top_k: int,
+    feature_names: list[str],
 ) -> tuple[np.ndarray, np.ndarray, list[dict[str, Any]]]:
     rows: list[list[float]] = []
     labels: list[int] = []
@@ -146,7 +210,7 @@ def build_matrix(
         for item in features_by_qid.get(qid, []):
             passage_id = str(item["row"]["passage_id"])
             vector = enriched_feature_vector(item, top_k)
-            rows.append([vector[name] for name in FEATURE_NAMES])
+            rows.append([vector[name] for name in feature_names])
             labels.append(1 if passage_id in gold else 0)
             meta.append({"qid": qid, "passage_id": passage_id, "item": item, "features": vector})
     return np.asarray(rows, dtype=np.float64), np.asarray(labels, dtype=np.int64), meta
@@ -198,11 +262,12 @@ def rerank_split(
     qids: set[str],
     *,
     top_k: int,
+    feature_names: list[str],
     blend_weight: float,
     retriever_name: str,
 ) -> list[dict[str, Any]]:
     dummy_qrels: dict[str, dict[str, float]] = {}
-    matrix, _, meta = build_matrix(features_by_qid, qids, dummy_qrels, top_k)
+    matrix, _, meta = build_matrix(features_by_qid, qids, dummy_qrels, top_k, feature_names)
     model_scores = predict_probabilities(model, matrix)
 
     by_qid_model: dict[str, list[tuple[float, dict[str, Any]]]] = {}
@@ -266,11 +331,11 @@ def filter_source_predictions(predictions: list[dict[str, Any]], qids: set[str],
     return kept
 
 
-def coefficient_table(model: Any) -> list[dict[str, float | str]]:
+def coefficient_table(model: Any, feature_names: list[str]) -> list[dict[str, float | str]]:
     if not hasattr(model, "named_steps") or "logisticregression" not in model.named_steps:
         return []
     coef = model.named_steps["logisticregression"].coef_[0]
-    rows = [{"feature": name, "coefficient": float(value)} for name, value in zip(FEATURE_NAMES, coef, strict=False)]
+    rows = [{"feature": name, "coefficient": float(value)} for name, value in zip(feature_names, coef, strict=False)]
     return sorted(rows, key=lambda row: abs(float(row["coefficient"])), reverse=True)
 
 
@@ -296,6 +361,7 @@ def main() -> None:
     question_mesh = mesh_map(read_jsonl(question_mesh_path), "question_id") if Path(question_mesh_path).exists() else {}
     passage_mesh = mesh_map(read_jsonl(passage_mesh_path), "passage_id") if Path(passage_mesh_path).exists() else {}
     entity_relations = relations_map(read_jsonl(relations_path)) if Path(relations_path).exists() else {}
+    feature_names = select_feature_names(args.feature_set)
 
     features_by_qid = build_feature_rows(
         predictions,
@@ -319,7 +385,7 @@ def main() -> None:
         validation_remainders=set(args.validation_remainders),
         test_remainders=set(args.test_remainders),
     )
-    train_x, train_y, _ = build_matrix(features_by_qid, splits["train"], qrels_by_qid, args.top_k)
+    train_x, train_y, _ = build_matrix(features_by_qid, splits["train"], qrels_by_qid, args.top_k, feature_names)
     val_qrels = filter_qrels(qrels, splits["validation"])
     test_qrels = filter_qrels(qrels, splits["test"])
 
@@ -338,6 +404,7 @@ def main() -> None:
                 features_by_qid,
                 splits["validation"],
                 top_k=args.top_k,
+                feature_names=feature_names,
                 blend_weight=blend_weight,
                 retriever_name=f"learning_{args.model}_validation",
             )
@@ -365,7 +432,7 @@ def main() -> None:
     selected = best["trial"]
     final_model = make_model(args.model, float(selected["c_value"]), seed)
     final_train_qids = splits["train"] | splits["validation"]
-    final_x, final_y, _ = build_matrix(features_by_qid, final_train_qids, qrels_by_qid, args.top_k)
+    final_x, final_y, _ = build_matrix(features_by_qid, final_train_qids, qrels_by_qid, args.top_k, feature_names)
     final_model.fit(final_x, final_y)
 
     test_predictions = rerank_split(
@@ -373,6 +440,7 @@ def main() -> None:
         features_by_qid,
         splits["test"],
         top_k=args.top_k,
+        feature_names=feature_names,
         blend_weight=float(selected["blend_weight"]),
         retriever_name=f"learning_{args.model}",
     )
@@ -390,13 +458,15 @@ def main() -> None:
         "source_predictions": args.predictions,
         "source_test_metrics": source_test_metrics,
         "model": args.model,
-        "feature_names": FEATURE_NAMES,
+        "feature_set": args.feature_set,
+        "feature_names": feature_names,
+        "num_features": len(feature_names),
         "selected": selected,
         "top_trials": sorted(
             trials,
             key=lambda row: (-row["validation_mrr@10"], -row["validation_recall@10"], -row["validation_ndcg@10"]),
         )[:20],
-        "coefficients": coefficient_table(final_model),
+        "coefficients": coefficient_table(final_model, feature_names),
         "split": {
             "modulo": args.split_modulo,
             "train_qids": len(splits["train"]),
@@ -417,6 +487,8 @@ def main() -> None:
         "output": args.output,
         "metrics_output": args.metrics_output,
         "selected": selected,
+        "feature_set": args.feature_set,
+        "num_features": len(feature_names),
         "test_mrr@10": test_metrics.get("mrr@10"),
         "source_test_mrr@10": source_test_metrics.get("mrr@10"),
         "test_recall@10": test_metrics.get("recall@10"),

@@ -1,19 +1,21 @@
 {
-  "timestamp": "2026-05-19T03:03:08.470758+00:00",
-  "output": "outputs\\rerank\\learning_hgb_test_top100.jsonl",
-  "metrics_output": "results\\metrics\\learning_hgb_test_top100_metrics.json",
+  "timestamp": "2026-05-19T03:26:18.584133+00:00",
+  "output": "outputs\\rerank\\learning_hgb_no_hypergraph_test_top100.jsonl",
+  "metrics_output": "results\\metrics\\learning_hgb_no_hypergraph_test_top100_metrics.json",
   "selected": {
     "model": "hist_gradient",
     "c_value": 0.01,
-    "blend_weight": 0.1,
-    "train_auc": 0.9490075255956697,
-    "validation_mrr@10": 0.7756990684691956,
-    "validation_recall@10": 0.5004651391441289,
-    "validation_ndcg@10": 0.6166340911168363
+    "blend_weight": 0.2,
+    "train_auc": 0.9441117073534482,
+    "validation_mrr@10": 0.7744808481302126,
+    "validation_recall@10": 0.49882737699001695,
+    "validation_ndcg@10": 0.6161792516436284
   },
-  "test_mrr@10": 0.7696472756653033,
+  "feature_set": "no_hypergraph",
+  "num_features": 17,
+  "test_mrr@10": 0.7624295140466932,
   "source_test_mrr@10": 0.7550244912387012,
-  "test_recall@10": 0.4729946359052557,
+  "test_recall@10": 0.47298436795244847,
   "source_test_recall@10": 0.4635873575239647,
   "split": {
     "modulo": 5,
