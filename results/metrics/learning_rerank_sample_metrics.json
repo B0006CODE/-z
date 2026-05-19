@@ -1,0 +1,287 @@
+{
+  "num_questions_with_qrels": 2,
+  "num_questions_with_predictions": 2,
+  "ks": [
+    1,
+    3,
+    5,
+    10,
+    20,
+    50,
+    100
+  ],
+  "recall@1": 0.10555555555555556,
+  "hit@1": 1.0,
+  "mrr@1": 1.0,
+  "ndcg@1": 1.0,
+  "recall@3": 0.1611111111111111,
+  "hit@3": 1.0,
+  "mrr@3": 1.0,
+  "ndcg@3": 0.617319681505689,
+  "recall@5": 0.26666666666666666,
+  "hit@5": 1.0,
+  "mrr@5": 1.0,
+  "ndcg@5": 0.5773584151532217,
+  "recall@10": 0.37222222222222223,
+  "hit@10": 1.0,
+  "mrr@10": 1.0,
+  "ndcg@10": 0.4634256983707299,
+  "recall@20": 0.4277777777777778,
+  "hit@20": 1.0,
+  "mrr@20": 1.0,
+  "ndcg@20": 0.49217770891409485,
+  "recall@50": 0.5277777777777778,
+  "hit@50": 1.0,
+  "mrr@50": 1.0,
+  "ndcg@50": 0.5399167996501023,
+  "recall@100": 0.5277777777777778,
+  "hit@100": 1.0,
+  "mrr@100": 1.0,
+  "ndcg@100": 0.5399167996501023,
+  "timestamp": "2026-05-19T02:55:56.178214+00:00",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "predictions": "outputs\\rerank\\learning_rerank_sample.jsonl",
+  "source_predictions": "outputs\\retrieval\\hybrid_sample.jsonl",
+  "source_test_metrics": {
+    "num_questions_with_qrels": 2,
+    "num_questions_with_predictions": 2,
+    "ks": [
+      1,
+      3,
+      5,
+      10,
+      20,
+      50,
+      100
+    ],
+    "recall@1": 0.05555555555555555,
+    "hit@1": 0.5,
+    "mrr@1": 0.5,
+    "ndcg@1": 0.5,
+    "recall@3": 0.1611111111111111,
+    "hit@3": 1.0,
+    "mrr@3": 0.6666666666666666,
+    "ndcg@3": 0.46927872602275644,
+    "recall@5": 0.21666666666666667,
+    "hit@5": 1.0,
+    "mrr@5": 0.6666666666666666,
+    "ndcg@5": 0.40476274402978707,
+    "recall@10": 0.2722222222222222,
+    "hit@10": 1.0,
+    "mrr@10": 0.6666666666666666,
+    "ndcg@10": 0.3186335759444703,
+    "recall@20": 0.4277777777777778,
+    "hit@20": 1.0,
+    "mrr@20": 0.6666666666666666,
+    "ndcg@20": 0.4020871782831486,
+    "recall@50": 0.5277777777777778,
+    "hit@50": 1.0,
+    "mrr@50": 0.6666666666666666,
+    "ndcg@50": 0.4457542770210776,
+    "recall@100": 0.5277777777777778,
+    "hit@100": 1.0,
+    "mrr@100": 0.6666666666666666,
+    "ndcg@100": 0.4457542770210776
+  },
+  "model": "logreg",
+  "feature_names": [
+    "base_rank_score",
+    "hybrid_score",
+    "bm25_score",
+    "dense_score",
+    "bm25_rank_score",
+    "dense_rank_score",
+    "rank_percentile",
+    "hypergraph_score_norm",
+    "entity_overlap_count",
+    "entity_jaccard",
+    "question_entity_coverage",
+    "passage_entity_count",
+    "mesh_overlap_count",
+    "mesh_jaccard",
+    "question_mesh_coverage",
+    "passage_mesh_count",
+    "primekg_relation_count",
+    "question_relation_coverage",
+    "local_num_nodes",
+    "local_num_hyperedges",
+    "local_shared_entity_edges",
+    "local_document_mesh_edges",
+    "local_primekg_relation_edges"
+  ],
+  "selected": {
+    "model": "logreg",
+    "c_value": 0.1,
+    "blend_weight": 0.0,
+    "train_auc": 0.9270318275646873,
+    "validation_mrr@10": 1.0,
+    "validation_recall@10": 0.2857142857142857,
+    "validation_ndcg@10": 0.5051961457381371
+  },
+  "top_trials": [
+    {
+      "model": "logreg",
+      "c_value": 0.1,
+      "blend_weight": 0.0,
+      "train_auc": 0.9270318275646873,
+      "validation_mrr@10": 1.0,
+      "validation_recall@10": 0.2857142857142857,
+      "validation_ndcg@10": 0.5051961457381371
+    },
+    {
+      "model": "logreg",
+      "c_value": 1.0,
+      "blend_weight": 0.0,
+      "train_auc": 0.9332245211463684,
+      "validation_mrr@10": 1.0,
+      "validation_recall@10": 0.26190476190476186,
+      "validation_ndcg@10": 0.47646148870237937
+    },
+    {
+      "model": "logreg",
+      "c_value": 1.0,
+      "blend_weight": 0.5,
+      "train_auc": 0.9332245211463684,
+      "validation_mrr@10": 1.0,
+      "validation_recall@10": 0.26190476190476186,
+      "validation_ndcg@10": 0.4636417075813162
+    },
+    {
+      "model": "logreg",
+      "c_value": 0.1,
+      "blend_weight": 0.5,
+      "train_auc": 0.9270318275646873,
+      "validation_mrr@10": 1.0,
+      "validation_recall@10": 0.26190476190476186,
+      "validation_ndcg@10": 0.45087991029055785
+    },
+    {
+      "model": "logreg",
+      "c_value": 0.1,
+      "blend_weight": 1.0,
+      "train_auc": 0.9270318275646873,
+      "validation_mrr@10": 1.0,
+      "validation_recall@10": 0.26190476190476186,
+      "validation_ndcg@10": 0.44605728692659297
+    },
+    {
+      "model": "logreg",
+      "c_value": 1.0,
+      "blend_weight": 1.0,
+      "train_auc": 0.9332245211463684,
+      "validation_mrr@10": 1.0,
+      "validation_recall@10": 0.26190476190476186,
+      "validation_ndcg@10": 0.44605728692659297
+    }
+  ],
+  "coefficients": [
+    {
+      "feature": "base_rank_score",
+      "coefficient": 0.7605875838639609
+    },
+    {
+      "feature": "dense_score",
+      "coefficient": -0.6814311806233113
+    },
+    {
+      "feature": "local_document_mesh_edges",
+      "coefficient": -0.6783723710725362
+    },
+    {
+      "feature": "hypergraph_score_norm",
+      "coefficient": 0.5118169133558323
+    },
+    {
+      "feature": "question_mesh_coverage",
+      "coefficient": 0.4093348662483084
+    },
+    {
+      "feature": "hybrid_score",
+      "coefficient": 0.3256685833635668
+    },
+    {
+      "feature": "dense_rank_score",
+      "coefficient": 0.2834192165861336
+    },
+    {
+      "feature": "entity_jaccard",
+      "coefficient": -0.27857961446125856
+    },
+    {
+      "feature": "passage_entity_count",
+      "coefficient": -0.24728278737427625
+    },
+    {
+      "feature": "local_num_nodes",
+      "coefficient": 0.20888352145538983
+    },
+    {
+      "feature": "mesh_overlap_count",
+      "coefficient": -0.1981192647392856
+    },
+    {
+      "feature": "mesh_jaccard",
+      "coefficient": -0.18464338260035537
+    },
+    {
+      "feature": "local_primekg_relation_edges",
+      "coefficient": 0.17637142370387057
+    },
+    {
+      "feature": "rank_percentile",
+      "coefficient": 0.12341772992108659
+    },
+    {
+      "feature": "bm25_score",
+      "coefficient": 0.11259632846045
+    },
+    {
+      "feature": "primekg_relation_count",
+      "coefficient": 0.10497665814779247
+    },
+    {
+      "feature": "question_relation_coverage",
+      "coefficient": 0.10497665814779247
+    },
+    {
+      "feature": "bm25_rank_score",
+      "coefficient": 0.09633898910619457
+    },
+    {
+      "feature": "passage_mesh_count",
+      "coefficient": 0.08926439730015705
+    },
+    {
+      "feature": "question_entity_coverage",
+      "coefficient": 0.07537636991140205
+    },
+    {
+      "feature": "local_num_hyperedges",
+      "coefficient": 0.07504038265100066
+    },
+    {
+      "feature": "entity_overlap_count",
+      "coefficient": 0.06356874620703977
+    },
+    {
+      "feature": "local_shared_entity_edges",
+      "coefficient": 0.0
+    }
+  ],
+  "split": {
+    "modulo": 5,
+    "train_qids": 6,
+    "validation_qids": 2,
+    "test_qids": 2,
+    "validation_remainders": [
+      3
+    ],
+    "test_remainders": [
+      4
+    ]
+  },
+  "train_rows": 600,
+  "train_positive_rows": 37,
+  "final_train_rows": 800,
+  "final_train_positive_rows": 54
+}

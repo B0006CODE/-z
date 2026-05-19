@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-05-19T03:03:08.470758+00:00",
+  "output": "outputs\\rerank\\learning_hgb_test_top100.jsonl",
+  "metrics_output": "results\\metrics\\learning_hgb_test_top100_metrics.json",
+  "selected": {
+    "model": "hist_gradient",
+    "c_value": 0.01,
+    "blend_weight": 0.1,
+    "train_auc": 0.9490075255956697,
+    "validation_mrr@10": 0.7756990684691956,
+    "validation_recall@10": 0.5004651391441289,
+    "validation_ndcg@10": 0.6166340911168363
+  },
+  "test_mrr@10": 0.7696472756653033,
+  "source_test_mrr@10": 0.7550244912387012,
+  "test_recall@10": 0.4729946359052557,
+  "source_test_recall@10": 0.4635873575239647,
+  "split": {
+    "modulo": 5,
+    "train_qids": 2832,
+    "validation_qids": 944,
+    "test_qids": 943,
+    "validation_remainders": [
+      3
+    ],
+    "test_remainders": [
+      4
+    ]
+  }
+}
