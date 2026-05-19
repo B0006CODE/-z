@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-05-19T08:06:44.687754+00:00",
+  "dataset": "BioASQ",
+  "qrels": "data\\processed\\bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs\\retrieval\\hybrid_full_top100.jsonl",
+  "candidate_predictions": "outputs\\rerank\\learning_hgb_all_test_top100.jsonl",
+  "baseline_label": "Hybrid RRF",
+  "candidate_label": "HGB all features",
+  "num_paired_questions": 943,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 4719,
+  "num_candidate_questions": 943,
+  "num_bootstrap": 10000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.7550244912387012,
+      "candidate_mean": 0.7696472756653033,
+      "delta": 0.014622784426602028,
+      "relative_delta_percent": 1.9367298142357916,
+      "ci_lower": 0.006564556716995742,
+      "ci_upper": 0.02279760852732751,
+      "p_value_two_sided": 0.00039996000399960006
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.4635873575239647,
+      "candidate_mean": 0.4729946359052557,
+      "delta": 0.009407278381291023,
+      "relative_delta_percent": 2.0292353164106127,
+      "ci_lower": 0.0040762455999686946,
+      "ci_upper": 0.014765009662624238,
+      "p_value_two_sided": 0.0007999200079992001
+    }
+  ]
+}
