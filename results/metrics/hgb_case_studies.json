@@ -1,0 +1,403 @@
+{
+  "top_k": 10,
+  "max_cases_per_dataset": 3,
+  "datasets": [
+    {
+      "dataset": "BioASQ",
+      "paths": {
+        "questions": "data/processed/bioasq_questions.jsonl",
+        "corpus": "data/processed/bioasq_corpus.jsonl",
+        "qrels": "data/processed/bioasq_qrels.jsonl",
+        "baseline": "outputs/retrieval/hybrid_full_top100.jsonl",
+        "candidate": "outputs/rerank/learning_hgb_all_test_top100.jsonl",
+        "question_entities": "data/processed/bioasq_question_entities.jsonl",
+        "passage_entities": "data/processed/bioasq_passage_entities.jsonl",
+        "question_mesh": "data/processed/bioasq_question_mesh.jsonl",
+        "passage_mesh": "data/processed/bioasq_passage_mesh.jsonl"
+      },
+      "summary": {
+        "num_questions": 943,
+        "questions_with_rescued_gold_to_top_k": 187,
+        "rescued_gold_passages_to_top_k": 241,
+        "questions_with_lost_gold_from_top_k": 119,
+        "lost_gold_passages_from_top_k": 147,
+        "questions_with_gold_in_hgb_top100": 822,
+        "questions_without_gold_in_hgb_top100": 121,
+        "improved_min_gold_rank": 70,
+        "unchanged_min_gold_rank": 716,
+        "worsened_min_gold_rank": 36
+      },
+      "cases": [
+        {
+          "dataset": "BioASQ",
+          "question_id": "694",
+          "passage_id": "22162803",
+          "rescued_gold_to_top_k": true,
+          "baseline_gold_rank": 32,
+          "hgb_gold_rank": 5,
+          "rank_gain": 27,
+          "question": "Is there a phylogenetic analysis for HIV?",
+          "passage_title": "",
+          "passage_text": "The South American human immunodeficiency virus type 1 (HIV-1) epidemic is driven by several subtypes (B, C, and F1) and circulating and unique recombinant forms derived from those subtypes. Those variants are heterogeneously distributed around the continent in a country-specific manner. Despite some inconsistencies mainly derived from sampling biases and analytical constrains, most of studies carried out in the area agreed in pointing out specificities in the evolutionary dynamics of the circulating HIV-1 lineages. In this paper, we covered the theoretical basis, and the application of bioinformatics methods to reconstruct the HIV spatial-temporal dynamics, unveiling relevant information to understand the origin, geographical dissemination and the current molecular scenario of the HIV epidemic in the continent, particularly in the countries of Southern Cone.",
+          "overlap_entities": [
+            "hiv"
+          ],
+          "overlap_mesh": [],
+          "question_entities": [
+            "analysis",
+            "hiv"
+          ],
+          "passage_entities": [
+            "covered",
+            "current",
+            "hiv",
+            "hiv epidemic",
+            "human immunodeficiency virus type 1",
+            "information"
+          ],
+          "question_mesh": [
+            "hiv"
+          ],
+          "passage_mesh": [],
+          "features": {
+            "base_rank_score": 0.4554238032498901,
+            "hybrid_score": 0.01639344262295082,
+            "hypergraph_score_norm": 0.11774234202857801,
+            "entity_overlap_count": 1.0,
+            "question_entity_coverage": 0.5,
+            "mesh_overlap_count": 0.0,
+            "question_mesh_coverage": 0.0,
+            "primekg_relation_count": 0.0,
+            "question_relation_coverage": 0.0,
+            "local_num_hyperedges": 523.0,
+            "local_shared_entity_edges": 128.0,
+            "local_document_mesh_edges": 93.0,
+            "local_primekg_relation_edges": 1.0
+          },
+          "hybrid_score": 0.01639344262295082,
+          "hgb_score": 0.26011438667042014
+        },
+        {
+          "dataset": "BioASQ",
+          "question_id": "1724",
+          "passage_id": "19214283",
+          "rescued_gold_to_top_k": true,
+          "baseline_gold_rank": 35,
+          "hgb_gold_rank": 10,
+          "rank_gain": 25,
+          "question": "What colonoscopy findings have been reported in autism",
+          "passage_title": "",
+          "passage_text": "Les troubles du spectre autistique font référence à des syndromes de gravité diverse, caractérisés par une perturbation des interactions sociales, des retards sur le plan de la communication, ainsi que des comportements et des intérêts limités et répétés. La prévalence des troubles du spectre autistique est en hausse, tandis que leur étiologie reste imprécise et fort probablement multifactorielle. Plusieurs rapports ont avancé l’hypothèse d’un lien entre l’autisme et certains symptômes gastro-intestinaux chroniques. Des études endoscopiques ont notamment montré une prévalence plus élevée de colite non spécifique, d’hyperplasie lymphoïde et de gastrite en foyers chez des sujets malades comparativement à des témoins. Parmi les mécanismes potentiellement en cause, on retrouve : réponse immunitaire aberrante à certaines protéines alimentaires, perméabilité intestinale anormale et microflore intestinale inappropriée. On décrit ici le cas de deux patients atteints de troubles du spectre autistique qui présentaient des symptômes intestinaux chroniques et des anomalies endoscopiques, le tout est suivi d’une revue sur ce sujet controversé.",
+          "overlap_entities": [],
+          "overlap_mesh": [
+            "colon",
+            "colonoscopy"
+          ],
+          "question_entities": [
+            "findings"
+          ],
+          "passage_entities": [
+            "cas",
+            "des",
+            "est",
+            "et",
+            "ici",
+            "int",
+            "les",
+            "lev",
+            "par"
+          ],
+          "question_mesh": [
+            "colon",
+            "colonoscopy"
+          ],
+          "passage_mesh": [
+            "asperger syndrome",
+            "autistic disorder",
+            "colon",
+            "colonoscopy",
+            "enterocolitis",
+            "gastritis",
+            "gastroscopy",
+            "glucocorticoids",
+            "pyloric antrum"
+          ],
+          "features": {
+            "base_rank_score": 0.4215842636895268,
+            "hybrid_score": 0.014285714285714285,
+            "hypergraph_score_norm": 0.0811045862525838,
+            "entity_overlap_count": 0.0,
+            "question_entity_coverage": 0.0,
+            "mesh_overlap_count": 2.0,
+            "question_mesh_coverage": 1.0,
+            "primekg_relation_count": 0.0,
+            "question_relation_coverage": 0.0,
+            "local_num_hyperedges": 535.0,
+            "local_shared_entity_edges": 128.0,
+            "local_document_mesh_edges": 90.0,
+            "local_primekg_relation_edges": 19.0
+          },
+          "hybrid_score": 0.014285714285714285,
+          "hgb_score": 0.3565720640159064
+        },
+        {
+          "dataset": "BioASQ",
+          "question_id": "1479",
+          "passage_id": "10790371",
+          "rescued_gold_to_top_k": true,
+          "baseline_gold_rank": 29,
+          "hgb_gold_rank": 5,
+          "rank_gain": 24,
+          "question": "what is the role of MEF-2 in cardiomyocyte differentiation?",
+          "passage_title": "",
+          "passage_text": "The myocyte enhancer factor-2 (MEF2) proteins are MADS-box transcription factors that are essential for differentiation of all muscle lineages but their mechanisms of action remain largely undefined. In mammals, the earliest site of MEF2 expression is the heart where the MEF2C isoform is detectable as early as embryonic day 7.5. Inactivation of the MEF2C gene causes cardiac developmental arrest and severe downregulation of a number of cardiac markers including atrial natriuretic factor (ANF). However, most of these promoters contain no or low affinity MEF2 binding sites and they are not significantly activated by any MEF2 proteins in heterologous cells suggesting a dependence on a cardiac-enriched cofactor for MEF2 action. We provide evidence that MEF2 proteins are recruited to target promoters by the cell-specific GATA transcription factors, and that MEF2 potentiates the transcriptional activity of this family of tissue-restricted zinc finger proteins. Functional MEF2/GATA-4 synergy involves physical interaction between the MEF2 DNA-binding domain and the carboxy zinc finger of GATA-4 and requires the activation domains of both proteins. However, neither MEF2 binding sites nor MEF2 DNA binding capacity are required for transcriptional synergy. The results unravel a novel pathway for transcriptional regulation by MEF2 and provide a molecular paradigm for elucidating the mechanisms of action of MEF2 in muscle and non-muscle cells.",
+          "overlap_entities": [],
+          "overlap_mesh": [],
+          "question_entities": [],
+          "passage_entities": [
+            "activation domains",
+            "atrial natriuretic factor anf",
+            "dna binding",
+            "early",
+            "evidence",
+            "gata",
+            "gene causes",
+            "mef2",
+            "mef2c",
+            "nor",
+            "novel pathway",
+            "number"
+          ],
+          "question_mesh": [
+            "role"
+          ],
+          "passage_mesh": [
+            "atrial natriuretic factor",
+            "binding sites",
+            "cells cultured",
+            "dna",
+            "dna binding proteins",
+            "drug synergism",
+            "gata4 transcription factor",
+            "hela cells",
+            "mads domain proteins",
+            "mef2 transcription factors",
+            "myocardium",
+            "myogenic regulatory factors"
+          ],
+          "features": {
+            "base_rank_score": 0.49154466008398584,
+            "hybrid_score": 0.01639344262295082,
+            "hypergraph_score_norm": 0.19981052235505942,
+            "entity_overlap_count": 0.0,
+            "question_entity_coverage": 0.0,
+            "mesh_overlap_count": 0.0,
+            "question_mesh_coverage": 0.0,
+            "primekg_relation_count": 0.0,
+            "question_relation_coverage": 0.0,
+            "local_num_hyperedges": 540.0,
+            "local_shared_entity_edges": 128.0,
+            "local_document_mesh_edges": 97.0,
+            "local_primekg_relation_edges": 11.0
+          },
+          "hybrid_score": 0.01639344262295082,
+          "hgb_score": 0.47042356486542114
+        }
+      ]
+    },
+    {
+      "dataset": "PubMedQA",
+      "paths": {
+        "questions": "data/processed/pubmedqa_pqa_labeled_questions.jsonl",
+        "corpus": "data/processed/pubmedqa_pqa_labeled_corpus.jsonl",
+        "qrels": "data/processed/pubmedqa_pqa_labeled_qrels.jsonl",
+        "baseline": "outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl",
+        "candidate": "outputs/rerank/pubmedqa_learning_hgb_test_top100.jsonl",
+        "question_entities": "data/processed/pubmedqa_question_entities.jsonl",
+        "passage_entities": "data/processed/pubmedqa_passage_entities.jsonl",
+        "question_mesh": "data/processed/pubmedqa_pqa_labeled_question_mesh.jsonl",
+        "passage_mesh": "data/processed/pubmedqa_pqa_labeled_passage_mesh.jsonl"
+      },
+      "summary": {
+        "num_questions": 200,
+        "questions_with_rescued_gold_to_top_k": 48,
+        "rescued_gold_passages_to_top_k": 58,
+        "questions_with_lost_gold_from_top_k": 7,
+        "lost_gold_passages_from_top_k": 7,
+        "questions_with_gold_in_hgb_top100": 200,
+        "questions_without_gold_in_hgb_top100": 0,
+        "improved_min_gold_rank": 2,
+        "unchanged_min_gold_rank": 196,
+        "worsened_min_gold_rank": 2
+      },
+      "cases": [
+        {
+          "dataset": "PubMedQA",
+          "question_id": "pubmedqa_20382292",
+          "passage_id": "pubmedqa_20382292_3",
+          "rescued_gold_to_top_k": true,
+          "baseline_gold_rank": 100,
+          "hgb_gold_rank": 7,
+          "rank_gain": 93,
+          "question": "Knee extensor strength, dynamic stability, and functional ambulation: are they related in Parkinson's disease?",
+          "passage_title": "PMID 20382292 PARTICIPANTS",
+          "passage_text": "Patients (N=44) with idiopathic PD.",
+          "overlap_entities": [],
+          "overlap_mesh": [
+            "knee"
+          ],
+          "question_entities": [],
+          "passage_entities": [],
+          "question_mesh": [
+            "knee"
+          ],
+          "passage_mesh": [
+            "cohort studies",
+            "knee",
+            "muscle skeletal",
+            "muscle strength",
+            "parkinson disease",
+            "physical therapy modalities",
+            "postural balance",
+            "severity of illness index",
+            "walking"
+          ],
+          "features": {
+            "base_rank_score": 0.0,
+            "hybrid_score": 0.008620689655172414,
+            "hypergraph_score_norm": 0.010270161924893153,
+            "entity_overlap_count": 0.0,
+            "question_entity_coverage": 0.0,
+            "mesh_overlap_count": 1.0,
+            "question_mesh_coverage": 1.0,
+            "primekg_relation_count": 0.0,
+            "question_relation_coverage": 0.0,
+            "local_num_hyperedges": 430.0,
+            "local_shared_entity_edges": 38.0,
+            "local_document_mesh_edges": 100.0,
+            "local_primekg_relation_edges": 0.0
+          },
+          "hybrid_score": 0.008620689655172414,
+          "hgb_score": 0.012324967715837258
+        },
+        {
+          "dataset": "PubMedQA",
+          "question_id": "pubmedqa_26606599",
+          "passage_id": "pubmedqa_26606599_3",
+          "rescued_gold_to_top_k": true,
+          "baseline_gold_rank": 79,
+          "hgb_gold_rank": 5,
+          "rank_gain": 74,
+          "question": "Do Surrogates of Injury Severity Influence the Occurrence of Heterotopic Ossification in Fractures of the Acetabulum?",
+          "passage_title": "PMID 26606599 PARTICIPANTS",
+          "passage_text": "Two hundred forty-one patients who were treated through a posterior approach with a minimum of 6-month radiographic follow-up were identified from an acetabular fracture database.",
+          "overlap_entities": [],
+          "overlap_mesh": [
+            "acetabulum",
+            "ossification heterotopic"
+          ],
+          "question_entities": [],
+          "passage_entities": [
+            "database",
+            "who"
+          ],
+          "question_mesh": [
+            "acetabulum",
+            "ossification heterotopic"
+          ],
+          "passage_mesh": [
+            "acetabulum",
+            "aged 80 and over",
+            "causality",
+            "comorbidity",
+            "fracture fixation internal",
+            "fractures bone",
+            "incidence",
+            "length of stay",
+            "ohio",
+            "open fracture reduction",
+            "ossification heterotopic",
+            "prognosis"
+          ],
+          "features": {
+            "base_rank_score": 0.09308916503161108,
+            "hybrid_score": 0.009345794392523364,
+            "hypergraph_score_norm": 0.43516779096524527,
+            "entity_overlap_count": 0.0,
+            "question_entity_coverage": 0.0,
+            "mesh_overlap_count": 2.0,
+            "question_mesh_coverage": 1.0,
+            "primekg_relation_count": 0.0,
+            "question_relation_coverage": 0.0,
+            "local_num_hyperedges": 419.0,
+            "local_shared_entity_edges": 30.0,
+            "local_document_mesh_edges": 100.0,
+            "local_primekg_relation_edges": 0.0
+          },
+          "hybrid_score": 0.009345794392523364,
+          "hgb_score": 0.064553367162006
+        },
+        {
+          "dataset": "PubMedQA",
+          "question_id": "pubmedqa_16216859",
+          "passage_id": "pubmedqa_16216859_2",
+          "rescued_gold_to_top_k": true,
+          "baseline_gold_rank": 80,
+          "hgb_gold_rank": 8,
+          "rank_gain": 72,
+          "question": "Does a well developed collateral circulation predispose to restenosis after percutaneous coronary intervention?",
+          "passage_title": "PMID 16216859 PATIENTS AND SETTING",
+          "passage_text": "58 patients undergoing elective single vessel PCI in a tertiary referral interventional cardiac unit in the UK.",
+          "overlap_entities": [],
+          "overlap_mesh": [
+            "collateral circulation",
+            "coronary restenosis"
+          ],
+          "question_entities": [
+            "restenosis"
+          ],
+          "passage_entities": [
+            "pci",
+            "uk"
+          ],
+          "question_mesh": [
+            "collateral circulation",
+            "coronary circulation",
+            "coronary restenosis",
+            "percutaneous coronary intervention",
+            "rest"
+          ],
+          "passage_mesh": [
+            "angioplasty balloon coronary",
+            "case control studies",
+            "collateral circulation",
+            "coronary angiography",
+            "coronary restenosis",
+            "coronary stenosis",
+            "predictive value of tests",
+            "risk factors",
+            "stents",
+            "ultrasonography"
+          ],
+          "features": {
+            "base_rank_score": 0.08802308802308796,
+            "hybrid_score": 0.009523809523809525,
+            "hypergraph_score_norm": 0.12895292628819513,
+            "entity_overlap_count": 0.0,
+            "question_entity_coverage": 0.0,
+            "mesh_overlap_count": 2.0,
+            "question_mesh_coverage": 0.4,
+            "primekg_relation_count": 0.0,
+            "question_relation_coverage": 0.0,
+            "local_num_hyperedges": 431.0,
+            "local_shared_entity_edges": 40.0,
+            "local_document_mesh_edges": 100.0,
+            "local_primekg_relation_edges": 0.0
+          },
+          "hybrid_score": 0.009523809523809525,
+          "hgb_score": 0.01571329072012923
+        }
+      ]
+    }
+  ]
+}
