@@ -1,0 +1,14 @@
+| predictions | method | top_k | eval_split | num_eval | evidence_hit@k | accuracy | macro_f1 | yes_f1 | no_f1 | maybe_f1 |
+| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| pubmedqa_dense_full_top100 | majority | 1 | test | 200 | 0.9750 | 0.5550 | 0.2379 | 0.7138 | 0.0000 | 0.0000 |
+| pubmedqa_dense_full_top100 | lexical_rule | 1 | test | 200 | 0.9750 | 0.4850 | 0.3541 | 0.6265 | 0.3107 | 0.1250 |
+| pubmedqa_dense_full_top100 | tfidf_logreg | 1 | test | 200 | 0.9750 | 0.5000 | 0.2925 | 0.6400 | 0.2376 | 0.0000 |
+| pubmedqa_dense_full_top100 | majority | 3 | test | 200 | 0.9850 | 0.5550 | 0.2379 | 0.7138 | 0.0000 | 0.0000 |
+| pubmedqa_dense_full_top100 | lexical_rule | 3 | test | 200 | 0.9850 | 0.4150 | 0.3439 | 0.4167 | 0.4972 | 0.1176 |
+| pubmedqa_dense_full_top100 | tfidf_logreg | 3 | test | 200 | 0.9850 | 0.5350 | 0.3544 | 0.6617 | 0.3301 | 0.0714 |
+| pubmedqa_dense_full_top100 | majority | 5 | test | 200 | 0.9900 | 0.5550 | 0.2379 | 0.7138 | 0.0000 | 0.0000 |
+| pubmedqa_dense_full_top100 | lexical_rule | 5 | test | 200 | 0.9900 | 0.3800 | 0.2844 | 0.2353 | 0.5249 | 0.0930 |
+| pubmedqa_dense_full_top100 | tfidf_logreg | 5 | test | 200 | 0.9900 | 0.5350 | 0.3702 | 0.6640 | 0.3860 | 0.0606 |
+| pubmedqa_dense_full_top100 | majority | 10 | test | 200 | 0.9950 | 0.5550 | 0.2379 | 0.7138 | 0.0000 | 0.0000 |
+| pubmedqa_dense_full_top100 | lexical_rule | 10 | test | 200 | 0.9950 | 0.3250 | 0.2290 | 0.0174 | 0.4822 | 0.1875 |
+| pubmedqa_dense_full_top100 | tfidf_logreg | 10 | test | 200 | 0.9950 | 0.5500 | 0.4187 | 0.6694 | 0.4202 | 0.1667 |

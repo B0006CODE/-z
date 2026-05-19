@@ -170,3 +170,23 @@ python scripts/run_learning_rerank.py --config configs/default.yaml --prediction
 Current PubMedQA HGB held-out result is saved to `results/tables/pubmedqa_hgb_test.md`: same-split Hybrid RRF MRR@10 `0.9850` vs HGB `0.9861`, and Recall@10 `0.8200` vs `0.8953`. This supports the evidence-coverage argument more strongly than a pure MRR argument.
 
 BioASQ full held-out cross-encoder scoring with `cross-encoder/ms-marco-MiniLM-L-6-v2` timed out on CPU after 2400 seconds. The BioASQ 10-question sanity run completed but underperformed Hybrid RRF. Treat this as a warning that a generic MS MARCO cross-encoder is not enough for the biomedical setting; use a biomedical cross-encoder and GPU for the full BioASQ reranking comparison.
+
+Biomedical reranker candidates are summarized in `results/tables/biomedical_reranker_candidates.md`. The cross-encoder script now also supports Hugging Face `AutoModelForSequenceClassification` rerankers:
+
+```powershell
+python scripts/run_cross_encoder_rerank.py --config configs/default.yaml --questions data/processed/pubmedqa_pqa_labeled_questions.jsonl --corpus data/processed/pubmedqa_pqa_labeled_corpus.jsonl --qrels data/processed/pubmedqa_pqa_labeled_qrels.jsonl --predictions outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --output outputs/rerank/pubmedqa_medcpt_cross_encoder_sample2_top5.jsonl --metrics-output results/metrics/pubmedqa_medcpt_cross_encoder_sample2_top5_metrics.json --model-name ncbi/MedCPT-Cross-Encoder --backend transformers_sequence_classification --top-m 5 --top-k 5 --sample-limit 2 --batch-size 4 --max-length 256 --device cpu --only-predicted-qids
+```
+
+Current CPU status: this MedCPT smoke test did not finish within 300 seconds in the local environment, before writing metrics. Keep biomedical cross-encoder runs to tiny timing tests on CPU, or move BioASQ/PubMedQA full reranking to GPU.
+
+## PubMedQA Answer Selection
+
+PubMedQA yes/no/maybe answer-selection baselines are intentionally lightweight and do not use LLM generation. They consume top-k evidence from retrieval or reranking outputs and report accuracy, macro-F1, per-label F1, and evidence hit@k.
+
+```powershell
+python scripts/run_pubmedqa_qa.py --config configs/default.yaml --predictions outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --output outputs/generation/pubmedqa_hybrid_qa_test.jsonl --metrics-output results/metrics/pubmedqa_hybrid_qa_test_metrics.json --table-output results/tables/pubmedqa_hybrid_qa_accuracy.md --top-ks 1 3 5 10
+python scripts/run_pubmedqa_qa.py --config configs/default.yaml --predictions outputs/rerank/pubmedqa_learning_hgb_test_top100.jsonl --train-predictions outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl --output outputs/generation/pubmedqa_hgb_qa_test.jsonl --metrics-output results/metrics/pubmedqa_hgb_qa_test_metrics.json --table-output results/tables/pubmedqa_hgb_qa_accuracy.md --top-ks 1 3 5 10
+python scripts/summarize_pubmedqa_qa.py --metrics results/metrics/pubmedqa_dense_qa_test_metrics.json results/metrics/pubmedqa_hybrid_qa_test_metrics.json results/metrics/pubmedqa_hgb_qa_test_metrics.json --output results/tables/pubmedqa_qa_accuracy.md
+```
+
+Current QA diagnostic: evidence hit@10 is near 1.0 on PubMedQA test, but the simple majority, lexical-rule, and TF-IDF logistic baselines do not produce a strong answer-accuracy gain. This is useful negative evidence: retrieval coverage is high, but yes/no/maybe decision-making needs a stronger controlled answer selector before LLM generation is introduced.

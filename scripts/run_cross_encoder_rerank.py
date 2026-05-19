@@ -8,7 +8,9 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import torch
 from sentence_transformers import CrossEncoder
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -28,6 +30,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", default="outputs/rerank/cross_encoder_test_top100.jsonl")
     parser.add_argument("--metrics-output", default="results/metrics/cross_encoder_test_top100_metrics.json")
     parser.add_argument("--model-name", default=None)
+    parser.add_argument(
+        "--backend",
+        choices=["auto", "sentence_transformers", "transformers_sequence_classification"],
+        default="sentence_transformers",
+        help="Model loading/scoring backend. Use transformers_sequence_classification for models such as ncbi/MedCPT-Cross-Encoder.",
+    )
     parser.add_argument("--device", default=None, help="Torch device, e.g. cpu or cuda.")
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--max-length", type=int, default=None)
@@ -67,6 +75,49 @@ def score_pairs(model: CrossEncoder, pairs: list[list[str]], batch_size: int, sh
     return [float(score) for score in scores_array.tolist()]
 
 
+def resolve_backend(model_name: str, requested_backend: str) -> str:
+    if requested_backend != "auto":
+        return requested_backend
+    if model_name == "ncbi/MedCPT-Cross-Encoder":
+        return "transformers_sequence_classification"
+    return "sentence_transformers"
+
+
+def score_pairs_with_transformers(
+    model: AutoModelForSequenceClassification,
+    tokenizer: AutoTokenizer,
+    pairs: list[list[str]],
+    *,
+    batch_size: int,
+    max_length: int,
+    device: str,
+) -> list[float]:
+    if not pairs:
+        return []
+    model.eval()
+    scores: list[float] = []
+    for start in range(0, len(pairs), batch_size):
+        batch = pairs[start : start + batch_size]
+        encoded = tokenizer(
+            batch,
+            truncation=True,
+            padding=True,
+            return_tensors="pt",
+            max_length=max_length,
+        )
+        encoded = {key: value.to(device) for key, value in encoded.items()}
+        with torch.no_grad():
+            logits = model(**encoded).logits
+        if logits.ndim == 1:
+            batch_scores = logits
+        elif logits.shape[1] == 1:
+            batch_scores = logits[:, 0]
+        else:
+            batch_scores = logits[:, -1]
+        scores.extend(float(score) for score in batch_scores.detach().cpu().tolist())
+    return scores
+
+
 def main() -> None:
     args = parse_args()
     config = load_config(args.config)
@@ -80,6 +131,7 @@ def main() -> None:
     model_name = args.model_name or cross_encoder_cfg.get("model_name", "cross-encoder/ms-marco-MiniLM-L-6-v2")
     batch_size = args.batch_size or int(cross_encoder_cfg.get("batch_size", 32))
     max_length = args.max_length or int(cross_encoder_cfg.get("max_length", 512))
+    backend = resolve_backend(model_name, args.backend)
 
     questions = read_jsonl(questions_path)
     corpus = read_jsonl(corpus_path)
@@ -91,11 +143,6 @@ def main() -> None:
     ordered_qids = [str(row["question_id"]) for row in questions if str(row["question_id"]) in candidates_by_qid]
     if args.sample_limit is not None:
         ordered_qids = ordered_qids[: args.sample_limit]
-
-    model_kwargs: dict[str, Any] = {"max_length": max_length}
-    if args.device:
-        model_kwargs["device"] = args.device
-    model = CrossEncoder(model_name, **model_kwargs)
 
     pair_rows: list[dict[str, Any]] = []
     pairs: list[list[str]] = []
@@ -111,7 +158,26 @@ def main() -> None:
             pair_rows.append(row)
             pairs.append([question, passage_text(passage)])
 
-    cross_scores = score_pairs(model, pairs, batch_size=batch_size, show_progress_bar=True)
+    actual_device = args.device
+    if backend == "sentence_transformers":
+        model_kwargs: dict[str, Any] = {"max_length": max_length}
+        if args.device:
+            model_kwargs["device"] = args.device
+        model = CrossEncoder(model_name, **model_kwargs)
+        cross_scores = score_pairs(model, pairs, batch_size=batch_size, show_progress_bar=True)
+        actual_device = args.device
+    else:
+        actual_device = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForSequenceClassification.from_pretrained(model_name).to(actual_device)
+        cross_scores = score_pairs_with_transformers(
+            model,
+            tokenizer,
+            pairs,
+            batch_size=batch_size,
+            max_length=max_length,
+            device=actual_device,
+        )
     scored_by_qid: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
     for score, row in zip(cross_scores, pair_rows, strict=True):
         scored_by_qid[str(row["question_id"])].append((score, row))
@@ -130,6 +196,7 @@ def main() -> None:
                     "retriever": "cross_encoder_rerank",
                     "metadata": {
                         "model_name": model_name,
+                        "backend": backend,
                         "base_rank": int(row["rank"]),
                         "base_score": float(row.get("score", 0.0)),
                         "top_m": args.top_m,
@@ -164,7 +231,8 @@ def main() -> None:
             "source_predictions": args.predictions,
             "predictions": args.output,
             "model_name": model_name,
-            "device": args.device,
+            "backend": backend,
+            "device": actual_device,
             "batch_size": batch_size,
             "max_length": max_length,
             "top_m": args.top_m,
@@ -183,6 +251,7 @@ def main() -> None:
         "output": args.output,
         "metrics_output": args.metrics_output,
         "model_name": model_name,
+        "backend": backend,
         "num_questions_scored": len(ordered_qids),
         "num_candidates_scored": len(reranked),
         "mrr@10": metrics.get("mrr@10"),

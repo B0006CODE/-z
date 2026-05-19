@@ -1,0 +1,848 @@
+{
+  "timestamp": "2026-05-19T07:42:15.518763+00:00",
+  "config": {
+    "questions": "data/processed/pubmedqa_pqa_labeled_questions.jsonl",
+    "corpus": "data/processed/pubmedqa_pqa_labeled_corpus.jsonl",
+    "qrels": "data/processed/pubmedqa_pqa_labeled_qrels.jsonl",
+    "answer_labels": "data/processed/pubmedqa_pqa_labeled_answer_labels.jsonl",
+    "predictions": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+    "train_predictions": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+    "methods": [
+      "majority",
+      "lexical_rule",
+      "tfidf_logreg"
+    ],
+    "top_ks": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "eval_split": "test",
+    "sample_limit": null,
+    "include_evidence": true
+  },
+  "results": [
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "majority",
+      "top_k": 1,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.975,
+      "metrics": {
+        "accuracy": 0.555,
+        "macro_f1": 0.23794212218649516,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            111,
+            0,
+            0
+          ],
+          [
+            65,
+            0,
+            0
+          ],
+          [
+            24,
+            0,
+            0
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.555,
+            "recall": 1.0,
+            "f1": 0.7138263665594855,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "lexical_rule",
+      "top_k": 1,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.975,
+      "metrics": {
+        "accuracy": 0.485,
+        "macro_f1": 0.3540618785822904,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            78,
+            16,
+            17
+          ],
+          [
+            45,
+            16,
+            4
+          ],
+          [
+            15,
+            6,
+            3
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.5652173913043478,
+            "recall": 0.7027027027027027,
+            "f1": 0.6265060240963856,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.42105263157894735,
+            "recall": 0.24615384615384617,
+            "f1": 0.3106796116504854,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.125,
+            "recall": 0.125,
+            "f1": 0.125,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "tfidf_logreg",
+      "top_k": 1,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.975,
+      "metrics": {
+        "accuracy": 0.5,
+        "macro_f1": 0.29254125412541254,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            88,
+            23,
+            0
+          ],
+          [
+            53,
+            12,
+            0
+          ],
+          [
+            23,
+            1,
+            0
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.5365853658536586,
+            "recall": 0.7927927927927928,
+            "f1": 0.64,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.3333333333333333,
+            "recall": 0.18461538461538463,
+            "f1": 0.2376237623762376,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "majority",
+      "top_k": 3,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.985,
+      "metrics": {
+        "accuracy": 0.555,
+        "macro_f1": 0.23794212218649516,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            111,
+            0,
+            0
+          ],
+          [
+            65,
+            0,
+            0
+          ],
+          [
+            24,
+            0,
+            0
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.555,
+            "recall": 1.0,
+            "f1": 0.7138263665594855,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "lexical_rule",
+      "top_k": 3,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.985,
+      "metrics": {
+        "accuracy": 0.415,
+        "macro_f1": 0.34385043151698985,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            35,
+            57,
+            19
+          ],
+          [
+            15,
+            45,
+            5
+          ],
+          [
+            7,
+            14,
+            3
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.6140350877192983,
+            "recall": 0.3153153153153153,
+            "f1": 0.4166666666666667,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.3879310344827586,
+            "recall": 0.6923076923076923,
+            "f1": 0.4972375690607735,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.1111111111111111,
+            "recall": 0.125,
+            "f1": 0.11764705882352941,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "tfidf_logreg",
+      "top_k": 3,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.985,
+      "metrics": {
+        "accuracy": 0.535,
+        "macro_f1": 0.35441189866064443,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            89,
+            19,
+            3
+          ],
+          [
+            48,
+            17,
+            0
+          ],
+          [
+            21,
+            2,
+            1
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.5632911392405063,
+            "recall": 0.8018018018018018,
+            "f1": 0.6617100371747212,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.4473684210526316,
+            "recall": 0.26153846153846155,
+            "f1": 0.3300970873786408,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.25,
+            "recall": 0.041666666666666664,
+            "f1": 0.07142857142857142,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "majority",
+      "top_k": 5,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.99,
+      "metrics": {
+        "accuracy": 0.555,
+        "macro_f1": 0.23794212218649516,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            111,
+            0,
+            0
+          ],
+          [
+            65,
+            0,
+            0
+          ],
+          [
+            24,
+            0,
+            0
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.555,
+            "recall": 1.0,
+            "f1": 0.7138263665594855,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "lexical_rule",
+      "top_k": 5,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.99,
+      "metrics": {
+        "accuracy": 0.38,
+        "macro_f1": 0.2844014170963555,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            16,
+            81,
+            14
+          ],
+          [
+            4,
+            58,
+            3
+          ],
+          [
+            5,
+            17,
+            2
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.64,
+            "recall": 0.14414414414414414,
+            "f1": 0.23529411764705882,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.3717948717948718,
+            "recall": 0.8923076923076924,
+            "f1": 0.5248868778280543,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.10526315789473684,
+            "recall": 0.08333333333333333,
+            "f1": 0.09302325581395349,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "tfidf_logreg",
+      "top_k": 5,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.99,
+      "metrics": {
+        "accuracy": 0.535,
+        "macro_f1": 0.3702008644800407,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            84,
+            22,
+            5
+          ],
+          [
+            40,
+            22,
+            3
+          ],
+          [
+            18,
+            5,
+            1
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.5915492957746479,
+            "recall": 0.7567567567567568,
+            "f1": 0.6640316205533597,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.4489795918367347,
+            "recall": 0.3384615384615385,
+            "f1": 0.38596491228070173,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.1111111111111111,
+            "recall": 0.041666666666666664,
+            "f1": 0.06060606060606061,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "majority",
+      "top_k": 10,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.995,
+      "metrics": {
+        "accuracy": 0.555,
+        "macro_f1": 0.23794212218649516,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            111,
+            0,
+            0
+          ],
+          [
+            65,
+            0,
+            0
+          ],
+          [
+            24,
+            0,
+            0
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.555,
+            "recall": 1.0,
+            "f1": 0.7138263665594855,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "lexical_rule",
+      "top_k": 10,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.995,
+      "metrics": {
+        "accuracy": 0.325,
+        "macro_f1": 0.22903491436100132,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            1,
+            106,
+            4
+          ],
+          [
+            3,
+            61,
+            1
+          ],
+          [
+            0,
+            21,
+            3
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.25,
+            "recall": 0.009009009009009009,
+            "f1": 0.017391304347826087,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.324468085106383,
+            "recall": 0.9384615384615385,
+            "f1": 0.48221343873517786,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.375,
+            "recall": 0.125,
+            "f1": 0.1875,
+            "support": 24
+          }
+        }
+      }
+    },
+    {
+      "prediction_name": "pubmedqa_dense_full_top100",
+      "prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "train_prediction_path": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl",
+      "method": "tfidf_logreg",
+      "top_k": 10,
+      "eval_split": "test",
+      "num_train": 597,
+      "num_eval": 200,
+      "include_evidence": true,
+      "train_label_counts": {
+        "maybe": 67,
+        "no": 209,
+        "yes": 321
+      },
+      "eval_label_counts": {
+        "maybe": 24,
+        "no": 65,
+        "yes": 111
+      },
+      "evidence_hit_at_k": 0.995,
+      "metrics": {
+        "accuracy": 0.55,
+        "macro_f1": 0.4187408296651995,
+        "label_order": [
+          "yes",
+          "no",
+          "maybe"
+        ],
+        "confusion_matrix": [
+          [
+            82,
+            23,
+            6
+          ],
+          [
+            37,
+            25,
+            3
+          ],
+          [
+            15,
+            6,
+            3
+          ]
+        ],
+        "per_label": {
+          "yes": {
+            "precision": 0.6119402985074627,
+            "recall": 0.7387387387387387,
+            "f1": 0.6693877551020408,
+            "support": 111
+          },
+          "no": {
+            "precision": 0.46296296296296297,
+            "recall": 0.38461538461538464,
+            "f1": 0.42016806722689076,
+            "support": 65
+          },
+          "maybe": {
+            "precision": 0.25,
+            "recall": 0.125,
+            "f1": 0.16666666666666666,
+            "support": 24
+          }
+        }
+      }
+    }
+  ],
+  "notes": [
+    "This is answer selection over PubMedQA yes/no/maybe labels, not free-form clinical advice generation.",
+    "TF-IDF logistic regression is trained only on the deterministic train split.",
+    "For rerankers that only output held-out predictions, pass a full first-stage file via --train-predictions."
+  ]
+}

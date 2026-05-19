@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-05-19T16:00:00+08:00",
+  "dataset": "PubMedQA pqa_labeled",
+  "model_name": "ncbi/MedCPT-Cross-Encoder",
+  "backend": "transformers_sequence_classification",
+  "device": "cpu",
+  "attempted_scope": {
+    "sample_limit": 2,
+    "top_m": 5,
+    "top_k": 5,
+    "batch_size": 4,
+    "max_length": 256
+  },
+  "status": "timeout",
+  "timeout_seconds": 300,
+  "outputs_written": false,
+  "interpretation": "The biomedical MedCPT cross-encoder is now wired through the transformers backend, but the smallest CPU smoke test did not complete within 300 seconds in the current environment. Do not run BioASQ full cross-encoder on CPU; use GPU or keep only small timing diagnostics."
+}
