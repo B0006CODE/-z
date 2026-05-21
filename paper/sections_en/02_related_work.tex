@@ -1,0 +1,17 @@
+\section{Related Work}
+
+\subsection{Medical Retrieval-Augmented Question Answering}
+
+Medical RAG benchmarking has recently made systematic evaluation of corpora, retrievers, and backbone models more visible. The MedRAG/MIRAGE benchmark evaluates medical RAG configurations over multiple QA datasets and highlights that retrieval settings have a large effect on downstream medical QA \citep{xiong2024benchmarking}. Iterative medical RAG extends this direction by generating follow-up retrieval queries for complex questions \citep{xiong2024imedrag}. This work is narrower: it focuses on evidence retrieval and reranking before making strong generation claims.
+
+\subsection{Biomedical QA Datasets and Biomedical Retrieval}
+
+BioASQ provides a long-running biomedical semantic indexing and QA benchmark \citep{tsatsaronis2015bioasq}, and BioASQ-QA offers manually curated questions, reference answers, documents, snippets, and concepts for biomedical QA research \citep{krithara2023bioasqqa}. PubMedQA is a complementary biomedical research question answering dataset with yes/no/maybe labels over PubMed abstracts \citep{jin2019pubmedqa}. For biomedical semantic retrieval, MedCPT uses large-scale PubMed search logs to train a biomedical retriever and reranker \citep{jin2023medcpt}.
+
+\subsection{Graph and Hypergraph RAG}
+
+GraphRAG-style methods organize retrieved information using graph structure, with local-to-global search proposed for query-focused summarization \citep{edge2024graphrag}. Medical Graph RAG connects user documents, credible medical sources, and controlled vocabularies for medical response grounding \citep{wu2024medgraphrag}. HyperGraphRAG argues that hyperedges can represent n-ary relations beyond ordinary pairwise graph edges \citep{luo2025hypergraphrag}, and cross-granularity HGRAG models entities and passages at different retrieval granularities \citep{wang2026hgrag}. KCH-MedRank follows this high-order motivation but uses a local, evidence-retrieval-focused hypergraph rather than a global graph construction.
+
+\subsection{Controlled Biomedical Knowledge}
+
+MeSH is a controlled, hierarchically organized vocabulary maintained by the National Library of Medicine for indexing and searching biomedical information \citep{nlm2026mesh}. PrimeKG integrates multimodal precision-medicine relations across diseases, proteins, drugs, phenotypes, and other biomedical entities \citep{chandak2023primekg}. In this project, MeSH hierarchy features are central to the medical constraint design, while PrimeKG is treated as an auxiliary relation source because current exact-name coverage is sparse.

@@ -1,0 +1,14 @@
+\section{实验设置}
+
+\subsection{数据集}
+
+主数据集为 `rag-datasets/rag-mini-bioasq`，作为紧凑的 BioASQ 风格生物医学证据检索设置。当前留出测试集包含 943 个问题，采用项目指标文件中描述的确定性划分规则。PubMedQA 保持为次要鲁棒性数据集，目前还不是论文主结果。
+
+\subsection{基线}
+
+论文骨架跟踪以下必要基线：BM25、稠密生物医学检索、Hybrid BM25 + dense RRF、增强 Hybrid RRF、同一增强候选池上的 MedCPT Cross-Encoder、仅检索特征的 LambdaMART、带生物医学语义但不含超图特征的 LambdaMART、成对图学习排序、不含医学知识的超图学习排序，以及完整 KCH-MedRank。
+
+\subsection{评估}
+
+主要检索指标包括 Recall@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage。与 Hybrid RRF 和强语义重排序基线的比较报告成对 bootstrap 置信区间与 p 值。hard reranking subset 仅用于诊断分析，不替代完整留出测试集评估。
+

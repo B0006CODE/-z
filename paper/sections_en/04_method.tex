@@ -1,0 +1,16 @@
+\section{Method}
+
+\subsection{First-Stage Retrieval}
+
+The first stage retrieves top-$M$ evidence candidates using BM25, dense biomedical retrieval, and hybrid Reciprocal Rank Fusion. The enhanced candidate-generation path adds fielded BM25 with MeSH expansion and MedCPT dual-encoder dense retrieval. Fusion weights are selected on the validation split, where the selected w122 configuration maximizes Recall@100 rather than test performance.
+
+\subsection{Knowledge-Constrained Local Hypergraph}
+
+For each question and top-$M$ candidates, KCH-MedRank builds a local hypergraph with question, passage, document, biomedical entity, MeSH concept, and optional relation nodes. Hyperedges connect query concepts, passage concepts, document-MeSH labels, shared concepts, hierarchy relations, and auxiliary PrimeKG-style relation signals.
+
+The local design avoids constructing a global graph over millions of biomedical passages. It also keeps the method interpretable: feature inspection and case studies can report which concept overlaps, hierarchy links, shared candidate clusters, or hypergraph centrality signals influenced reranking.
+
+\subsection{Learning-to-Rank}
+
+The main supervised reranker is a query-group learning-to-rank model using LightGBM/LambdaMART-style gradient boosted decision trees \citep{ke2017lightgbm}. Features include initial rank scores, BM25 and dense scores, biomedical semantic score, MeSH hierarchy-aware features, entity overlap, local hypergraph diffusion and degree centrality, and auxiliary relation features. Hypergraph diffusion is used as an interpretable feature, not as the sole hand-tuned scoring rule.
+

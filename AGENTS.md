@@ -249,6 +249,49 @@ Preferred scoring options:
 2. Lightweight logistic regression or LambdaMART with interpretable features.
 3. Deterministic rank aggregation with validation-selected coefficients.
 
+### Stage 2 Updated Direction: KCH-MedRank
+
+The next method version should be treated as an upgrade of the current local hypergraph reranking pipeline, not as a new project. The working method name is:
+
+```text
+KCH-MedRank: Knowledge-Constrained Hypergraph Learning-to-Rank with Biomedical Semantic Reranking
+```
+
+The goal is to obtain stronger and more defensible evidence-retrieval gains over strong Hybrid RRF baselines while keeping the paper focused on reproducible biomedical evidence reranking.
+
+Required method changes:
+
+1. Add a biomedical semantic reranking signal, preferably MedCPT or another PubMed-trained biomedical reranker, as an explicit feature rather than as an unreported replacement for the proposed method.
+2. Replace pointwise reranking as the main supervised method with listwise or pairwise learning-to-rank, preferably LambdaMART / LightGBM ranking with query-level candidate groups and validation-selected hyperparameters.
+3. Extend MeSH features from exact overlap to hierarchy-aware signals, including parent or ancestor match, sibling match, tree-distance similarity, query concept coverage, passage concept specificity, and shared-MeSH candidate clusters.
+4. Keep the local hypergraph cross-granularity design: question, passage, document, MeSH concept, biomedical entity, and optional relation nodes connected by query-concept, passage-concept, document-MeSH, shared-concept, hierarchy, and relation hyperedges.
+5. Use hypergraph diffusion and centrality as interpretable ranking features, not as an arbitrary hand-tuned standalone formula.
+6. Treat PrimeKG as an auxiliary relation feature unless concept normalization improves its coverage. Do not present PrimeKG as the primary source of improvement if validation selects near-zero relation weight.
+
+Required KCH-MedRank baselines and ablations:
+
+- BM25.
+- Dense biomedical retriever.
+- Hybrid BM25 + Dense RRF.
+- MedCPT or biomedical reranker only.
+- Retrieval-feature-only LambdaMART.
+- LambdaMART + biomedical semantic reranker without hypergraph features.
+- Pairwise graph learning-to-rank without hyperedges.
+- Hypergraph learning-to-rank without medical knowledge constraints.
+- Full KCH-MedRank.
+- Remove MedCPT or biomedical semantic reranker.
+- Remove MeSH hierarchy features.
+- Remove biomedical entity features.
+- Remove hypergraph diffusion and centrality features.
+- Remove PrimeKG relation features.
+
+Required evaluation additions:
+
+- Full held-out test evaluation remains mandatory.
+- Add a hard reranking subset where Hybrid top-100 contains at least one gold evidence passage but Hybrid top-10 misses it. This subset is for diagnostic analysis, not a replacement for the full test set.
+- Report Recall@k, MRR@k, nDCG@k, evidence coverage, bootstrap confidence intervals, and p-values against Hybrid RRF and strong semantic reranker baselines.
+- Generation remains secondary unless answer accuracy and evidence support improve with controlled metrics.
+
 ## 9. Baselines
 
 Minimum baselines:
@@ -570,3 +613,37 @@ Do not commit large reproducible artifacts unless the user explicitly asks for G
 - Python caches or local virtual environments.
 
 The repository contains `.gitignore` rules for these generated artifacts. Preserve those rules unless the user explicitly changes the versioning policy.
+
+## 20. Paper Writing And Bilingual LaTeX Rules
+
+The manuscript is maintained under `paper/` using a generic LaTeX article-style template. Do not bind the manuscript to Elsevier, Springer, IEEE, MDPI, or any other journal-specific template unless the user explicitly requests it later.
+
+Use these paper entry points:
+
+- `paper/main_en.tex` for the English manuscript.
+- `paper/main_zh.tex` for the Chinese manuscript.
+- `paper/sections_en/` and `paper/sections_zh/` for matched section files.
+
+English and Chinese versions must remain synchronized:
+
+- Each English section file must have a corresponding Chinese section file.
+- If one language adds or changes a claim, result, limitation, table reference, citation, or conclusion, update the corresponding location in the other language in the same change.
+- If a translation cannot be completed immediately, add an explicit TODO marker in both versions rather than silently changing only one side.
+
+Reference rules:
+
+- Literature metadata must be verified online from reliable sources before citation.
+- Do not invent paper titles, authors, years, venues, DOIs, arXiv IDs, PubMed IDs, or BibTeX entries.
+- Do not add unverified literature to `paper/references.bib`; keep unverified related work as explicit TODO comments in the manuscript.
+- Prefer official sources such as arXiv, PubMed/NCBI, ACL Anthology, IEEE, ACM, Springer, Elsevier, Nature, MDPI, Hugging Face official model pages, and official GitHub repositories for software or dataset information.
+- Record verified citation source links in `paper/verified_sources.md`.
+
+Claim and result rules:
+
+- Manuscript claims must match the current experimental evidence.
+- The contribution should be framed as a lightweight, reproducible, knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking.
+- Do not claim to invent RAG, GraphRAG, or HyperGraphRAG.
+- Do not make QA generation the main contribution unless later controlled metrics support it.
+- Do not present PrimeKG as the primary source of improvement; treat it as auxiliary unless validation and feature analysis support a stronger claim.
+- Result tables should preferentially come from `results/tables/` and `results/metrics/`.
+- After each major manuscript edit, attempt to compile both English and Chinese PDFs and report any LaTeX environment limitations.

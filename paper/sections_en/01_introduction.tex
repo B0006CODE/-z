@@ -1,0 +1,10 @@
+\section{Introduction}
+
+Evidence-grounded medical question answering requires systems to retrieve relevant biomedical evidence before producing or selecting an answer. Retrieval-augmented generation (RAG) provides a general framework for combining retrieved evidence with language models \citep{lewis2020rag}, and recent medical benchmarking work has shown that retrieval choices strongly affect medical QA performance \citep{xiong2024benchmarking}. However, standard lexical or dense retrieval often ranks passages by pairwise similarity only, while biomedical evidence is frequently organized through higher-order relations among questions, passages, MeSH concepts, biomedical entities, documents, and relation sources.
+
+This paper studies a practical, domain-specific reranking method rather than a new generic RAG paradigm. We propose KCH-MedRank, a knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. The method keeps candidate generation reproducible with BM25, dense retrieval, and Reciprocal Rank Fusion \citep{robertson2009bm25,cormack2009rrf}, then builds a local cross-granularity hypergraph around each question and its top candidate passages.
+
+The intended contribution is modest and evidence-oriented: a lightweight reranking module that uses biomedical semantic signals, MeSH hierarchy-aware features, local hypergraph diffusion and centrality, and query-group LambdaMART ranking to improve evidence retrieval. The system does not claim to replace clinical judgment, provide clinical diagnosis, or make answer generation the main contribution.
+
+The current experimental main line on the BioASQ evidence retrieval setting shows that enhanced candidate generation raises the held-out top-100 recall ceiling, and KCH-MedRank improves top-10 evidence retrieval over original Hybrid RRF and a true MedCPT Cross-Encoder baseline. The failure analysis also shows lost gold passages, so the discussion treats the method as a net improvement with clear remaining failure modes.
+

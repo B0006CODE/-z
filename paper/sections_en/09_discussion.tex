@@ -1,0 +1,6 @@
+\section{Discussion}
+
+The current evidence supports a focused claim: local knowledge-constrained learning-to-rank improves biomedical evidence retrieval over strong retrieval and semantic reranking baselines. The strongest statistically supported comparison against the true MedCPT Cross-Encoder baseline is Recall@10; MRR@10 and nDCG@10 move in the right direction but are not significant.
+
+Several limitations remain. First, the method depends on a strong candidate pool; if top-100 recall is low, reranking cannot recover missing evidence. Second, exact-name PrimeKG mapping is sparse and should not be overclaimed. Third, some ablations suggest that the learning-to-rank model benefits substantially from retrieval and semantic features, so the contribution of each knowledge constraint must be presented carefully. Fourth, answer generation and faithfulness metrics are not yet mature enough to be the main manuscript claim.
+

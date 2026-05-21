@@ -1,0 +1,14 @@
+\section{Experimental Setup}
+
+\subsection{Dataset}
+
+The primary dataset is `rag-datasets/rag-mini-bioasq`, used as a compact BioASQ-style biomedical evidence retrieval setting. The current held-out test split contains 943 questions, selected by the deterministic split rule described in the project metrics files. PubMedQA remains a secondary robustness dataset and is not yet the main manuscript result.
+
+\subsection{Baselines}
+
+The manuscript skeleton tracks the following required baselines: BM25, dense biomedical retrieval, Hybrid BM25 + dense RRF, enhanced Hybrid RRF, MedCPT Cross-Encoder on the same enhanced candidate pool, retrieval-feature-only LambdaMART, LambdaMART with biomedical semantic reranking but without hypergraph features, pairwise graph learning-to-rank, hypergraph learning-to-rank without medical knowledge, and full KCH-MedRank.
+
+\subsection{Evaluation}
+
+The main retrieval metrics are Recall@$k$, MRR@$k$, nDCG@$k$, and evidence coverage. Paired bootstrap confidence intervals and p-values are reported against Hybrid RRF and the strong semantic reranker baseline. A hard reranking subset is used for diagnosis, not as a replacement for the full held-out test evaluation.
+

@@ -1,0 +1,8 @@
+\section{Ablation Study}
+
+The ablation study should separate retrieval-strength gains from medical-knowledge and hypergraph contributions. Current result files include removal settings for the biomedical semantic score, MeSH hierarchy features, biomedical entity features, hypergraph diffusion and centrality, and PrimeKG relation features.
+
+Preliminary interpretation is conservative. Biomedical semantic and retrieval features are strong. MeSH hierarchy and shared concept clusters provide medically interpretable features, but some leave-one-out ablations have small or mixed differences. PrimeKG exact-name relation features have low coverage and should remain auxiliary unless future normalization improves their contribution.
+
+% TODO: build the final ablation table from results/tables/kch_medrank_enhanced_bioasq_retrieval.md and feature importance files.
+

@@ -286,6 +286,31 @@ Current PubMedQA status:
 - [ ] Efficiency analysis.
 - [ ] Draft paper structure: Introduction, Related Work, Task Definition, Method, Experimental Setup, Results, Ablation Study, Case Study, Discussion, Conclusion.
 
+## 12A. Manuscript
+
+- [x] Create bilingual LaTeX paper skeleton under `paper/`.
+- [x] Create `main_en.tex` and `main_zh.tex`.
+- [x] Create matched `sections_en/` and `sections_zh/`.
+- [x] Add bilingual synchronization rules to `paper/README.md`.
+- [x] Verify literature metadata online before adding citations.
+- [x] Create `references.bib` only from verified sources.
+- [x] Record verified citation source links.
+- [ ] Build final result tables for the manuscript.
+- [ ] Build method diagram.
+- [ ] Write Introduction in English and Chinese.
+- [ ] Write Related Work after verifying literature metadata.
+- [ ] Write Method in English and Chinese.
+- [ ] Write Experimental Setup in English and Chinese.
+- [ ] Write Results in English and Chinese.
+- [ ] Write Ablation Study in English and Chinese.
+- [ ] Write Case Study and Failure Analysis in English and Chinese.
+- [ ] Write Discussion and limitations in English and Chinese.
+- [ ] Write Conclusion in English and Chinese.
+- [x] Verify initial `references.bib` entries.
+- [x] Compile English PDF.
+- [x] Compile Chinese PDF.
+- [ ] Confirm both language versions are synchronized before submission.
+
 ## 13. Quality Gates
 
 - [x] All scripts expose CLI arguments for paths and model names.

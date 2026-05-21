@@ -1,0 +1,38 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+\title{Knowledge-Constrained Hypergraph Retrieval-Augmented Generation for Evidence-Grounded Medical Question Answering}
+\author{Anonymous Authors}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Medical retrieval-augmented generation systems require evidence retrieval that is both accurate and medically grounded. This manuscript studies KCH-MedRank, a lightweight and reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. The current draft is a bilingual LaTeX skeleton. It records the verified experimental main line: enhanced candidate generation improves the top-100 evidence ceiling, and KCH-MedRank improves top-10 evidence retrieval over strong Hybrid RRF and MedCPT cross-encoder baselines on the held-out BioASQ test split. Answer generation remains secondary until controlled answer and evidence-support metrics are complete.
+\end{abstract}
+
+\input{sections_en/01_introduction}
+\input{sections_en/02_related_work}
+\input{sections_en/03_task_definition}
+\input{sections_en/04_method}
+\input{sections_en/05_experimental_setup}
+\input{sections_en/06_results}
+\input{sections_en/07_ablation}
+\input{sections_en/08_case_study}
+\input{sections_en/09_discussion}
+\input{sections_en/10_conclusion}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
+

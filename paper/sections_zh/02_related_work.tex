@@ -1,0 +1,17 @@
+\section{相关工作}
+
+\subsection{医学检索增强问答}
+
+医学 RAG 基准研究使语料、检索器和主干模型的系统评估更加清晰。MedRAG/MIRAGE 基准在多个医学问答数据集上评估医学 RAG 配置，并指出检索设置对下游医学问答具有较大影响 \citep{xiong2024benchmarking}。迭代式医学 RAG 进一步通过为复杂问题生成后续检索查询来扩展这一方向 \citep{xiong2024imedrag}。本文范围更窄，重点放在证据检索与重排序上，而不是过早提出强生成结论。
+
+\subsection{生物医学问答数据集与检索}
+
+BioASQ 是长期运行的生物医学语义索引与问答基准 \citep{tsatsaronis2015bioasq}，BioASQ-QA 提供人工整理的问题、参考答案、文档、片段和概念，适合生物医学问答研究 \citep{krithara2023bioasqqa}。PubMedQA 是互补的生物医学研究问题回答数据集，围绕 PubMed 摘要提供 yes/no/maybe 标签 \citep{jin2019pubmedqa}。在生物医学语义检索方面，MedCPT 使用大规模 PubMed 搜索日志训练生物医学检索器与重排序器 \citep{jin2023medcpt}。
+
+\subsection{图与超图 RAG}
+
+GraphRAG 类方法使用图结构组织检索信息，其中 local-to-global search 被用于面向查询的摘要任务 \citep{edge2024graphrag}。Medical Graph RAG 将用户文档、可信医学来源和受控词表连接起来，以支持医学回答的证据 grounding \citep{wu2024medgraphrag}。HyperGraphRAG 认为超边可以表示普通成对图边无法直接表达的 n 元关系 \citep{luo2025hypergraphrag}，跨粒度 HGRAG 则在不同检索粒度上建模实体和段落 \citep{wang2026hgrag}。KCH-MedRank 继承高阶关系建模动机，但采用局部、面向证据检索的超图，而不是全局图构建。
+
+\subsection{受控生物医学知识}
+
+MeSH 是由美国国家医学图书馆维护的受控且层级化的词表，用于生物医学和健康信息的索引、编目与检索 \citep{nlm2026mesh}。PrimeKG 融合了疾病、蛋白、药物、表型等生物医学实体之间的多模态精准医学关系 \citep{chandak2023primekg}。在本项目中，MeSH 层级特征是医学约束设计的核心，而 PrimeKG 由于当前精确名称匹配覆盖稀疏，仅作为辅助关系来源。
