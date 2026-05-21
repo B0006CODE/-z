@@ -1,9 +1,13 @@
 \section{Ablation Study}
 
-The ablation study should separate retrieval-strength gains from medical-knowledge and hypergraph contributions. Current result files include removal settings for the biomedical semantic score, MeSH hierarchy features, biomedical entity features, hypergraph diffusion and centrality, and PrimeKG relation features.
+The ablation study separates retrieval-strength gains from biomedical semantic, medical-knowledge, and hypergraph contributions. Current result files include removal settings for the biomedical semantic score, MeSH hierarchy features, biomedical entity features, hypergraph diffusion and centrality, and PrimeKG relation features. All variants use the same enhanced top-100 candidate pool, so differences reflect reranking behavior rather than candidate availability.
 
 Preliminary interpretation is conservative. Biomedical semantic and retrieval features are strong. MeSH hierarchy and shared concept clusters provide medically interpretable features, but some leave-one-out ablations have small or mixed differences. PrimeKG exact-name relation features have low coverage and should remain auxiliary unless future normalization improves their contribution.
 
 \input{tables/kch_ablation_summary}
 
-The ablation table suggests three points. First, learning-to-rank over retrieval features already provides a strong improvement over enhanced Hybrid RRF. Second, adding biomedical semantic evidence improves the strongest reranking variants. Third, the medical-knowledge and hypergraph features should be interpreted as complementary and explanatory rather than as a single dominant source of gain. In particular, removing PrimeKG relation features still leaves a strong model, so PrimeKG is not presented as the primary improvement driver.
+The ablation table suggests four points. First, learning-to-rank over retrieval features already provides a strong improvement over enhanced Hybrid RRF, raising Recall@10 from 0.4660 to 0.5208. This means the supervised query-group ranking objective itself is an important part of the method. Second, adding biomedical semantic evidence improves the strongest reranking variants: the semantic-without-hypergraph model reaches Recall@10 of 0.5328 and MRR@10 of 0.7885.
+
+Third, graph structure and medical constraints are best interpreted as complementary features. Pairwise graph LTR and full KCH-MedRank are close, while the no-medical-knowledge hypergraph variant is weaker than the full model on Recall@10 and MRR@10. This supports the use of medical constraints but does not justify claiming that hyperedges alone dominate the improvement. Fourth, PrimeKG is not a primary driver in the current implementation. Removing PrimeKG relation features still leaves Recall@10 of 0.5252 and MRR@10 of 0.7834, consistent with the observed sparsity of exact-name relation matching.
+
+The final claim should therefore be phrased as a combined framework: high-recall candidate generation, biomedical semantic reranking features, supervised listwise learning, and interpretable local hypergraph knowledge features together improve evidence retrieval.

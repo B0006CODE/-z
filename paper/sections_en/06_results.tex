@@ -1,14 +1,23 @@
 \section{Results}
 
-Table~\ref{tab:enhanced-bioasq-main-results} summarizes the current main held-out BioASQ retrieval results. The original Hybrid RRF test baseline has Recall@10 of 0.4636, MRR@10 of 0.7550, nDCG@10 of 0.5848, and Recall@100 of 0.6077. The enhanced w122 candidate pool was selected on validation Recall@100 and reaches test Recall@100 of 0.7388, providing a stronger candidate ceiling for reranking.
+\subsection{Candidate Pool Quality}
+
+Table~\ref{tab:enhanced-bioasq-main-results} summarizes the current main held-out BioASQ retrieval results. The original Hybrid RRF test baseline has Recall@10 of 0.4636, MRR@10 of 0.7550, nDCG@10 of 0.5848, and Recall@100 of 0.6077. The enhanced w122 candidate pool was selected on validation Recall@100 and reaches test Recall@100 of 0.7388, providing a stronger candidate ceiling for reranking. This step is important because reranking cannot recover gold evidence that is absent from the candidate pool.
 
 \input{tables/enhanced_bioasq_main_results}
 
-Enhanced KCH-MedRank reaches Recall@10 of 0.5332, MRR@10 of 0.7882, nDCG@10 of 0.6446, and Recall@100 of 0.7388. Relative to original Hybrid RRF, this corresponds to gains of +0.0696 Recall@10, +0.0332 MRR@10, and +0.0598 nDCG@10.
+\subsection{Main Held-Out Test Results}
+
+Enhanced KCH-MedRank reaches Recall@10 of 0.5332, MRR@10 of 0.7882, nDCG@10 of 0.6446, and Recall@100 of 0.7388. Relative to original Hybrid RRF, this corresponds to gains of +0.0696 Recall@10, +0.0332 MRR@10, and +0.0598 nDCG@10. Relative to the enhanced Hybrid RRF candidate ordering, KCH-MedRank improves Recall@10 by +0.0673, MRR@10 by +0.0352, nDCG@10 by +0.0602, and evidence coverage@10 by +0.0673.
+
+Table~\ref{tab:enhanced-bioasq-bootstrap-hybrid} reports paired bootstrap testing against enhanced Hybrid RRF. All four top-10 metrics are significant with $p=0.0002$. This confirms that the improvement is not only a consequence of the stronger candidate pool: the reranking step itself changes the top-10 evidence ordering in a measurable way.
+
+\input{tables/enhanced_bioasq_bootstrap_vs_hybrid}
+
+\subsection{Comparison with Biomedical Semantic Reranking}
 
 On the same enhanced candidate pool, the true MedCPT Cross-Encoder baseline reaches Recall@10 of 0.5172, MRR@10 of 0.7775, and nDCG@10 of 0.6390. Table~\ref{tab:enhanced-bioasq-significance} reports paired bootstrap results against this strong semantic baseline. KCH-MedRank significantly improves Recall@10 ($p=0.0074$), while MRR@10 and nDCG@10 are positive but not statistically significant.
 
 \input{tables/enhanced_bioasq_significance}
 
-These results support the paper's evidence-retrieval claim. They do not yet justify making answer generation the primary contribution.
-
+The comparison with MedCPT Cross-Encoder is the stricter test for the proposed reranker. It shows that KCH-MedRank improves evidence coverage at top 10 beyond a strong biomedical semantic reranker, but the rank-sensitive MRR and nDCG gains should be described as positive trends rather than significant improvements. These results support the paper's evidence-retrieval claim. They do not yet justify making answer generation the primary contribution.

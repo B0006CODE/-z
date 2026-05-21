@@ -301,8 +301,8 @@ Current PubMedQA status:
 - [ ] Write Related Work after verifying literature metadata.
 - [x] Write Method in English and Chinese.
 - [x] Write Experimental Setup in English and Chinese.
-- [ ] Write Results in English and Chinese.
-- [ ] Write Ablation Study in English and Chinese.
+- [x] Write Results in English and Chinese.
+- [x] Write Ablation Study in English and Chinese.
 - [ ] Write Case Study and Failure Analysis in English and Chinese.
 - [ ] Write Discussion and limitations in English and Chinese.
 - [ ] Write Conclusion in English and Chinese.
