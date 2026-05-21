@@ -36,7 +36,7 @@ PrimeKG-derived features are included only as auxiliary relation signals: relati
 
 \subsection{Learning-to-Rank}
 
-The main supervised reranker is a query-group learning-to-rank model using LightGBM/LambdaMART-style gradient boosted decision trees \citep{ke2017lightgbm}. Each question forms one ranking group, candidate passages form rows, and binary relevance labels are derived from gold evidence annotations. The feature vector combines retrieval scores, biomedical semantic scores, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and local hypergraph structural features.
+The main supervised reranker is a query-group learning-to-rank model: a LightGBM gradient boosted tree ranker trained with a LambdaMART-style objective \citep{ke2017lightgbm}. Each question forms one ranking group, candidate passages form rows, and binary relevance labels are derived from gold evidence annotations. The feature vector combines retrieval scores, biomedical semantic scores, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and local hypergraph structural features.
 
 Hyperparameters are selected on the validation split. The grid includes number of leaves, learning rate, number of estimators, and an optional blend weight that interpolates model scores with the original candidate rank score. Selection prioritizes validation MRR@10, then Recall@10 and nDCG@10. After validation selection, the final model is trained on train plus validation questions and evaluated once on the held-out test split.
 
