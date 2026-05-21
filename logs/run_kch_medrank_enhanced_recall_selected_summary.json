@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-05-21T08:35:35.208298+00:00",
+  "metrics": "results\\metrics\\kch_medrank_enhanced_recall_selected_metrics.json",
+  "table": "results\\tables\\kch_medrank_enhanced_recall_selected_retrieval.md",
+  "hard_subset_table": "results\\tables\\kch_medrank_enhanced_recall_selected_hard_subset.md",
+  "semantic_source": "outputs/retrieval/medcpt_dense_full_top100.jsonl",
+  "hybrid_mrr@10": 0.7530016495817131,
+  "semantic_mrr@10": 0.16577160026258647,
+  "main_method": "Full KCH-MedRank",
+  "main_mrr@10": 0.7871231631570974,
+  "hybrid_recall@10": 0.46595719332215196,
+  "main_recall@10": 0.5293750908986573,
+  "hard_subset_qids": 65
+}

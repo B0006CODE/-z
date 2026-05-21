@@ -15,7 +15,7 @@
 MeSH 覆盖 & 31,110 个描述符；37,356/40,221 个段落和 4,264/4,719 个问题具有 MeSH 匹配 & 受控词表特征具有较好覆盖。 \\
 PrimeKG 过滤 & 扫描 8,100,498 行；保留 5,766 条项目局部关系 & 关系特征较稀疏，应保持辅助定位。 \\
 稠密生物医学检索 & MedCPT dual encoder 在 RTX 4060 Laptop GPU 上使用 CUDA & GPU 加速适合稠密检索。 \\
-Cross-Encoder 打分 & BioASQ CPU 完整运行在 2,400 秒后超时 & 完整 Cross-Encoder 重打分应使用 GPU 或受控子集。 \\
+Cross-Encoder 打分 & 早期通用 CPU 运行在 2,400 秒后超时；最终 MedCPT Cross-Encoder 测试基线完成 943 个问题和 94,300 个候选打分 & 完整 Cross-Encoder 重打分明显比表格重排序更昂贵。 \\
 \bottomrule
 \end{tabularx}
 \end{table}

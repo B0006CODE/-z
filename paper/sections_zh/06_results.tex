@@ -22,6 +22,16 @@ Enhanced KCH-MedRank 达到 Recall@10 = 0.5332、MRR@10 = 0.7882、nDCG@10 = 0.6
 
 与 MedCPT Cross-Encoder 的比较是对所提出重排序器更严格的检验。结果表明，KCH-MedRank 能在强生物医学语义重排序器之外进一步提高 top-10 证据覆盖，但 MRR 和 nDCG 的排序敏感指标只能表述为正向趋势，而不是显著提升。这些结果支持本文的证据检索主张，但尚不足以把答案生成作为主要贡献。
 
+\subsection{Hard Reranking 与 PubMedQA 诊断}
+
+表~\ref{tab:hard-subset-diagnostic} 报告了 hard subset 诊断结果。该子集包含增强 Hybrid top-100 中存在金标准证据、但增强 Hybrid top-10 未命中的 BioASQ 留出测试问题，共 65 个问题。该子集只用于诊断分析，不能替代完整测试集评估。在该子集上，增强 Hybrid RRF 的 Recall@10 按定义为 0，而完整 KCH-MedRank 达到 Recall@10 = 0.4751。这说明当候选池中存在可恢复金标准证据时，重排序器能够将相当一部分遗漏证据提升到 top-10。该子集也再次显示了消融中的整体趋势：检索和语义特征解释了很大一部分恢复效果，超图和医学知识特征更应解释为互补信号，而不是单独解释全部提升。
+
+\input{tables/hard_subset_diagnostic_zh}
+
+表~\ref{tab:pubmedqa-retrieval-diagnostic} 给出了 PubMedQA 上的次要检索诊断。PubMedQA 的证据结构与 BioASQ 不同，且一位命中表现已经很强，因此本文仅将其作为稳健性检查。轻量 HGB 知识重排序器相对于其 Hybrid RRF 来源将 Recall@10 从 0.8200 提高到 0.8953；实验日志中的成对 bootstrap 显示 Recall@10 差值为 +0.0754，$p=0.0002$。MRR@10 仅从 0.9850 变化到 0.9861，且不显著，这与 PubMedQA 已经具有较高一位命中的特点一致。因此，该结果支持证据覆盖改善的解释，而不是泛化为答案生成能力的全面提升。
+
+\input{tables/pubmedqa_retrieval_diagnostic_zh}
+
 \subsection{答案支持分析}
 
 PubMedQA 答案选择分析进一步区分了证据检索与答案正确性。对于 Hybrid 和 HGB 的 top 10 证据，规则化引用支持率均为 1.0000，因为每个评估问题都至少检索到一个金标准证据段落。然而，答案支持率仍受轻量 yes/no/maybe 答案选择器限制：多数类基线的支持答案比例为 0.5550，而 TF-IDF 逻辑回归在 Hybrid 与 HGB top 10 上分别为 0.5050 和 0.4800。在 98 个抽取到问题实体的问题中，top 10 答案-证据实体一致性为 0.5510。这些分析使用 qrels、金标准标签和确定性实体重叠，而不是 LLM 评审。因此，在加入更强答案与忠实性建模前，答案生成仍应作为次要任务。

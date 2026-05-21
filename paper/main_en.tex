@@ -19,7 +19,7 @@
 \maketitle
 
 \begin{abstract}
-Medical retrieval-augmented generation systems require evidence retrieval that is both accurate and medically grounded. This paper presents KCH-MedRank, a lightweight and reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. Enhanced candidate generation improves the top-100 evidence ceiling, and KCH-MedRank improves top-10 evidence retrieval over strong Hybrid RRF and MedCPT cross-encoder baselines on the held-out BioASQ test split. PubMedQA answer-support analysis shows high citation support for retrieved evidence but limited answer-label support for lightweight answer selection, so answer generation is treated as a secondary component rather than the main contribution.
+Medical retrieval-augmented generation systems require evidence retrieval that is both accurate and medically grounded. This paper presents KCH-MedRank, a lightweight and reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. Enhanced candidate generation improves the top-100 evidence ceiling, and KCH-MedRank improves top-10 evidence retrieval over strong Hybrid RRF on the held-out BioASQ test split. Against a true MedCPT Cross-Encoder baseline on the same candidate pool, KCH-MedRank significantly improves Recall@10, while MRR@10 and nDCG@10 show positive but non-significant trends. PubMedQA retrieval and answer-support diagnostics show improved evidence coverage but limited answer-label support for lightweight answer selection, so answer generation is treated as a secondary component rather than the main contribution.
 \end{abstract}
 
 \input{sections_en/01_introduction}

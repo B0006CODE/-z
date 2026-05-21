@@ -22,6 +22,16 @@ On the same enhanced candidate pool, the true MedCPT Cross-Encoder baseline reac
 
 The comparison with MedCPT Cross-Encoder is the stricter test for the proposed reranker. It shows that KCH-MedRank improves evidence coverage at top 10 beyond a strong biomedical semantic reranker, but the rank-sensitive MRR and nDCG gains should be described as positive trends rather than significant improvements. These results support the paper's evidence-retrieval claim. They do not yet justify making answer generation the primary contribution.
 
+\subsection{Hard Reranking and PubMedQA Diagnostics}
+
+Table~\ref{tab:hard-subset-diagnostic} reports the diagnostic hard subset in which the enhanced Hybrid candidate pool contains gold evidence in the top 100 but misses all gold evidence in the top 10. This subset contains 65 held-out BioASQ questions and is not used as a replacement for the full test set. On this subset, enhanced Hybrid RRF has Recall@10 of 0 by construction, while full KCH-MedRank reaches Recall@10 of 0.4751. The result indicates that the reranker can recover a substantial fraction of missed top-10 evidence when the candidate pool contains recoverable gold passages. The subset also confirms the broader ablation pattern: retrieval and semantic features explain much of the recovery, and hypergraph/medical features should be interpreted as complementary rather than as a standalone source of all gains.
+
+\input{tables/hard_subset_diagnostic}
+
+Table~\ref{tab:pubmedqa-retrieval-diagnostic} gives a secondary PubMedQA retrieval diagnostic. PubMedQA has a different evidence structure and much stronger first-rank retrieval behavior than BioASQ, so it is used only as a robustness check. The lightweight HGB knowledge reranker improves Recall@10 from 0.8200 to 0.8953 over its Hybrid RRF source, with paired bootstrap Recall@10 delta of +0.0754 and $p=0.0002$ in the experiment logs. MRR@10 changes only from 0.9850 to 0.9861 and is not significant, consistent with the observation that PubMedQA already has very high first-hit retrieval. This supports an evidence-coverage interpretation rather than a claim of broad answer-generation improvement.
+
+\input{tables/pubmedqa_retrieval_diagnostic}
+
 \subsection{Answer-Support Analysis}
 
 PubMedQA answer-selection analysis further separates evidence retrieval from answer correctness. For Hybrid and HGB evidence at top 10, the rule-based citation support rate is 1.0000 because at least one gold evidence passage is retrieved for each evaluated question. However, answer-supported rate remains limited by the lightweight yes/no/maybe answer selector: the majority baseline reaches 0.5550 supported answers, while TF-IDF logistic regression reaches 0.5050 for Hybrid and 0.4800 for HGB at top 10. Among the 98 questions with extracted question entities, answer-evidence entity consistency is 0.5510 at top 10. These analyses use qrels, gold labels, and deterministic entity overlap rather than an LLM judge. They support keeping generation secondary until stronger answer and faithfulness modeling is added.

@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Diagnostic hard reranking subset on held-out BioASQ questions where enhanced Hybrid top-100 contains gold evidence but enhanced Hybrid top-10 misses it.}
+\label{tab:hard-subset-diagnostic}
+\begin{tabular}{lrrrr}
+\toprule
+Method & Recall@10 & MRR@10 & nDCG@10 & Recall@100 \\
+\midrule
+Enhanced Hybrid RRF & 0.0000 & 0.0000 & 0.0000 & 0.8375 \\
+Retrieval-feature-only LambdaMART & 0.4411 & 0.2180 & 0.2424 & 0.8375 \\
+LambdaMART + semantic, no hypergraph & 0.4550 & 0.2821 & 0.2907 & 0.8375 \\
+Pairwise graph LTR & 0.4415 & 0.2755 & 0.2768 & 0.8375 \\
+Full KCH-MedRank & 0.4751 & 0.2742 & 0.2896 & 0.8375 \\
+\bottomrule
+\end{tabular}
+\end{table}

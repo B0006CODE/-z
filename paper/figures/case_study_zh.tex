@@ -3,12 +3,12 @@
 \small
 \caption{BioASQ 留出测试集中 Enhanced Hybrid w122 与 KCH-MedRank 对比的代表性救回与丢失证据案例。}
 \label{tab:case-study}
-\begin{tabularx}{\linewidth}{p{0.11\linewidth}p{0.29\linewidth}p{0.19\linewidth}p{0.14\linewidth}X}
+\begin{tabularx}{\linewidth}{p{0.12\linewidth}p{0.13\linewidth}X}
 \toprule
-案例 & 问题 & 关键实体或 MeSH 信号 & 金标准排名 & 解释 \\
+案例 & 金标准排名 & 问题、信号与解释 \\
 \midrule
-救回 & What is the p-crAssphage? & bacteriophages；crAssphage；viral genome；phylogeny & 54 $\rightarrow$ 1 & 金标准段落与问题共享 bacteriophage 概念，并连接到局部 phage 相关候选簇，使重排序器能够恢复增强混合排序遗漏的证据。 \\
-丢失 & Is there any protein that undergoes both mono-ubiquitination and poly-ubiquitination? & ubiquitin；ubiquitination；ubiquitins；post-translational processing & 2 $\rightarrow$ 18 & 该段落相关，但使用了相关生化形式和更宽泛的加工概念；同义词与层级特征未能充分对齐 mono-/poly-ubiquitination 与段落证据。 \\
+救回 & 54 $\rightarrow$ 1 & 问题：What is the p-crAssphage? 主要信号包括 bacteriophages、crAssphage、viral genome 和 phylogeny。金标准段落与问题共享 bacteriophage 概念，并连接到局部 phage 相关候选簇，使重排序器能够恢复增强混合排序遗漏的证据。 \\
+丢失 & 2 $\rightarrow$ 18 & 问题：Is there any protein that undergoes both mono-ubiquitination and poly-ubiquitination? 主要信号包括 ubiquitin、ubiquitination、ubiquitins 和 post-translational processing。该段落相关，但使用了相关生化形式和更宽泛的加工概念；同义词与层级特征未能充分对齐 mono-/poly-ubiquitination 与段落证据。 \\
 \bottomrule
 \end{tabularx}
 \end{table}

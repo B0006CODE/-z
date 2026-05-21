@@ -146,6 +146,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--learning-rate-grid", type=parse_float_grid, default=parse_float_grid("0.03,0.05"))
     parser.add_argument("--n-estimators-grid", type=parse_int_grid, default=parse_int_grid("80,160"))
     parser.add_argument("--blend-grid", type=parse_float_grid, default=parse_float_grid("0,0.1,0.2,0.35"))
+    parser.add_argument(
+        "--selection-primary",
+        choices=["mrr", "recall", "ndcg"],
+        default="mrr",
+        help="Primary validation metric for hyperparameter selection at k=10.",
+    )
+    parser.add_argument(
+        "--settings",
+        nargs="+",
+        default=None,
+        help="Optional setting names to run. Defaults to all KCH-MedRank baselines and ablations.",
+    )
+    parser.add_argument(
+        "--write-validation-predictions",
+        action="store_true",
+        help="Write selected-model validation predictions for downstream validation-selected fusion.",
+    )
     parser.add_argument("--ks", type=int, nargs="+", default=[1, 3, 5, 10, 20, 50, 100])
     parser.add_argument("--bootstrap-samples", type=int, default=10000)
     parser.add_argument("--seed", type=int, default=None)
@@ -609,7 +626,12 @@ def train_setting(
                         "validation_ndcg@10": float(val_metrics.get("ndcg@10", 0.0)),
                     }
                     trials.append(trial)
-                    key = (trial["validation_mrr@10"], trial["validation_recall@10"], trial["validation_ndcg@10"], -trial["blend_weight"])
+                    if args.selection_primary == "recall":
+                        key = (trial["validation_recall@10"], trial["validation_mrr@10"], trial["validation_ndcg@10"], -trial["blend_weight"])
+                    elif args.selection_primary == "ndcg":
+                        key = (trial["validation_ndcg@10"], trial["validation_mrr@10"], trial["validation_recall@10"], -trial["blend_weight"])
+                    else:
+                        key = (trial["validation_mrr@10"], trial["validation_recall@10"], trial["validation_ndcg@10"], -trial["blend_weight"])
                     if best is None or key > best["key"]:
                         best = {"key": key, "trial": trial}
     assert best is not None
@@ -627,6 +649,7 @@ def train_setting(
         "label": label,
         "feature_names": feature_names,
         "num_features": len(feature_names),
+        "selection_primary": args.selection_primary,
         "selected": selected,
         "top_trials": sorted(trials, key=lambda row: (-row["validation_mrr@10"], -row["validation_recall@10"], -row["validation_ndcg@10"]))[:10],
         "train_rows": int(train_x.shape[0]),
@@ -644,6 +667,33 @@ def train_setting(
         reverse=True,
     )
     return final_model, diagnostics
+
+
+def default_settings() -> list[tuple[str, str, str]]:
+    return [
+        ("Retrieval-feature-only LambdaMART", "retrieval_ltr", "full"),
+        ("LambdaMART + biomedical semantic without hypergraph", "semantic_no_hypergraph_ltr", "full"),
+        ("Pairwise graph LTR", "pairwise_graph_ltr", "pairwise"),
+        ("Hypergraph LTR without medical knowledge", "hypergraph_no_medical_knowledge_ltr", "no_knowledge"),
+        ("Full KCH-MedRank", "full_kch_medrank", "full"),
+        ("Remove biomedical semantic reranker", "remove_semantic", "full"),
+        ("Remove MeSH hierarchy features", "remove_mesh_hierarchy", "full"),
+        ("Remove biomedical entity features", "remove_entity", "full"),
+        ("Remove hypergraph diffusion and centrality", "remove_hypergraph", "full"),
+        ("Remove PrimeKG relation features", "remove_primekg", "full"),
+    ]
+
+
+def selected_settings(requested: list[str] | None) -> list[tuple[str, str, str]]:
+    settings = default_settings()
+    if requested is None:
+        return settings
+    requested_set = set(requested)
+    available = {setting_name for _display, setting_name, _source in settings}
+    missing = requested_set - available
+    if missing:
+        raise ValueError(f"Unsupported settings: {sorted(missing)}. Available: {sorted(available)}")
+    return [row for row in settings if row[1] in requested_set]
 
 
 def write_table(path_csv: str | Path, path_md: str | Path, rows: list[dict[str, Any]], columns: list[str]) -> None:
@@ -706,6 +756,8 @@ def main() -> None:
     semantic_scores = read_score_predictions(args.biomedical_reranker_predictions)
 
     semantic_source = args.biomedical_reranker_predictions or "hybrid_metadata.dense_score_fallback"
+    settings = selected_settings(args.settings)
+    required_feature_sources = {source for _display_name, _setting_name, source in settings}
     print(f"[{datetime.now().isoformat(timespec='seconds')}] Building full knowledge-hypergraph features...", flush=True)
     full_features = build_all_feature_rows(
         hybrid_predictions,
@@ -725,44 +777,48 @@ def main() -> None:
         max_passage_entities=args.max_passage_entities,
         max_passage_mesh=args.max_passage_mesh,
     )
-    print(f"[{datetime.now().isoformat(timespec='seconds')}] Building pairwise graph features...", flush=True)
-    pairwise_features = build_all_feature_rows(
-        hybrid_predictions,
-        question_entities,
-        passage_entities,
-        question_mesh,
-        passage_mesh,
-        mesh_hierarchy,
-        entity_relations,
-        semantic_scores,
-        enable_mesh_hierarchy_graph_edges=args.enable_mesh_hierarchy_graph_edges,
-        structure="pairwise_graph",
-        top_k=args.top_k,
-        rrf_k=args.rrf_k,
-        iterations=args.iterations,
-        damping=args.damping,
-        max_passage_entities=args.max_passage_entities,
-        max_passage_mesh=args.max_passage_mesh,
-    )
-    print(f"[{datetime.now().isoformat(timespec='seconds')}] Building no-knowledge hypergraph features...", flush=True)
-    no_knowledge_features = build_all_feature_rows(
-        hybrid_predictions,
-        question_entities,
-        passage_entities,
-        question_mesh,
-        passage_mesh,
-        mesh_hierarchy,
-        entity_relations,
-        semantic_scores,
-        enable_mesh_hierarchy_graph_edges=args.enable_mesh_hierarchy_graph_edges,
-        structure="no_knowledge_hypergraph",
-        top_k=args.top_k,
-        rrf_k=args.rrf_k,
-        iterations=args.iterations,
-        damping=args.damping,
-        max_passage_entities=args.max_passage_entities,
-        max_passage_mesh=args.max_passage_mesh,
-    )
+    pairwise_features: dict[str, list[dict[str, Any]]] = {}
+    if "pairwise" in required_feature_sources:
+        print(f"[{datetime.now().isoformat(timespec='seconds')}] Building pairwise graph features...", flush=True)
+        pairwise_features = build_all_feature_rows(
+            hybrid_predictions,
+            question_entities,
+            passage_entities,
+            question_mesh,
+            passage_mesh,
+            mesh_hierarchy,
+            entity_relations,
+            semantic_scores,
+            enable_mesh_hierarchy_graph_edges=args.enable_mesh_hierarchy_graph_edges,
+            structure="pairwise_graph",
+            top_k=args.top_k,
+            rrf_k=args.rrf_k,
+            iterations=args.iterations,
+            damping=args.damping,
+            max_passage_entities=args.max_passage_entities,
+            max_passage_mesh=args.max_passage_mesh,
+        )
+    no_knowledge_features: dict[str, list[dict[str, Any]]] = {}
+    if "no_knowledge" in required_feature_sources:
+        print(f"[{datetime.now().isoformat(timespec='seconds')}] Building no-knowledge hypergraph features...", flush=True)
+        no_knowledge_features = build_all_feature_rows(
+            hybrid_predictions,
+            question_entities,
+            passage_entities,
+            question_mesh,
+            passage_mesh,
+            mesh_hierarchy,
+            entity_relations,
+            semantic_scores,
+            enable_mesh_hierarchy_graph_edges=args.enable_mesh_hierarchy_graph_edges,
+            structure="no_knowledge_hypergraph",
+            top_k=args.top_k,
+            rrf_k=args.rrf_k,
+            iterations=args.iterations,
+            damping=args.damping,
+            max_passage_entities=args.max_passage_entities,
+            max_passage_mesh=args.max_passage_mesh,
+        )
     print(f"[{datetime.now().isoformat(timespec='seconds')}] Feature construction complete.", flush=True)
 
     all_qids = sorted(full_features)
@@ -799,24 +855,19 @@ def main() -> None:
     write_jsonl(semantic_output, semantic_predictions)
     semantic_metrics = add_evidence_coverage(evaluate_retrieval(test_qrels, semantic_predictions, sorted(set(args.ks))), sorted(set(args.ks)))
 
-    settings = [
-        ("Retrieval-feature-only LambdaMART", "retrieval_ltr", full_features),
-        ("LambdaMART + biomedical semantic without hypergraph", "semantic_no_hypergraph_ltr", full_features),
-        ("Pairwise graph LTR", "pairwise_graph_ltr", pairwise_features),
-        ("Hypergraph LTR without medical knowledge", "hypergraph_no_medical_knowledge_ltr", no_knowledge_features),
-        ("Full KCH-MedRank", "full_kch_medrank", full_features),
-        ("Remove biomedical semantic reranker", "remove_semantic", full_features),
-        ("Remove MeSH hierarchy features", "remove_mesh_hierarchy", full_features),
-        ("Remove biomedical entity features", "remove_entity", full_features),
-        ("Remove hypergraph diffusion and centrality", "remove_hypergraph", full_features),
-        ("Remove PrimeKG relation features", "remove_primekg", full_features),
-    ]
+    feature_source_lookup = {
+        "full": full_features,
+        "pairwise": pairwise_features,
+        "no_knowledge": no_knowledge_features,
+    }
     setting_metrics: dict[str, dict[str, Any]] = {}
     setting_predictions: dict[str, list[dict[str, Any]]] = {}
+    setting_validation_predictions: dict[str, list[dict[str, Any]]] = {}
     setting_diagnostics: dict[str, Any] = {}
 
-    for display_name, setting_name, feature_rows in settings:
+    for display_name, setting_name, feature_source in settings:
         print(f"[{datetime.now().isoformat(timespec='seconds')}] Training {setting_name}...", flush=True)
+        feature_rows = feature_source_lookup[feature_source]
         feature_names = feature_names_for(setting_name)
         model, diagnostics = train_setting(
             setting_name,
@@ -849,15 +900,35 @@ def main() -> None:
         setting_metrics[display_name] = metrics
         setting_predictions[display_name] = predictions
         setting_diagnostics[setting_name] = diagnostics
+        if args.write_validation_predictions:
+            validation_predictions = rerank_with_model(
+                model,
+                feature_rows,
+                splits["validation"],
+                qrels_by_qid,
+                feature_names,
+                blend_weight=float(diagnostics["selected"]["blend_weight"]),
+                top_k=args.top_k,
+                retriever_name=f"{setting_name}_validation",
+            )
+            validation_output_path = output_dir / f"{args.output_prefix}_{setting_name}_validation_top{args.top_k}.jsonl"
+            write_jsonl(validation_output_path, validation_predictions)
+            diagnostics["validation_predictions"] = str(validation_output_path)
+            diagnostics["validation_metrics"] = add_evidence_coverage(
+                evaluate_retrieval(validation_qrels, validation_predictions, sorted(set(args.ks))),
+                sorted(set(args.ks)),
+            )
+            setting_validation_predictions[display_name] = validation_predictions
         print(f"[{datetime.now().isoformat(timespec='seconds')}] Finished {setting_name}.", flush=True)
 
-    full_predictions = setting_predictions["Full KCH-MedRank"]
+    main_display_name = "Full KCH-MedRank" if "Full KCH-MedRank" in setting_predictions else next(iter(setting_predictions))
+    main_predictions = setting_predictions[main_display_name]
     bootstrap_vs_hybrid = paired_bootstrap(
         test_qrels,
         baseline_predictions["Hybrid RRF"],
-        full_predictions,
+        main_predictions,
         baseline_label="Hybrid RRF",
-        candidate_label="Full KCH-MedRank",
+        candidate_label=main_display_name,
         dataset_label=args.dataset_label,
         ks=[10],
         metrics=["mrr", "recall", "ndcg", "evidence_coverage"],
@@ -867,9 +938,9 @@ def main() -> None:
     bootstrap_vs_semantic = paired_bootstrap(
         test_qrels,
         semantic_predictions,
-        full_predictions,
+        main_predictions,
         baseline_label="Biomedical semantic reranker only",
-        candidate_label="Full KCH-MedRank",
+        candidate_label=main_display_name,
         dataset_label=args.dataset_label,
         ks=[10],
         metrics=["mrr", "recall", "ndcg", "evidence_coverage"],
@@ -888,6 +959,8 @@ def main() -> None:
         "mesh_hierarchy": args.mesh_hierarchy,
         "enable_mesh_hierarchy_graph_edges": args.enable_mesh_hierarchy_graph_edges,
         "top_k": args.top_k,
+        "selection_primary": args.selection_primary,
+        "settings": [setting_name for _display_name, setting_name, _source in settings],
         "split": {
             "modulo": args.split_modulo,
             "train_qids": len(splits["train"]),
@@ -907,7 +980,8 @@ def main() -> None:
     }
     write_json(metrics_dir / f"{args.output_prefix}_metrics.json", full_metrics_payload)
 
-    write_json(metrics_dir / f"{args.output_prefix}_full_kch_medrank_metrics.json", setting_metrics["Full KCH-MedRank"])
+    if "Full KCH-MedRank" in setting_metrics:
+        write_json(metrics_dir / f"{args.output_prefix}_full_kch_medrank_metrics.json", setting_metrics["Full KCH-MedRank"])
     write_json(metrics_dir / f"{args.output_prefix}_semantic_only_metrics.json", semantic_metrics)
 
     rows = []
@@ -941,12 +1015,13 @@ def main() -> None:
         hard_rows.append(table_row(name, metrics.get("hard_subset_metrics", {})))
     write_table(tables_dir / f"{args.output_prefix}_hard_subset.csv", tables_dir / f"{args.output_prefix}_hard_subset.md", hard_rows, columns)
 
+    importance_source = "full_kch_medrank" if "full_kch_medrank" in setting_diagnostics else next(iter(setting_diagnostics))
     importance_rows = [
         {
             "feature": row["feature"],
             "importance": f"{float(row['importance']):.4f}",
         }
-        for row in setting_diagnostics["full_kch_medrank"].get("feature_importance", [])[:30]
+        for row in setting_diagnostics[importance_source].get("feature_importance", [])[:30]
     ]
     write_table(
         tables_dir / f"{args.output_prefix}_feature_importance.csv",
@@ -963,9 +1038,10 @@ def main() -> None:
         "semantic_source": semantic_source,
         "hybrid_mrr@10": hybrid_metrics.get("mrr@10"),
         "semantic_mrr@10": semantic_metrics.get("mrr@10"),
-        "full_mrr@10": setting_metrics["Full KCH-MedRank"].get("mrr@10"),
+        "main_method": main_display_name,
+        "main_mrr@10": setting_metrics[main_display_name].get("mrr@10"),
         "hybrid_recall@10": hybrid_metrics.get("recall@10"),
-        "full_recall@10": setting_metrics["Full KCH-MedRank"].get("recall@10"),
+        "main_recall@10": setting_metrics[main_display_name].get("recall@10"),
         "hard_subset_qids": len(hard_qids),
     }
     write_json(Path(paths.get("logs_dir", "logs")) / f"run_{args.output_prefix}_summary.json", summary)

@@ -15,7 +15,7 @@ Local hypergraph scope & question, top-100 passages, document, entity, MeSH, hie
 MeSH coverage & 31,110 descriptors; 37,356/40,221 passages and 4,264/4,719 questions with MeSH matches & Controlled-vocabulary features are broadly available. \\
 PrimeKG filtering & 8,100,498 rows scanned; 5,766 local relations retained & Relation features are sparse and remain auxiliary. \\
 Dense biomedical retrieval & MedCPT dual encoder used CUDA on an RTX 4060 Laptop GPU & GPU acceleration is practical for dense retrieval. \\
-Cross-encoder scoring & BioASQ CPU full run timed out after 2,400 seconds & Full cross-encoder rescoring should use GPU or controlled subsets. \\
+Cross-encoder scoring & Early generic CPU run timed out after 2,400 seconds; final MedCPT Cross-Encoder test baseline scored 943 questions and 94,300 candidates & Full cross-encoder rescoring is substantially more expensive than tabular reranking. \\
 \bottomrule
 \end{tabularx}
 \end{table}
