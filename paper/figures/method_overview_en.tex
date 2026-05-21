@@ -1,0 +1,31 @@
+\begin{figure}[t]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  node distance=1.45cm and 1.9cm,
+  block/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=gray!8},
+  knowledge/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.9cm, fill=blue!7},
+  model/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=green!8},
+  output/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=orange!10},
+  arrow/.style={-{Latex[length=2mm]}, thick}
+]
+\node[block] (q) {Medical question\\$q$};
+\node[block, right=of q] (first) {First-stage retrieval\\BM25 + dense + RRF};
+\node[block, right=of first] (pool) {Top-$M$ candidate\\evidence passages};
+\node[knowledge, below=of first] (kg) {Medical constraints\\MeSH hierarchy\\entities\\PrimeKG auxiliary relations};
+\node[knowledge, below=of pool] (hg) {Local hypergraph\\question, passage, document,\\entity, concept nodes};
+\node[model, right=of pool] (ltr) {Query-group\\LambdaMART reranker};
+\node[output, right=of ltr] (out) {Ranked evidence\\top-$k$ passages\\optional paths};
+\draw[arrow] (q) -- (first);
+\draw[arrow] (first) -- (pool);
+\draw[arrow] (pool) -- (ltr);
+\draw[arrow] (ltr) -- (out);
+\draw[arrow] (kg) -- (hg);
+\draw[arrow] (pool) -- (hg);
+\draw[arrow] (q) |- (hg);
+\draw[arrow] (hg) -- node[below, align=center] {diffusion, centrality,\\hierarchy features} (ltr);
+\end{tikzpicture}}
+\caption{Overview of KCH-MedRank. The method first builds a high-recall candidate pool, constructs a local knowledge-constrained hypergraph around each question and candidate set, and uses hypergraph and biomedical semantic features in query-group learning-to-rank.}
+\label{fig:method-overview}
+\end{figure}
+

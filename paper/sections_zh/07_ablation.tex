@@ -4,5 +4,6 @@
 
 初步解释应保持保守。生物医学语义和检索特征很强。MeSH 层级和共享概念簇提供了具有医学可解释性的特征，但部分 leave-one-out 消融差异较小或呈混合趋势。PrimeKG 精确名称关系特征覆盖较低，除非后续概念归一化显著提升其贡献，否则应保持辅助定位。
 
-% TODO: 根据 results/tables/kch_medrank_enhanced_bioasq_retrieval.md 和特征重要性文件构建最终消融表。
+\input{tables/kch_ablation_summary_zh}
 
+消融表显示三点。第一，仅使用检索特征进行学习排序已经相对于增强 Hybrid RRF 带来较强提升。第二，加入生物医学语义证据后，最强重排序变体进一步改善。第三，医学知识与超图特征应解释为互补和可解释的信号，而不是单一主导收益来源。特别是，移除 PrimeKG 关系特征后模型仍然较强，因此本文不将 PrimeKG 描述为主要提升来源。

@@ -12,3 +12,8 @@
 
 主要检索指标包括 Recall@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage。与 Hybrid RRF 和强语义重排序基线的比较报告成对 bootstrap 置信区间与 p 值。hard reranking subset 仅用于诊断分析，不替代完整留出测试集评估。
 
+\subsection{验证集选择}
+
+表~\ref{tab:enhanced-candidate-selection} 报告增强候选生成的验证集选择结果。被选中的 w122 设置以 BM25 和稠密检索为基础来源，以 fielded BM25 作为更强召回来源，并加入 MedCPT dual-encoder 检索作为额外生物医学语义来源。该设置因最大化验证集 Recall@100 而被选择，符合重排序阶段提升候选上限的目标。
+
+\input{tables/enhanced_candidate_selection_zh}

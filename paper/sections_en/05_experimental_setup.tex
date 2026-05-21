@@ -12,3 +12,8 @@ The manuscript skeleton tracks the following required baselines: BM25, dense bio
 
 The main retrieval metrics are Recall@$k$, MRR@$k$, nDCG@$k$, and evidence coverage. Paired bootstrap confidence intervals and p-values are reported against Hybrid RRF and the strong semantic reranker baseline. A hard reranking subset is used for diagnosis, not as a replacement for the full held-out test evaluation.
 
+\subsection{Validation Selection}
+
+Table~\ref{tab:enhanced-candidate-selection} reports the enhanced candidate-generation validation selection. The selected w122 setting uses BM25 and dense retrieval as base sources, fielded BM25 as a stronger recall source, and MedCPT dual-encoder retrieval as an additional biomedical semantic source. It is selected because it maximizes validation Recall@100, matching the reranking objective of improving the candidate ceiling.
+
+\input{tables/enhanced_candidate_selection}

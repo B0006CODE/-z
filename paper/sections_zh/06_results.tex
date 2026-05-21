@@ -2,13 +2,12 @@
 
 表~\ref{tab:enhanced-bioasq-main-results} 总结了当前 BioASQ 留出测试集主结果。原始 Hybrid RRF 测试基线的 Recall@10 为 0.4636，MRR@10 为 0.7550，nDCG@10 为 0.5848，Recall@100 为 0.6077。增强 w122 候选池根据验证集 Recall@100 选择，并在测试集达到 Recall@100 = 0.7388，为重排序提供了更强的候选上限。
 
-\input{tables/enhanced_bioasq_main_results}
+\input{tables/enhanced_bioasq_main_results_zh}
 
 Enhanced KCH-MedRank 达到 Recall@10 = 0.5332、MRR@10 = 0.7882、nDCG@10 = 0.6446、Recall@100 = 0.7388。相对于原始 Hybrid RRF，这对应 Recall@10 +0.0696、MRR@10 +0.0332、nDCG@10 +0.0598 的提升。
 
 在同一增强候选池上，真实 MedCPT Cross-Encoder 基线达到 Recall@10 = 0.5172、MRR@10 = 0.7775、nDCG@10 = 0.6390。表~\ref{tab:enhanced-bioasq-significance} 报告了相对于该强语义基线的成对 bootstrap 结果。KCH-MedRank 在 Recall@10 上显著提升（$p=0.0074$），MRR@10 和 nDCG@10 为正向提升但未达到统计显著。
 
-\input{tables/enhanced_bioasq_significance}
+\input{tables/enhanced_bioasq_significance_zh}
 
 这些结果支持本文的证据检索主张，但尚不足以把答案生成作为主要贡献。
-

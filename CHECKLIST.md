@@ -295,8 +295,8 @@ Current PubMedQA status:
 - [x] Verify literature metadata online before adding citations.
 - [x] Create `references.bib` only from verified sources.
 - [x] Record verified citation source links.
-- [ ] Build final result tables for the manuscript.
-- [ ] Build method diagram.
+- [x] Build manuscript result tables.
+- [x] Build method diagram.
 - [ ] Write Introduction in English and Chinese.
 - [ ] Write Related Work after verifying literature metadata.
 - [ ] Write Method in English and Chinese.

@@ -1,5 +1,7 @@
 \section{Method}
 
+\input{figures/method_overview_en}
+
 \subsection{First-Stage Retrieval}
 
 The first stage retrieves top-$M$ evidence candidates using BM25, dense biomedical retrieval, and hybrid Reciprocal Rank Fusion. The enhanced candidate-generation path adds fielded BM25 with MeSH expansion and MedCPT dual-encoder dense retrieval. Fusion weights are selected on the validation split, where the selected w122 configuration maximizes Recall@100 rather than test performance.
@@ -14,3 +16,6 @@ The local design avoids constructing a global graph over millions of biomedical 
 
 The main supervised reranker is a query-group learning-to-rank model using LightGBM/LambdaMART-style gradient boosted decision trees \citep{ke2017lightgbm}. Features include initial rank scores, BM25 and dense scores, biomedical semantic score, MeSH hierarchy-aware features, entity overlap, local hypergraph diffusion and degree centrality, and auxiliary relation features. Hypergraph diffusion is used as an interpretable feature, not as the sole hand-tuned scoring rule.
 
+\input{tables/feature_importance_summary}
+
+Feature importance in Table~\ref{tab:feature-importance-summary} shows that semantic and first-stage retrieval signals remain central, while MeSH cluster, passage specificity, and hypergraph centrality features contribute interpretable biomedical and structural evidence. This supports a cautious claim: KCH-MedRank improves reranking by combining retrieval strength, biomedical semantics, and local knowledge-constrained structure, not by relying on one isolated knowledge source.

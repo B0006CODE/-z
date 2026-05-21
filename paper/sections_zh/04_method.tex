@@ -1,5 +1,7 @@
 \section{方法}
 
+\input{figures/method_overview_zh}
+
 \subsection{第一阶段检索}
 
 第一阶段使用 BM25、稠密生物医学检索和混合倒数排名融合检索 top-$M$ 证据候选。增强候选生成路径进一步加入带 MeSH 扩展的 fielded BM25 和 MedCPT dual-encoder 稠密检索。融合权重在验证集上选择，其中 w122 配置以最大化 Recall@100 为目标，而不是根据测试集结果选择。
@@ -14,3 +16,6 @@
 
 主监督重排序器采用查询分组学习排序模型，使用 LightGBM/LambdaMART 风格的梯度提升决策树 \citep{ke2017lightgbm}。特征包括初始排名分数、BM25 与稠密检索分数、生物医学语义分数、MeSH 层级感知特征、实体重叠、局部超图扩散与度中心性，以及辅助关系特征。超图扩散作为可解释排序特征使用，而不是作为唯一的手工调权公式。
 
+\input{tables/feature_importance_summary_zh}
+
+表~\ref{tab:feature-importance-summary} 的特征重要性显示，语义信号和第一阶段检索信号仍然处于核心位置，同时 MeSH 共享簇、段落概念特异性和超图中心性特征提供了可解释的生物医学与结构信息。这支持一个谨慎结论：KCH-MedRank 的重排序提升来自检索强度、生物医学语义和局部知识约束结构的结合，而不是依赖单一知识源。
