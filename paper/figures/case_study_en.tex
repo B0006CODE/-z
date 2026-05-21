@@ -1,0 +1,14 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Representative rescued and lost evidence cases from the held-out BioASQ comparison between Enhanced Hybrid w122 and KCH-MedRank.}
+\label{tab:case-study}
+\begin{tabularx}{\linewidth}{p{0.11\linewidth}p{0.29\linewidth}p{0.19\linewidth}p{0.14\linewidth}X}
+\toprule
+Case & Question & Key entities or MeSH signals & Gold rank & Interpretation \\
+\midrule
+Rescued & What is the p-crAssphage? & bacteriophages; crAssphage; viral genome; phylogeny & 54 $\rightarrow$ 1 & The gold passage shares the bacteriophage concept with the question and is connected to a local cluster of phage-related candidates, allowing the reranker to recover evidence missed by the enhanced hybrid ordering. \\
+Lost & Is there any protein that undergoes both mono-ubiquitination and poly-ubiquitination? & ubiquitin; ubiquitination; ubiquitins; post-translational processing & 2 $\rightarrow$ 18 & The passage is relevant but uses related biochemical forms and broader processing concepts; synonym and hierarchy features do not fully align mono-/poly-ubiquitination with the passage evidence. \\
+\bottomrule
+\end{tabularx}
+\end{table}

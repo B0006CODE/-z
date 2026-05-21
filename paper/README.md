@@ -1,6 +1,6 @@
 # Paper Workspace
 
-This directory contains the bilingual LaTeX manuscript skeleton for:
+This directory contains the bilingual LaTeX manuscript for:
 
 - English: **Knowledge-Constrained Hypergraph Retrieval-Augmented Generation for Evidence-Grounded Medical Question Answering**
 - Chinese: **面向循证医学问答的知识约束超图增强检索生成方法**
@@ -58,4 +58,3 @@ xelatex -output-directory=paper/build paper/main_zh.tex
 ```
 
 If using the bundled Codex LaTeX helper, compile each entry point with the output directory set to `paper/build`.
-

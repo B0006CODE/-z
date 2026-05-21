@@ -8,7 +8,7 @@ The first stage retrieves a high-recall candidate pool before any knowledge-awar
 \[
   \mathrm{RRF}(q,d)=\sum_{s \in S}\frac{w_s}{k+r_s(q,d)},
 \]
-where $S$ is the set of retrieval sources, $w_s$ is a source weight, and $k=60$ in the current experiments. The original Hybrid RRF uses BM25 and dense retrieval with equal weights.
+where $S$ is the set of retrieval sources, $w_s$ is a source weight, and $k=60$ in the reported experiments. The original Hybrid RRF uses BM25 and dense retrieval with equal weights.
 
 The enhanced candidate-generation path is designed to raise the top-100 ceiling for reranking. It adds fielded BM25 with title, text, and MeSH expansion fields, plus MedCPT dual-encoder dense retrieval as an additional biomedical semantic source. Fusion weights are selected on the validation split only. The selected w122 configuration gives BM25 and dense retrieval weight 1.0, fielded BM25 weight 1.2, and MedCPT dual-encoder retrieval weight 0.2. This setting is selected for validation Recall@100 rather than test performance, because reranking can improve only passages already present in the candidate pool.
 
@@ -26,13 +26,13 @@ KCH-MedRank uses hypergraph diffusion as an interpretable feature rather than as
 \[
   x^{(t+1)}=(1-\alpha)x^{(0)}+\alpha \cdot \mathrm{Propagate}(x^{(t)},\mathcal{E}_q),
 \]
-where $\alpha=0.85$ and the current implementation uses three diffusion iterations. Passage-level diffusion scores are then min-max normalized within each question candidate set. We also compute weighted degree centrality, local node and hyperedge counts, shared-entity edge counts, document-MeSH edge counts, and optional hierarchy-edge counts.
+where $\alpha=0.85$ and the implementation uses three diffusion iterations. Passage-level diffusion scores are then min-max normalized within each question candidate set. We also compute weighted degree centrality, local node and hyperedge counts, shared-entity edge counts, document-MeSH edge counts, and optional hierarchy-edge counts.
 
 \subsection{Biomedical Knowledge Features}
 
 The reranker uses several medically motivated feature groups. Entity features include entity overlap count, entity Jaccard similarity, question entity coverage, and passage entity count. Exact MeSH features include MeSH overlap, MeSH Jaccard similarity, question MeSH coverage, and passage MeSH count. Hierarchy-aware MeSH features include exact descriptor overlap, parent match, ancestor match, sibling match, tree-distance similarity, query concept coverage, passage hierarchy coverage, passage concept specificity, and shared candidate clusters over MeSH terms or parent concepts.
 
-PrimeKG-derived features are included only as auxiliary relation signals: relation count, question relation coverage, and local relation-edge count. Because current exact-name relation coverage is sparse, these features are not treated as the main source of improvement.
+PrimeKG-derived features are included only as auxiliary relation signals: relation count, question relation coverage, and local relation-edge count. Because exact-name relation coverage is sparse, these features are not treated as the main source of improvement.
 
 \subsection{Learning-to-Rank}
 

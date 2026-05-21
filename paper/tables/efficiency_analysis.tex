@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Computational profile of the enhanced BioASQ experiment. The logs record scale, feature dimensionality, coverage, and hardware notes; full end-to-end wall-clock time is not available for every component.}
+\label{tab:efficiency-analysis}
+\begin{tabularx}{\linewidth}{p{0.22\linewidth}p{0.34\linewidth}X}
+\toprule
+Component & Recorded scale or setting & Implication \\
+\midrule
+Processed data & 4,719 questions; 40,221 passages; 42,608 qrels & Suitable for reproducible offline reranking. \\
+Candidate pool & top-100 per question; 471,900 prediction rows & Reranking is bounded by local candidate pools rather than a global corpus graph. \\
+Enhanced KCH-MedRank split & 2,832 train, 944 validation, and 943 held-out test questions & Hyperparameters are selected before held-out testing. \\
+Feature matrix & 45 features; 283,200 training rows; 377,600 final train+validation rows & Learning-to-rank remains a tabular query-group problem. \\
+Local hypergraph scope & question, top-100 passages, document, entity, MeSH, hierarchy, and optional relation nodes & Propagation cost scales with top-$M$ and local feature coverage. \\
+MeSH coverage & 31,110 descriptors; 37,356/40,221 passages and 4,264/4,719 questions with MeSH matches & Controlled-vocabulary features are broadly available. \\
+PrimeKG filtering & 8,100,498 rows scanned; 5,766 local relations retained & Relation features are sparse and remain auxiliary. \\
+Dense biomedical retrieval & MedCPT dual encoder used CUDA on an RTX 4060 Laptop GPU & GPU acceleration is practical for dense retrieval. \\
+Cross-encoder scoring & BioASQ CPU full run timed out after 2,400 seconds & Full cross-encoder rescoring should use GPU or controlled subsets. \\
+\bottomrule
+\end{tabularx}
+\end{table}

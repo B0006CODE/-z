@@ -4,8 +4,8 @@
 
 \input{tables/failure_analysis_summary_zh}
 
-一个救回模式可由问题 ``What colonoscopy findings have been reported in autism'' 说明。该金标准段落在 Hybrid RRF 中排名第 35，在超图重排序后进入第 10。该段落与问题共享两个查询 MeSH 概念，即 \emph{colon} 和 \emph{colonoscopy}，同时局部图中还存在文档-MeSH 与候选间共享实体连接。这类案例说明，当段落语言或表述方式与问题不同，单纯词法排序可能错过医学概念对齐的证据。
+\input{figures/case_study_zh}
 
-另一个救回案例询问 HIV 是否存在系统发育分析。金标准段落从第 32 位提升到第 5 位，主要受到 HIV 直接实体重叠以及 HIV 相关候选局部超图连接的支持。该案例具有解释价值，因为收益并非来自 PrimeKG 关系，而是来自实体和局部候选结构；这与特征重要性分析中将 PrimeKG 视为辅助信号的结论一致。
+表~\ref{tab:case-study} 展示一个救回案例和一个丢失案例。在 p-crAssphage 救回案例中，金标准段落从第 54 位提升到第 1 位。主要对齐信号是共享的 bacteriophage 概念，并由局部 phage 相关候选簇支持。这一模式与方法设计一致：当初始增强混合排序将医学对齐证据排在 top 10 之外时，MeSH 与局部超图特征可以提升该证据。
 
-丢失案例同样具有诊断价值。对于询问是否存在同时发生 mono-ubiquitination 和 poly-ubiquitination 的蛋白的问题，一个金标准段落从第 2 位降至第 18 位。问题包含 ubiquitin 和 ubiquitination 相关的 MeSH 式信号，但段落使用了相关表面形式以及更宽泛的翻译后加工概念。这说明当前层级与同义词处理在部分生化术语上仍不充分。类似丢失还出现在甲状腺激素类似物、cilengitide 受体、dasatinib 治疗、GIST 治疗和 Fanconi anemia 等问题中。这些案例支持后续改进生物医学概念归一化，而不是对当前关系特征作过强结论。
+ubiquitination 丢失案例则展示相反情形。尽管金标准段落讨论了 mono-ubiquitinated LDH-A 和 poly-ubiquitinated LDH，其排名仍从第 2 位降至第 18 位。问题与段落包含相关生化术语，但同义词和层级特征未能充分对齐表面形式及更宽泛的翻译后加工概念。类似丢失还出现在甲状腺激素类似物、cilengitide 受体、dasatinib 治疗、GIST 治疗和 Fanconi anemia 等问题中。这些案例支持后续改进生物医学概念归一化，而不是对关系特征作过强结论。
