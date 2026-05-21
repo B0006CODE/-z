@@ -42,6 +42,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-m", type=int, default=100, help="Number of input candidates per question to score.")
     parser.add_argument("--top-k", type=int, default=100, help="Number of output candidates per question.")
     parser.add_argument("--sample-limit", type=int, default=None, help="Limit questions for sanity checks.")
+    parser.add_argument("--split-modulo", type=int, default=None, help="Optional qid modulo for deterministic split filtering.")
+    parser.add_argument(
+        "--qid-remainders",
+        type=int,
+        nargs="+",
+        default=None,
+        help="Only score qids whose deterministic modulo bucket is in this set. Use with --split-modulo.",
+    )
     parser.add_argument("--ks", type=int, nargs="+", default=[1, 3, 5, 10, 20, 50, 100])
     parser.add_argument(
         "--only-predicted-qids",
@@ -49,6 +57,12 @@ def parse_args() -> argparse.Namespace:
         help="Evaluate only qrels whose question ids appear in the output. Useful for sample sanity checks.",
     )
     return parser.parse_args()
+
+
+def qid_bucket(qid: str, modulo: int) -> int:
+    if qid.isdigit():
+        return int(qid) % modulo
+    return sum(ord(char) for char in qid) % modulo
 
 
 def group_predictions(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
@@ -142,6 +156,15 @@ def main() -> None:
     candidates_by_qid = group_predictions(candidates)
 
     ordered_qids = [str(row["question_id"]) for row in questions if str(row["question_id"]) in candidates_by_qid]
+    if args.qid_remainders is not None:
+        if args.split_modulo is None:
+            raise ValueError("--qid-remainders requires --split-modulo.")
+        allowed_remainders = set(args.qid_remainders)
+        ordered_qids = [
+            qid
+            for qid in ordered_qids
+            if qid_bucket(qid, args.split_modulo) in allowed_remainders
+        ]
     if args.sample_limit is not None:
         ordered_qids = ordered_qids[: args.sample_limit]
 
@@ -236,6 +259,8 @@ def main() -> None:
             "top_m": args.top_m,
             "top_k": args.top_k,
             "sample_limit": args.sample_limit,
+            "split_modulo": args.split_modulo,
+            "qid_remainders": args.qid_remainders,
             "num_questions_scored": len(ordered_qids),
             "num_candidates_scored": len(reranked),
             "missing_passages": missing_passages,

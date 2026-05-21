@@ -137,7 +137,7 @@ Status legend:
 - [x] Ablation: remove hypergraph diffusion.
 - [x] Ablation: replace hypergraph with ordinary pairwise graph.
 - [x] Sensitivity: top-M values 20, 50, 100.
-- [ ] Sensitivity: top-k values 1, 3, 5, 10.
+- [x] Sensitivity: top-k values 1, 3, 5, 10.
 
 ## 8A. KCH-MedRank Method Upgrade
 
@@ -178,6 +178,7 @@ Implementation tasks:
 - [x] Save KCH-MedRank predictions to `outputs/rerank/`.
 - [x] Save KCH-MedRank metrics to `results/metrics/`.
 - [x] Save KCH-MedRank summary tables to `results/tables/`.
+- [x] Add enhanced first-stage retrieval with fielded BM25, MeSH query expansion, MedCPT dense retrieval, and multi-run RRF fusion.
 
 Required KCH-MedRank comparisons:
 
@@ -207,7 +208,7 @@ Required diagnostic evaluations:
 - [x] Paired bootstrap significance against Hybrid RRF.
 - [x] Paired bootstrap significance against biomedical semantic reranker only.
 - [x] Feature importance table for the learning-to-rank model.
-- [ ] Case studies showing rescued evidence passages and their MeSH / hypergraph paths.
+- [x] Case studies showing rescued evidence passages and their MeSH / hypergraph paths.
 - [ ] Failure analysis for cases where KCH-MedRank loses top-10 evidence.
 
 Current KCH-MedRank BioASQ status:
@@ -217,6 +218,15 @@ Current KCH-MedRank BioASQ status:
 - Paired bootstrap against Hybrid RRF: MRR@10 delta `+0.0114`, p=`0.0050`; Recall@10 delta `+0.0132`, p=`0.0002`; nDCG@10 delta `+0.0165`, p=`0.0002`.
 - Hard subset contains 26 held-out questions. Hybrid top10 is intentionally zero on this subset; Full KCH-MedRank recovers Recall@10 / evidence coverage `0.1447`.
 - Feature importance is saved to `results/tables/kch_medrank_bioasq_feature_importance.md`. PrimeKG remains low-importance / auxiliary and should not be overclaimed.
+
+Enhanced first-stage retrieval status:
+
+- MeSH descriptor entry terms are extracted from the 2026 MeSH XML into `data/external_knowledge/mesh_synonyms_2026.jsonl`.
+- Synonym-aware question MeSH coverage increased to `3823 / 4719` BioASQ questions.
+- Fielded BM25 with MeSH expansion improves full-set Recall@100 from original Hybrid `0.6336` to `0.6966`, but has weaker MRR@10 and should be used as a recall source rather than a direct replacement.
+- Enhanced four-way RRF raises full-set Recall@100 to `0.7292` with balanced weights and `0.7534` with recall-optimized weights.
+- Enhanced KCH-MedRank on the recall-optimized candidate pool improves held-out test MRR@10 to `0.7882`, Recall@10 to `0.5332`, and nDCG@10 to `0.6446`.
+- Against true MedCPT cross-encoder reranking on the same held-out test candidate pool, enhanced KCH-MedRank improves Recall@10 from `0.5172` to `0.5332` with paired bootstrap p=`0.0074`; MRR@10 is higher but not significant.
 
 ## 9. Generation And Faithfulness
 
@@ -267,8 +277,8 @@ Current PubMedQA status:
 - [x] Ablation table.
 - [x] Reranking diagnostic table.
 - [x] Top-M sensitivity table or figure.
-- [ ] Top-k sensitivity table or figure.
-- [ ] Case study with interpretable entity or evidence path.
+- [x] Top-k sensitivity table or figure.
+- [x] Case study with interpretable entity or evidence path.
 - [ ] Failure analysis.
 - [ ] Method diagram.
 - [ ] Efficiency analysis.

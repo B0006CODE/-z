@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-21T03:31:53.676576+00:00",
+  "index_action": "loaded",
+  "index_path": "indexes\\bm25\\bioasq_fielded_bm25.pkl",
+  "questions": "data/processed/bioasq_questions.jsonl",
+  "corpus": "data/processed/bioasq_corpus.jsonl",
+  "question_mesh": "data/processed/bioasq_question_mesh.jsonl",
+  "passage_mesh": "data/processed/bioasq_passage_mesh.jsonl",
+  "mesh_synonyms": "data/external_knowledge/mesh_synonyms_2026.jsonl",
+  "num_questions": 4719,
+  "num_corpus_passages": 40221,
+  "questions_with_mesh_expansion": 3823,
+  "passages_with_mesh": 37356,
+  "top_k": 100,
+  "num_predictions": 471900,
+  "output": "outputs/retrieval/fielded_bm25_full_top100.jsonl"
+}

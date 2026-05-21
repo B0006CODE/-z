@@ -1,0 +1,16 @@
+| method | recall@5 | recall@10 | mrr@10 | ndcg@10 | evidence_coverage@10 | recall@100 | mrr@100 | ndcg@100 | delta_mrr@10 | delta_recall@10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| BM25 | 0.0776 | 0.0920 | 0.0815 | 0.0765 | 0.0920 | 0.1961 | 0.0895 | 0.1097 |  |  |
+| Dense | 0.0713 | 0.0815 | 0.1142 | 0.0771 | 0.0815 | 0.2293 | 0.1205 | 0.1134 |  |  |
+| Hybrid RRF | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8375 | 0.0375 | 0.1932 |  |  |
+| Biomedical semantic reranker only | 0.0031 | 0.0142 | 0.0113 | 0.0090 | 0.0142 | 0.8375 | 0.0375 | 0.1846 |  |  |
+| Retrieval-feature-only LambdaMART | 0.2550 | 0.4411 | 0.2180 | 0.2424 | 0.4411 | 0.8375 | 0.2335 | 0.3423 |  |  |
+| LambdaMART + biomedical semantic without hypergraph | 0.3662 | 0.4550 | 0.2821 | 0.2907 | 0.4550 | 0.8375 | 0.2977 | 0.3876 |  |  |
+| Pairwise graph LTR | 0.3508 | 0.4415 | 0.2755 | 0.2768 | 0.4415 | 0.8375 | 0.2913 | 0.3751 |  |  |
+| Hypergraph LTR without medical knowledge | 0.2836 | 0.4306 | 0.2621 | 0.2699 | 0.4306 | 0.8375 | 0.2787 | 0.3730 |  |  |
+| Full KCH-MedRank | 0.3778 | 0.4751 | 0.2742 | 0.2896 | 0.4751 | 0.8375 | 0.2892 | 0.3815 |  |  |
+| Remove biomedical semantic reranker | 0.3425 | 0.4507 | 0.2319 | 0.2633 | 0.4507 | 0.8375 | 0.2480 | 0.3588 |  |  |
+| Remove MeSH hierarchy features | 0.3498 | 0.4724 | 0.2649 | 0.2804 | 0.4724 | 0.8375 | 0.2786 | 0.3716 |  |  |
+| Remove biomedical entity features | 0.3688 | 0.4576 | 0.2861 | 0.2929 | 0.4576 | 0.8375 | 0.3007 | 0.3883 |  |  |
+| Remove hypergraph diffusion and centrality | 0.3771 | 0.4840 | 0.2923 | 0.3062 | 0.4840 | 0.8375 | 0.3055 | 0.3960 |  |  |
+| Remove PrimeKG relation features | 0.3233 | 0.4124 | 0.2572 | 0.2514 | 0.4124 | 0.8375 | 0.2754 | 0.3612 |  |  |

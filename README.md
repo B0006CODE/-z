@@ -92,7 +92,7 @@ Current evidence-retrieval conclusions:
 - BioASQ HGB reranking improves held-out Hybrid RRF Recall@10 from `0.4636` to `0.4730`, with paired bootstrap `p < 0.001`.
 - PubMedQA HGB reranking improves same-split Hybrid RRF Recall@10 from `0.8200` to `0.8953`, while MRR@10 is near saturation.
 - Current QA answer selection does not yet improve beyond the majority baseline, so generation should not be the main claim.
-- The next priority is KCH-MedRank: biomedical semantic reranking features, MeSH hierarchy features, LambdaMART listwise ranking, and hard-subset evaluation.
+- The current strongest BioASQ retrieval path is enhanced first-stage retrieval followed by KCH-MedRank reranking.
 
 ## KCH-MedRank Upgrade
 
@@ -125,6 +125,34 @@ Current BioASQ KCH-MedRank result:
 - Hard reranking subset has 26 held-out questions; Full KCH-MedRank recovers Recall@10 / evidence coverage `0.1447` where Hybrid top10 has no gold evidence by construction.
 
 Important limitation: the current full run records `semantic_source = hybrid_metadata.dense_score_fallback`. Full MedCPT cross-encoder scoring previously timed out on CPU, so these results must be described as using a biomedical semantic fallback feature, not as a completed MedCPT full experiment.
+
+### Enhanced first-stage retrieval
+
+The enhanced candidate-generation path adds:
+
+- MeSH descriptor entry-term extraction with `scripts/build_mesh_synonyms.py`.
+- Synonym-aware MeSH feature rebuilding with `scripts/build_mesh_features.py --mesh-synonyms ...`.
+- Fielded BM25 over title/text/MeSH expansion with `scripts/run_fielded_bm25.py`.
+- MedCPT dual-encoder dense retrieval with `scripts/run_medcpt_dense.py`.
+- Generic weighted multi-run RRF fusion with `scripts/run_rrf_fusion.py`.
+
+Key BioASQ results:
+
+- Synonym-aware question MeSH coverage is now `3823 / 4719` questions.
+- Fielded BM25 raises full-set Recall@100 from original Hybrid `0.6336` to `0.6966`, but lowers MRR@10, so it is used as a recall source.
+- Enhanced four-way RRF reaches full-set Recall@100 `0.7534` in the recall-optimized setting.
+- Enhanced KCH-MedRank on that candidate pool reaches held-out test MRR@10 `0.7882`, Recall@10 `0.5332`, and nDCG@10 `0.6446`.
+- True MedCPT cross-encoder reranking on the same held-out test pool reaches MRR@10 `0.7775`, Recall@10 `0.5172`, and nDCG@10 `0.6390`; enhanced KCH-MedRank has significantly higher Recall@10 (`p=0.0074`) but non-significant MRR/nDCG gains.
+
+Run the enhanced candidate-generation path:
+
+```powershell
+python scripts/build_mesh_synonyms.py --config configs/default.yaml
+python scripts/build_mesh_features.py --config configs/default.yaml --mesh-synonyms data/external_knowledge/mesh_synonyms_2026.jsonl
+python scripts/run_fielded_bm25.py --config configs/default.yaml --output outputs/retrieval/fielded_bm25_full_top100.jsonl --index-path indexes/bm25/bioasq_fielded_bm25.pkl --top-k 100
+python scripts/run_medcpt_dense.py --config configs/default.yaml --output outputs/retrieval/medcpt_dense_full_top100.jsonl --index-path indexes/dense/bioasq_medcpt_article.npz --top-k 100 --device cuda
+python scripts/run_rrf_fusion.py --config configs/default.yaml --source bm25=1.0=outputs/retrieval/bm25_full_top100.jsonl --source dense=1.0=outputs/retrieval/dense_full_top100.jsonl --source fielded_bm25=1.2=outputs/retrieval/fielded_bm25_full_top100.jsonl --source medcpt=0.2=outputs/retrieval/medcpt_dense_full_top100.jsonl --output outputs/retrieval/enhanced_hybrid_w122_full_top100.jsonl --top-k 100 --rrf-k 60
+```
 
 ## Entity Features
 

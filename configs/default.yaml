@@ -38,6 +38,7 @@ paths:
   question_mesh: data/processed/bioasq_question_mesh.jsonl
   passage_mesh: data/processed/bioasq_passage_mesh.jsonl
   mesh_hierarchy: data/external_knowledge/mesh_hierarchy_2026.jsonl
+  mesh_synonyms: data/external_knowledge/mesh_synonyms_2026.jsonl
   primekg_relations: data/external_knowledge/primekg_project_relations.jsonl
   rerank_diagnostics: results/metrics/rerank_diagnostics_hybrid_top100.json
   pubmedqa_questions: data/processed/pubmedqa_pqa_labeled_questions.jsonl
@@ -58,6 +59,14 @@ retrieval:
     batch_size: 64
     score_batch_size: 128
     normalize_embeddings: true
+  medcpt_dense:
+    query_model_name: ncbi/MedCPT-Query-Encoder
+    article_model_name: ncbi/MedCPT-Article-Encoder
+    device: auto
+    batch_size: 32
+    score_batch_size: 128
+    query_max_length: 64
+    article_max_length: 512
   hybrid:
     rrf_k: 60
     bm25_weight: 1.0

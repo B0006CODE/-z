@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-05-21T03:04:27.954314+00:00",
+  "source_url": "https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/desc2026.xml",
+  "mesh_xml": "data/external_knowledge/desc2026.xml",
+  "output": "data/external_knowledge/mesh_synonyms_2026.jsonl",
+  "num_descriptors": 31110,
+  "descriptors_with_entry_terms": 28580,
+  "num_entry_terms": 213754
+}
