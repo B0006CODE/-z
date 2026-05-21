@@ -14,6 +14,7 @@ Accessed date for all links: 2026-05-21.
 | `edge2024graphrag` | https://arxiv.org/abs/2404.16130 | Official arXiv metadata for GraphRAG local-to-global search. |
 | `wu2024medgraphrag` | https://arxiv.org/abs/2408.04187 | Official arXiv metadata for Medical Graph RAG. |
 | `luo2025hypergraphrag` | https://arxiv.org/abs/2503.21322 | Official arXiv metadata for HyperGraphRAG. |
+| `xu2026medicalhyperrag` | https://doi.org/10.21203/rs.3.rs-8497459/v1 | Research Square preprint metadata for Medical HyperRAG; treated cautiously as preprint evidence. |
 | `wang2026hgrag` | https://ojs.aaai.org/index.php/AAAI/article/download/40623/44584 | Official AAAI PDF for cross-granularity HGRAG. |
 | `chandak2023primekg` | https://www.nature.com/articles/s41597-023-01960-3 | Nature Scientific Data metadata for PrimeKG. |
 | `nlm2026mesh` | https://www.nlm.nih.gov/mesh/meshhome.html | Official NLM MeSH page. |

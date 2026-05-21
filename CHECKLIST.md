@@ -265,13 +265,13 @@ Current PubMedQA status:
 
 ## 11. Literature Verification
 
-- [ ] Verify latest metadata for MedRAG / MIRAGE style medical RAG benchmarking.
-- [ ] Verify latest metadata for medical GraphRAG with controlled vocabularies.
-- [ ] Verify latest metadata for HyperGraphRAG.
-- [ ] Verify latest metadata for cross-granularity hypergraph RAG.
-- [ ] Verify latest metadata for self-reflective or iterative medical RAG.
-- [ ] Verify latest metadata for knowledge graph enhanced biomedical QA.
-- [ ] Keep novelty claims modest: domain-specific constraints, local hypergraph construction, and evidence-oriented evaluation.
+- [x] Verify latest metadata for MedRAG / MIRAGE style medical RAG benchmarking.
+- [x] Verify latest metadata for medical GraphRAG with controlled vocabularies.
+- [x] Verify latest metadata for HyperGraphRAG.
+- [x] Verify latest metadata for cross-granularity hypergraph RAG.
+- [x] Verify latest metadata for self-reflective or iterative medical RAG.
+- [x] Verify latest metadata for knowledge graph enhanced biomedical QA.
+- [x] Keep novelty claims modest: domain-specific constraints, local hypergraph construction, and evidence-oriented evaluation.
 
 ## 12. Paper Assets
 
@@ -282,9 +282,9 @@ Current PubMedQA status:
 - [x] Top-k sensitivity table or figure.
 - [x] Case study with interpretable entity or evidence path.
 - [x] Failure analysis.
-- [ ] Method diagram.
-- [ ] Efficiency analysis.
-- [ ] Draft paper structure: Introduction, Related Work, Task Definition, Method, Experimental Setup, Results, Ablation Study, Case Study, Discussion, Conclusion.
+- [x] Method diagram.
+- [x] Efficiency analysis.
+- [x] Draft paper structure: Introduction, Related Work, Task Definition, Method, Experimental Setup, Results, Ablation Study, Case Study, Discussion, Conclusion.
 
 ## 12A. Manuscript
 
@@ -297,15 +297,15 @@ Current PubMedQA status:
 - [x] Record verified citation source links.
 - [x] Build manuscript result tables.
 - [x] Build method diagram.
-- [ ] Write Introduction in English and Chinese.
-- [ ] Write Related Work after verifying literature metadata.
+- [x] Write Introduction in English and Chinese.
+- [x] Write Related Work after verifying literature metadata.
 - [x] Write Method in English and Chinese.
 - [x] Write Experimental Setup in English and Chinese.
 - [x] Write Results in English and Chinese.
 - [x] Write Ablation Study in English and Chinese.
-- [ ] Write Case Study and Failure Analysis in English and Chinese.
-- [ ] Write Discussion and limitations in English and Chinese.
-- [ ] Write Conclusion in English and Chinese.
+- [x] Write Case Study and Failure Analysis in English and Chinese.
+- [x] Write Discussion and limitations in English and Chinese.
+- [x] Write Conclusion in English and Chinese.
 - [x] Verify initial `references.bib` entries.
 - [x] Compile English PDF.
 - [x] Compile Chinese PDF.

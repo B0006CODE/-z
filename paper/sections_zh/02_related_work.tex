@@ -10,7 +10,7 @@ BioASQ 是长期运行的生物医学语义索引与问答基准 \citep{tsatsaro
 
 \subsection{图与超图 RAG}
 
-GraphRAG 类方法使用图结构组织检索信息，其中 local-to-global search 被用于面向查询的摘要任务 \citep{edge2024graphrag}。Medical Graph RAG 将用户文档、可信医学来源和受控词表连接起来，以支持医学回答的证据 grounding \citep{wu2024medgraphrag}。HyperGraphRAG 认为超边可以表示普通成对图边无法直接表达的 n 元关系 \citep{luo2025hypergraphrag}，跨粒度 HGRAG 则在不同检索粒度上建模实体和段落 \citep{wang2026hgrag}。KCH-MedRank 继承高阶关系建模动机，但采用局部、面向证据检索的超图，而不是全局图构建。
+GraphRAG 类方法使用图结构组织检索信息，其中 local-to-global search 被用于面向查询的摘要任务 \citep{edge2024graphrag}。Medical Graph RAG 将用户文档、可信医学来源和受控词表连接起来，以支持医学回答的证据 grounding \citep{wu2024medgraphrag}。HyperGraphRAG 认为超边可以表示普通成对图边无法直接表达的 n 元关系 \citep{luo2025hypergraphrag}，跨粒度 HGRAG 则在不同检索粒度上建模实体和段落 \citep{wang2026hgrag}。近期 Medical HyperRAG 预印本研究了以患者为中心的临床问答，通过 ClinBridge 超图组织病历、病例和指南 \citep{xu2026medicalhyperrag}。KCH-MedRank 继承高阶关系建模动机，但研究范围不同：本文使用公开生物医学问答资源，避免依赖私有临床记录，并评估局部证据重排序模块，而不是完整的患者中心临床决策支持框架。
 
 \subsection{受控生物医学知识}
 
