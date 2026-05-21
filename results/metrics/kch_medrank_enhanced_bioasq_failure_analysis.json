@@ -1,0 +1,507 @@
+{
+  "baseline_label": "Enhanced Hybrid w122",
+  "candidate_label": "Enhanced KCH-MedRank",
+  "top_k": 10,
+  "summary": {
+    "paired_questions": 943,
+    "questions_with_lost_gold": 214,
+    "lost_gold_passages": 307,
+    "questions_with_rescued_gold": 414,
+    "rescued_gold_passages": 661
+  },
+  "lost_cases": [
+    {
+      "question_id": "1599",
+      "passage_id": "16154111",
+      "baseline_rank": 2,
+      "candidate_rank": 18,
+      "rank_delta": 16,
+      "question": "Is there any protein that undergoes both mono-ubiquitination and poly-ubiquitination?",
+      "passage_title": "",
+      "passage_text": "We previously reported that oxidative stress is associated with unloading-mediated ubiquitination of muscle proteins. To further elucidate the involvement of oxidative stress in ubiquitination, we examined the ubiquitination profile in rat myoblastic L6 cells after treatment with hydrogen peroxide. Hydrogen peroxide induced many ubiquitinated proteins with low molecular masses (less than 60 kDa) as well as high molecular masses (more than 160 kDa). Among them, a 42-kDa-ubiquitinated protein was abundantly accumulated and immediately disappeared after the treatment. Microsequencing revealed that the 42-kDa-protein was identical to the mono-ubiquitinated form of rat lactate dehydrogenase A (LDH-A), and we confirmed that hydrogen peroxide induced the mono-ubiquitination of LDH-A in COS7 cells overexpressing LDH-A and ubiquitin. Under unloading conditions, such as tail-suspension and spaceflight, mono-ubiquitinated LDH was accumulated in gastrocnemius muscle. Interestingly, E-64-d plus pepstatin, lysosomal protease inhibitors, further accumulated mono-ubiquitinated LDH-A in the cells after treatment with hydrogen peroxide, while they did not affect the amount of poly-ubiquitinated LDH. In contrast, epoxomicin, a potent proteasome inhibitor, did not change the amount of mono-ubiquitinated LDH-A in L6 cells treated with hydrogen peroxide, although it significantly increased the amount of poly-ubiquitinated LDH. Our results suggest that oxidative stress induces not only poly-ubiquitination but also mono-ubiquitination of LDH-A, which may be involved in its lysosomal degradation during unloading.",
+      "mesh_overlap": [],
+      "question_mesh": [
+        "poly u",
+        "proteins",
+        "tacrine",
+        "ubiquitin",
+        "ubiquitination"
+      ],
+      "passage_mesh": [
+        "chlorocebus aethiops",
+        "cos cells",
+        "hydrogen peroxide",
+        "isoenzymes",
+        "l lactate dehydrogenase",
+        "lactate dehydrogenase 5",
+        "muscle skeletal",
+        "oxidative stress",
+        "phosphoglycerate mutase",
+        "protease inhibitors",
+        "protein processing post translational",
+        "ubiquitins"
+      ]
+    },
+    {
+      "question_id": "124",
+      "passage_id": "15148346",
+      "baseline_rank": 2,
+      "candidate_rank": 12,
+      "rank_delta": 10,
+      "question": "Is DITPA a thyroid hormone analog utilized in experimental and clinical studies",
+      "passage_title": "",
+      "passage_text": "The heart is an important target of thyroid hormone actions. Only a limited number of cardiac target genes have been identified, and little is known about their regulation by T(3) (3,3',5-triiodothyronine) and thyroid hormone analogs. We used an oligonucleotide microarray to identify novel cardiac genes regulated by T(3) and two thyroid hormone analogs, 3,5-diidodothyropropionic acid (DITPA) and CGS 23425 [N-[3,5-dimethyl-4-(4'-hydroxy-3'-isopropylphenoxy)-phenyl]-oxamic acid]. DITPA binds with lower affinity than T(3) to thyroid hormone receptor alpha1 and beta1 isoforms, whereas CGS 23425 binds selectively to beta1. Fluorescent-labeled cDNA was prepared from cultured heart cells maintained in medium stripped of thyroid hormone (\"hypothyroid\" control) or treated with T(3), DITPA, and CGS 23425 at concentrations 5 times their respective K(d) values for 48 h. The arrays were scanned and analyzed using an analysis of variance program. Sixty-four genes were identified that were >1.5 times up- or down-regulated by one of the treatments with P < 0.05. The genes regulated by T(3) and DITPA were nearly identical. Thirteen genes were differentially regulated by CGS 23425. Genes encoding contractile proteins, Ca(2+)-ATPase of sarcoplasmic reticulum and several proteins of mitochondrial oxidative phosphorylation, were up-regulated by T(3) and DITPA but not by CGS 23425. These results indicate that some, but not all, of the actions of thyroid hormone analogs can be explained by differences in gene activation.",
+      "mesh_overlap": [
+        "thyroid hormones"
+      ],
+      "question_mesh": [
+        "hormones",
+        "thyroid gland",
+        "thyroid hormones"
+      ],
+      "passage_mesh": [
+        "cells cultured",
+        "diiodothyronines",
+        "gene expression",
+        "glyoxylates",
+        "myocytes cardiac",
+        "propionates",
+        "rats sprague dawley",
+        "reverse transcriptase polymerase chain reaction",
+        "thyroid hormones"
+      ]
+    },
+    {
+      "question_id": "154",
+      "passage_id": "2807143",
+      "baseline_rank": 3,
+      "candidate_rank": 18,
+      "rank_delta": 15,
+      "question": "Does strenuous physical activity affect thyroid hormone metabolism?",
+      "passage_title": "",
+      "passage_text": "Significant increases in the concentration of plasma glucagon-like immunoreactivity (GLI) and plasma levels of free fatty acids (FFA) and triglycerides (TG) concomitant with decreases in circulating levels of thyroxine (T4) and triiodothyronine (T3) and T3/T4 ratio were observed in homing pigeons, untrained for 3 months, after a flight of 48 km lasting 90-160 min. The increased level of FFA is attributed to glucagon stimulated lipolysis. The elevation of TG levels may be due to altered partitioning and utilization of lipoprotein in adipose tissue and muscle. Reductions in plasma T4, T3 and T3/T4 ratio are probably due to inhibition of T4 secretion and 5'-monodeiodination with possible conversion of T4 to reverse T3 (rT3). These processes may represent a mechanism for regulation of thyroid hormone metabolism during strenuous and extended flight.",
+      "mesh_overlap": [
+        "thyroid hormones"
+      ],
+      "question_mesh": [
+        "affect",
+        "exercise",
+        "hormones",
+        "hydrogen ion concentration",
+        "metabolism",
+        "thyroid gland",
+        "thyroid hormones"
+      ],
+      "passage_mesh": [
+        "columbidae",
+        "fatty acids nonesterified",
+        "flight animal",
+        "glucagon",
+        "lipids",
+        "thyroid hormones",
+        "thyroxine",
+        "triglycerides",
+        "triiodothyronine"
+      ]
+    },
+    {
+      "question_id": "414",
+      "passage_id": "23728220",
+      "baseline_rank": 3,
+      "candidate_rank": 18,
+      "rank_delta": 15,
+      "question": "List receptors of the drug Cilengitide",
+      "passage_title": "",
+      "passage_text": "The prognosis of children with high-grade glioma or high-risk neuroblastoma remains poor. Cilengitide is a selective antagonist of αvβ3 and αvβ5 integrins, which are involved in tumor growth and development of metastasis. We have evaluated the effects of cilengitide on pediatric glioma and neuroblastoma cell lines for the first time. Expression levels of αvβ3 and αvβ5 were determined by flow cytometry in three neuroblastoma and five pediatric glioma cell lines compared with adult U87-MG before and after irradiation. Cell detachment, cytotoxicity, and cell growth under nonadhesive conditions were measured using the MTS assay. Cell death and apoptosis were assessed by annexin-V/propidium iodide staining. The varying αvβ3 and αvβ5 expression levels were unrelated to tumor grade. Irrespective of the αvβ5 expression level, the pediatric cells expressing αvβ3 were dose dependently sensitive to cilengitide. UW479 cells expressed only αvβ5 integrin and were not sensitive to cilengitide, suggesting that cilengitide's action largely depends on αvβ3 inhibition. Cell detachment resulted in a higher cytotoxicity in pediatric glioma compared with U87-MG cells, which seem able to grow despite the significant cilengitide-induced cell detachment. Growth kinetics on polyHEMA showed that only pediatric glioma cells were sensitive to anoikis and so died after cilengitide-induced detachment. Furthermore, irradiation of glioma cells increased αvβ3 expression slightly but not cilengitide sensitivity. Cilengitide's action on glioma and neuroblastoma cells appears to be dependent on αvβ3 expression and sensitivity to anoikis. Cilengitide is able to target pediatric glioma and neuroblastoma cells in vitro directly and efficiently. Tumor context could validate these promising observations.",
+      "mesh_overlap": [],
+      "question_mesh": [
+        "fenofibrate",
+        "pharmaceutical preparations",
+        "receptors drug"
+      ],
+      "passage_mesh": [
+        "age factors",
+        "anoikis",
+        "antineoplastic agents",
+        "cell adhesion",
+        "cell line tumor",
+        "cell proliferation",
+        "dose response relationship drug",
+        "dose response relationship radiation",
+        "flow cytometry",
+        "glioma",
+        "integrin alphavbeta3",
+        "neoplasm grading"
+      ]
+    },
+    {
+      "question_id": "3609",
+      "passage_id": "29515069",
+      "baseline_rank": 3,
+      "candidate_rank": 14,
+      "rank_delta": 11,
+      "question": "Which disease is Dasatinib used to treat?",
+      "passage_title": "",
+      "passage_text": "A 37-year-old woman was diagnosed with chronic phase chronic myeloid leukemia. Nilotinib treatment was initiated; however, it had to be discontinued due to an allergic reaction one month later, and dasatinib treatment was provided. Although favorable response was obtained, she started complaining of shortness of breath 7 months after initiating dasatinib treatment. Chest X-ray and echocardiography indicated pulmonary congestion and hypertension. Further, she was diagnosed with mixed connective tissue disease (MCTD) based on Raynaud phenomenon, swollen fingers, sclerodactyly, pancytopenia, hypocomplementemia, and positive anti-U1-RNP antibody. Consequently, dasatinib treatment was discontinued, and she was administered prednisolone (1 mg/kg/day), which was effective and successfully tapered with concomitant administration of cyclophosphamide. This is the first case of MCTD that developed during dasatinib treatment. However, because the present case was a young woman, the development of MCTD could probably be attributed to autoimmune diatheses or it may be a coincidence. However, the possibility of patients receiving dasatinib treatment developing autoimmune diseases needs to be assessed.",
+      "mesh_overlap": [
+        "dasatinib"
+      ],
+      "question_mesh": [
+        "dasatinib",
+        "disease",
+        "oceans and seas"
+      ],
+      "passage_mesh": [
+        "antineoplastic combined chemotherapy protocols",
+        "dasatinib",
+        "hypertension pulmonary",
+        "leukemia myelogenous chronic bcr abl positive",
+        "mixed connective tissue disease"
+      ]
+    },
+    {
+      "question_id": "934",
+      "passage_id": "16821517",
+      "baseline_rank": 3,
+      "candidate_rank": 12,
+      "rank_delta": 9,
+      "question": "What are the treatments of choice for GIST (gastrointestinal stromal tumor)?",
+      "passage_title": "",
+      "passage_text": "Malignant gastointestinal stromal tumors (M-GIST) are rare mesenchymal tumors that arise in the wall of the gastrointestinal (GI) tract. Small intestinal GIST account for approximately 35% of all GIST the diagnosis of these tumors is difficult to establish, because the symptoms are vague and non-specific and traditional endoscopy is commonly unsatisfactory. Because of the infrequent nature of malignant small bowel tumors, the natural history and factors affecting outcome remain poorly defined; stage at presentation and complete surgical resection seem to be the main prognostic factors. For these rare tumors, surgery remains the treatment of choice, with little efficacy reported for irradiation, chemiotherapy, or both. Two cases of GIST of the jejunum, complicated by intestinal bleeding and intestinal obstruction respectively, are presented and a review of the literature is made.",
+      "mesh_overlap": [
+        "gastrointestinal stromal tumors"
+      ],
+      "question_mesh": [
+        "gastrointestinal stromal tumors",
+        "ice",
+        "neoplasms",
+        "romani people",
+        "sexually transmitted diseases",
+        "therapeutics"
+      ],
+      "passage_mesh": [
+        "gastrointestinal stromal tumors",
+        "jejunal neoplasms"
+      ]
+    },
+    {
+      "question_id": "124",
+      "passage_id": "17710084",
+      "baseline_rank": 3,
+      "candidate_rank": 11,
+      "rank_delta": 8,
+      "question": "Is DITPA a thyroid hormone analog utilized in experimental and clinical studies",
+      "passage_title": "",
+      "passage_text": "Thyroid hormone (T3 and T4) has many beneficial effects including enhancing cardiac function, promoting weight loss and reducing serum cholesterol. Excess thyroid hormone is, however, associated with unwanted effects on the heart, bone and skeletal muscle. We therefore need analogs that harness the beneficial effects of thyroid hormone without the untoward effects. Such work is largely based on understanding the cellular mechanisms of thyroid hormone action, specifically the crystal structure of the nuclear receptor proteins. In clinical studies, use of naturally occurring thyroid hormone analogs can suppress TSH levels in patients with thyroid cancer without producing tachycardia. Many thyromimetic compounds have been tested in animal models and shown to increase total body oxygen consumption, and to lower weight and serum cholesterol and triglyceride levels while having minor effects on heart rate. Alternatively, analogs that specifically enhance both systolic and diastolic function are potentially useful in the treatment of chronic congestive heart failure. In addition to analogs that are thyroid hormone receptor agonists, several compounds that are thyroid hormone receptor antagonists have been identified and tested. This Review discusses the potential application of thyroid hormone analogs (both agonists and antagonists) in a variety of human disease states.",
+      "mesh_overlap": [
+        "thyroid hormones"
+      ],
+      "question_mesh": [
+        "hormones",
+        "thyroid gland",
+        "thyroid hormones"
+      ],
+      "passage_mesh": [
+        "drug design",
+        "molecular mimicry",
+        "molecular structure",
+        "phenyl ethers",
+        "phenylacetates",
+        "receptors thyroid hormone",
+        "signal transduction",
+        "structure activity relationship",
+        "thyroid hormones"
+      ]
+    },
+    {
+      "question_id": "1274",
+      "passage_id": "21438918",
+      "baseline_rank": 3,
+      "candidate_rank": 11,
+      "rank_delta": 8,
+      "question": "Is Fanconi anemia presented as a genetically and clinically heterogeneous disease entity?",
+      "passage_title": "",
+      "passage_text": "Bednar tumor is a rare pigmented variation of dermatofibrosarcoma protuberans, present in 1 to 5% of all patients with dermatofibrosarcoma protuberans. No significant clinicopathologic differences exist between Bednar tumor and conventional dermatofibrosarcoma protuberans apart from the presence of scattered nonneoplastic pigmented dendritic cells in the former. Although most dermatofibrosarcoma protuberans occur in adults, they may be rarely present at birth. Fanconi anemia is a genetically heterogeneous chromosomal instability syndrome, characterized by multiple congenital anomalies, progressive bone marrow failure, and a predisposition to malignancy. We describe here a patient with Fanconi anemia who had a congenital Bednar tumor. To our knowledge, this is the first such patient described with both dermatofibrosarcoma protuberans and Fanconi anemia.",
+      "mesh_overlap": [
+        "fanconi anemia"
+      ],
+      "question_mesh": [
+        "anemia",
+        "disease",
+        "fanconi anemia",
+        "genes",
+        "hydroxyeicosatetraenoic acids",
+        "oceans and seas",
+        "tics"
+      ],
+      "passage_mesh": [
+        "child preschool",
+        "dermatofibrosarcoma",
+        "fanconi anemia",
+        "immunosuppressive agents",
+        "skin neoplasms",
+        "stem cell transplantation"
+      ]
+    }
+  ],
+  "rescued_cases": [
+    {
+      "question_id": "4614",
+      "passage_id": "33594055",
+      "baseline_rank": 54,
+      "candidate_rank": 1,
+      "rank_delta": -53,
+      "question": "What is the p-crAssphage?",
+      "passage_title": "",
+      "passage_text": "CrAssphage is the most abundant human-associated virus and the founding member of a large group of bacteriophages, discovered in animal-associated and environmental metagenomes, that infect bacteria of the phylum Bacteroidetes. We analyze 4907 Circular Metagenome Assembled Genomes (cMAGs) of putative viruses from human gut microbiomes and identify nearly 600 genomes of crAss-like phages that account for nearly 87% of the DNA reads mapped to these cMAGs. Phylogenetic analysis of conserved genes demonstrates the monophyly of crAss-like phages, a putative virus order, and of 5 branches, potential families within that order, two of which have not been identified previously. The phage genomes in one of these families are almost twofold larger than the crAssphage genome (145-192 kilobases), with high density of self-splicing introns and inteins. Many crAss-like phages encode suppressor tRNAs that enable read-through of UGA or UAG stop-codons, mostly, in late phage genes. A distinct feature of the crAss-like phages is the recurrent switch of the phage DNA polymerase type between A and B families. Thus, comparative genomic analysis of the expanded assemblage of crAss-like phages reveals aspects of genome architecture and expression as well as phage biology that were not apparent from the previous work on phage genomics.",
+      "mesh_overlap": [
+        "bacteriophages"
+      ],
+      "question_mesh": [
+        "bacteriophages",
+        "equidae",
+        "hydrogen ion concentration"
+      ],
+      "passage_mesh": [
+        "bacteriophages",
+        "codon",
+        "conserved sequence",
+        "dna directed dna polymerase",
+        "gastrointestinal microbiome",
+        "genome viral",
+        "inteins",
+        "introns",
+        "metagenome",
+        "open reading frames",
+        "phylogeny",
+        "rna splicing"
+      ]
+    },
+    {
+      "question_id": "3924",
+      "passage_id": "26083752",
+      "baseline_rank": 52,
+      "candidate_rank": 1,
+      "rank_delta": -51,
+      "question": "What is the function of ketohexokinase-A?",
+      "passage_title": "",
+      "passage_text": "Fructose is a major component of dietary sugar and its overconsumption exacerbates key pathological features of metabolic syndrome. The central fructose-metabolising enzyme is ketohexokinase (KHK), which exists in two isoforms: KHK-A and KHK-C, generated through mutually exclusive alternative splicing of KHK pre-mRNAs. KHK-C displays superior affinity for fructose compared with KHK-A and is produced primarily in the liver, thus restricting fructose metabolism almost exclusively to this organ. Here we show that myocardial hypoxia actuates fructose metabolism in human and mouse models of pathological cardiac hypertrophy through hypoxia-inducible factor 1α (HIF1α) activation of SF3B1 and SF3B1-mediated splice switching of KHK-A to KHK-C. Heart-specific depletion of SF3B1 or genetic ablation of Khk, but not Khk-A alone, in mice, suppresses pathological stress-induced fructose metabolism, growth and contractile dysfunction, thus defining signalling components and molecular underpinnings of a fructose metabolism regulatory system crucial for pathological growth.",
+      "mesh_overlap": [],
+      "question_mesh": [
+        "hexokinase",
+        "phosphotransferases"
+      ],
+      "passage_mesh": [
+        "alternative splicing",
+        "cardiomyopathy hypertrophic",
+        "disease models animal",
+        "fructokinases",
+        "fructose",
+        "hypoxia inducible factor 1 alpha subunit",
+        "isoenzymes",
+        "metabolic syndrome",
+        "phosphoproteins",
+        "ribonucleoprotein u2 small nuclear",
+        "rna splicing factors"
+      ]
+    },
+    {
+      "question_id": "3049",
+      "passage_id": "29358629",
+      "baseline_rank": 46,
+      "candidate_rank": 1,
+      "rank_delta": -45,
+      "question": "Which ploidy-agnostic method has been developed for estimating telomere length from whole genome sequencing data?",
+      "passage_title": "",
+      "passage_text": "nan",
+      "mesh_overlap": [
+        "ploidies",
+        "telomere",
+        "whole genome sequencing"
+      ],
+      "question_mesh": [
+        "bees",
+        "genome",
+        "methods",
+        "ploidies",
+        "sexually transmitted diseases",
+        "telomere",
+        "tics",
+        "whole genome sequencing",
+        "world health organization"
+      ],
+      "passage_mesh": [
+        "algorithms",
+        "carcinoma hepatocellular",
+        "gene expression",
+        "genotype",
+        "induced pluripotent stem cells",
+        "liver neoplasms",
+        "mesenchymal stem cells",
+        "ploidies",
+        "primary cell culture",
+        "telomerase",
+        "telomere",
+        "telomere homeostasis"
+      ]
+    },
+    {
+      "question_id": "3489",
+      "passage_id": "15850899",
+      "baseline_rank": 43,
+      "candidate_rank": 1,
+      "rank_delta": -42,
+      "question": "Can radiation induced meningiomas be treated with radiosurgery?",
+      "passage_title": "",
+      "passage_text": "nan",
+      "mesh_overlap": [
+        "meningioma",
+        "radiosurgery"
+      ],
+      "question_mesh": [
+        "general surgery",
+        "meningioma",
+        "radiation",
+        "radiosurgery"
+      ],
+      "passage_mesh": [
+        "meningeal neoplasms",
+        "meningioma",
+        "neoplasms radiation induced",
+        "neurilemmoma",
+        "radiosurgery",
+        "survival rate"
+      ]
+    },
+    {
+      "question_id": "3959",
+      "passage_id": "31187503",
+      "baseline_rank": 34,
+      "candidate_rank": 1,
+      "rank_delta": -33,
+      "question": "Are PDXK mutations linked to polyneuropathy?",
+      "passage_title": "",
+      "passage_text": "nan",
+      "mesh_overlap": [
+        "mutation",
+        "polyneuropathies"
+      ],
+      "question_mesh": [
+        "ink",
+        "ions",
+        "mutation",
+        "polyneuropathies"
+      ],
+      "passage_mesh": [
+        "aged 80 and over",
+        "child preschool",
+        "dietary supplements",
+        "gene regulatory networks",
+        "mutation",
+        "polyneuropathies",
+        "pyridoxal kinase",
+        "pyridoxal phosphate",
+        "vitamin b complex"
+      ]
+    },
+    {
+      "question_id": "4194",
+      "passage_id": "31953314",
+      "baseline_rank": 19,
+      "candidate_rank": 1,
+      "rank_delta": -18,
+      "question": "Is adenosine signaling prognostic for cancer outcome?",
+      "passage_title": "",
+      "passage_text": "nan",
+      "mesh_overlap": [
+        "adenosine",
+        "neoplasms"
+      ],
+      "question_mesh": [
+        "adenosine",
+        "neoplasms",
+        "sexually transmitted diseases",
+        "short interspersed nucleotide elements",
+        "tics",
+        "yemen"
+      ],
+      "passage_mesh": [
+        "adenosine",
+        "adenosine a2 receptor antagonists",
+        "biomarkers tumor",
+        "cd8 positive t lymphocytes",
+        "cell line tumor",
+        "databases genetic",
+        "immunotherapy",
+        "mice inbred c57bl",
+        "neoplasms",
+        "prognosis",
+        "random allocation",
+        "receptors adenosine a2"
+      ]
+    },
+    {
+      "question_id": "3004",
+      "passage_id": "23625205",
+      "baseline_rank": 18,
+      "candidate_rank": 1,
+      "rank_delta": -17,
+      "question": "What is the role of metalloproteinase-17 (ADAM17) in NK cells?",
+      "passage_title": "",
+      "passage_text": "A disintegrin and metalloproteinase-17 (ADAM17) is a member of the metalloproteinase superfamily and involved in the cleavage of ectodomain of many transmembrane proteins. ADAM17 is overexpressed in a variety of human tumors, which is associated with tumor development and progression. In the present study, we sought to investigate the expression and function of ADAM17 in hypoxia-treated hepatocellular carcinoma (HCC) cells. Western blot analysis was used to measure the expression of ADAM17 in HCC cell lines (Hep3B and HepG2 cells). Annexin V/PI double staining was performed to analyze the effects of ADAM17 on hypoxia-mediated cisplatin resistance. ADAM17 expression was upregulated by hypoxia treatment in HCC cells at both mRNA and protein levels. Overexpression of ADAM17 reduced cisplatin-induced apoptosis in HCC cells, accompanies by less cleavage of caspase-3 and poly (ADP-ribose) polymerase (PARP). Forced expression of ADAM17 enhanced the phosphorylation of epidermal growth factor receptor (EGFR) and Akt without affecting the expression of total EGFR and Akt. Pretreatment with EGFR inhibitor AG1478 or phosphatidylinositol 3-kinase (PI3K) inhibitor LY294002 rescued ADAM17-mediated cisplatin resistance of HCC cells. ADAM17 silencing attenuated hypoxia-induced cisplatin resistance and enhanced the accumulation of cleaved caspase-3 and PARP. Western blot analysis showed that overexpression of hypoxia-inducible factor-1α (HIF-1α), a transcription factor, upregulated the expression of ADAM17 and HIF-1α silencing downregulated the expression of ADAM17 in hypoxia-treated HCC cells, indicating the regulation of ADAM17 by HIF-1α. Taken together, our results indicated that ADAM17 is upregulated by hypoxia and contributes to hypoxia-induced cisplatin resistance via EGFR/PI3K/Akt pathway.",
+      "mesh_overlap": [],
+      "question_mesh": [
+        "cells",
+        "killer cells natural",
+        "metalloproteases",
+        "metalloproteins",
+        "metals",
+        "peptide hydrolases",
+        "proteins",
+        "role"
+      ],
+      "passage_mesh": [
+        "adam proteins",
+        "adam17 protein",
+        "antineoplastic agents",
+        "apoptosis",
+        "blotting western",
+        "carcinoma hepatocellular",
+        "cell hypoxia",
+        "cell line tumor",
+        "cisplatin",
+        "drug resistance neoplasm",
+        "erbb receptors",
+        "flow cytometry"
+      ]
+    },
+    {
+      "question_id": "3064",
+      "passage_id": "25852060",
+      "baseline_rank": 17,
+      "candidate_rank": 1,
+      "rank_delta": -16,
+      "question": "What is the mechanism of the drug CRT0066101?",
+      "passage_title": "",
+      "passage_text": "Invasive ductal carcinomas (IDC) of the breast are associated with altered expression of hormone receptors (HR), amplification or overexpression of HER2, or a triple-negative phenotype. The most aggressive cases of IDC are characterized by a high proliferation rate, a great propensity to metastasize, and their ability to resist to standard chemotherapy, hormone therapy, or HER2-targeted therapy. Using progression tissue microarrays, we here demonstrate that the serine/threonine kinase protein kinase D3 (PKD3) is highly upregulated in estrogen receptor (ER)-negative (ER(-)) tumors. We identify direct binding of the ER to the PRKD3 gene promoter as a mechanism of inhibition of PKD3 expression. Loss of ER results in upregulation of PKD3, leading to all hallmarks of aggressive IDC, including increased cell proliferation, migration, and invasion. This identifies ER(-) breast cancers as ideal for treatment with the PKD inhibitor CRT0066101. We show that similar to a knockdown of PKD3, treatment with this inhibitor targets all tumorigenic processes in vitro and decreases growth of primary tumors and metastasis in vivo. Our data strongly support the development of PKD inhibitors for clinical use for ER(-) breast cancers, including the triple-negative phenotype.",
+      "mesh_overlap": [],
+      "question_mesh": [
+        "pharmaceutical preparations"
+      ],
+      "passage_mesh": [
+        "blotting western",
+        "breast neoplasms",
+        "cell line tumor",
+        "cell movement",
+        "cell proliferation",
+        "immunohistochemistry",
+        "lung neoplasms",
+        "lymphatic metastasis",
+        "mcf 7 cells",
+        "mice inbred nod",
+        "mice scid",
+        "microscopy confocal"
+      ]
+    }
+  ]
+}

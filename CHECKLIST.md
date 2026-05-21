@@ -209,7 +209,7 @@ Required diagnostic evaluations:
 - [x] Paired bootstrap significance against biomedical semantic reranker only.
 - [x] Feature importance table for the learning-to-rank model.
 - [x] Case studies showing rescued evidence passages and their MeSH / hypergraph paths.
-- [ ] Failure analysis for cases where KCH-MedRank loses top-10 evidence.
+- [x] Failure analysis for cases where KCH-MedRank loses top-10 evidence.
 
 Current KCH-MedRank BioASQ status:
 
@@ -225,8 +225,10 @@ Enhanced first-stage retrieval status:
 - Synonym-aware question MeSH coverage increased to `3823 / 4719` BioASQ questions.
 - Fielded BM25 with MeSH expansion improves full-set Recall@100 from original Hybrid `0.6336` to `0.6966`, but has weaker MRR@10 and should be used as a recall source rather than a direct replacement.
 - Enhanced four-way RRF raises full-set Recall@100 to `0.7292` with balanced weights and `0.7534` with recall-optimized weights.
+- Fusion weights are selected on the validation split (`qid % 5 == 3`), where w122 maximizes Recall@100 (`0.7568`), then reported on held-out test (`0.7388` Recall@100).
 - Enhanced KCH-MedRank on the recall-optimized candidate pool improves held-out test MRR@10 to `0.7882`, Recall@10 to `0.5332`, and nDCG@10 to `0.6446`.
 - Against true MedCPT cross-encoder reranking on the same held-out test candidate pool, enhanced KCH-MedRank improves Recall@10 from `0.5172` to `0.5332` with paired bootstrap p=`0.0074`; MRR@10 is higher but not significant.
+- Failure analysis on the held-out test split shows `661` rescued gold passages versus `307` lost gold passages at top-10.
 
 ## 9. Generation And Faithfulness
 
@@ -279,7 +281,7 @@ Current PubMedQA status:
 - [x] Top-M sensitivity table or figure.
 - [x] Top-k sensitivity table or figure.
 - [x] Case study with interpretable entity or evidence path.
-- [ ] Failure analysis.
+- [x] Failure analysis.
 - [ ] Method diagram.
 - [ ] Efficiency analysis.
 - [ ] Draft paper structure: Introduction, Related Work, Task Definition, Method, Experimental Setup, Results, Ablation Study, Case Study, Discussion, Conclusion.

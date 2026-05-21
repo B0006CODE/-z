@@ -19,12 +19,26 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--predictions", default=None, help="Override predictions JSONL path.")
     parser.add_argument("--output", default=None, help="Override metrics JSON path.")
     parser.add_argument("--ks", type=int, nargs="+", default=[1, 3, 5, 10, 20, 50, 100])
+    parser.add_argument("--split-modulo", type=int, default=None, help="Optional qid modulo for deterministic split filtering.")
+    parser.add_argument(
+        "--qid-remainders",
+        type=int,
+        nargs="+",
+        default=None,
+        help="Only evaluate qids whose deterministic modulo bucket is in this set. Use with --split-modulo.",
+    )
     parser.add_argument(
         "--only-predicted-qids",
         action="store_true",
         help="Evaluate only qrels whose question ids appear in predictions. Use for sample sanity checks.",
     )
     return parser.parse_args()
+
+
+def qid_bucket(qid: str, modulo: int) -> int:
+    if qid.isdigit():
+        return int(qid) % modulo
+    return sum(ord(char) for char in qid) % modulo
 
 
 def main() -> None:
@@ -37,6 +51,20 @@ def main() -> None:
 
     qrels = read_jsonl(qrels_path)
     predictions = read_jsonl(predictions_path)
+    if args.qid_remainders is not None:
+        if args.split_modulo is None:
+            raise ValueError("--qid-remainders requires --split-modulo.")
+        allowed_remainders = set(args.qid_remainders)
+        qrels = [
+            row
+            for row in qrels
+            if qid_bucket(str(row["question_id"]), args.split_modulo) in allowed_remainders
+        ]
+        predictions = [
+            row
+            for row in predictions
+            if qid_bucket(str(row["question_id"]), args.split_modulo) in allowed_remainders
+        ]
     if args.only_predicted_qids:
         predicted_qids = {str(row["question_id"]) for row in predictions}
         qrels = [row for row in qrels if str(row["question_id"]) in predicted_qids]
@@ -48,6 +76,8 @@ def main() -> None:
             "predictions": predictions_path,
             "output": output_path,
             "only_predicted_qids": args.only_predicted_qids,
+            "split_modulo": args.split_modulo,
+            "qid_remainders": args.qid_remainders,
         }
     )
     write_json(output_path, metrics)

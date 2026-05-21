@@ -141,8 +141,10 @@ Key BioASQ results:
 - Synonym-aware question MeSH coverage is now `3823 / 4719` questions.
 - Fielded BM25 raises full-set Recall@100 from original Hybrid `0.6336` to `0.6966`, but lowers MRR@10, so it is used as a recall source.
 - Enhanced four-way RRF reaches full-set Recall@100 `0.7534` in the recall-optimized setting.
+- Fusion weights are selected on the validation split, where w122 reaches Recall@100 `0.7568`; its held-out test Recall@100 is `0.7388`.
 - Enhanced KCH-MedRank on that candidate pool reaches held-out test MRR@10 `0.7882`, Recall@10 `0.5332`, and nDCG@10 `0.6446`.
 - True MedCPT cross-encoder reranking on the same held-out test pool reaches MRR@10 `0.7775`, Recall@10 `0.5172`, and nDCG@10 `0.6390`; enhanced KCH-MedRank has significantly higher Recall@10 (`p=0.0074`) but non-significant MRR/nDCG gains.
+- Held-out failure analysis shows `661` rescued gold passages and `307` lost gold passages at top-10.
 
 Run the enhanced candidate-generation path:
 
