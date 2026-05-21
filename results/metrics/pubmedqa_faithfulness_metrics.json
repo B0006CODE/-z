@@ -1,0 +1,542 @@
+{
+  "timestamp": "2026-05-21T07:34:43.623179+00:00",
+  "config": {
+    "qrels": "data/processed/pubmedqa_pqa_labeled_qrels.jsonl",
+    "question_entities": "data/processed/pubmedqa_question_entities.jsonl",
+    "passage_entities": "data/processed/pubmedqa_passage_entities.jsonl",
+    "sources": [
+      {
+        "source_name": "dense",
+        "qa_predictions": "outputs/generation/pubmedqa_dense_qa_test.jsonl",
+        "evidence_predictions": "outputs/retrieval/pubmedqa_dense_full_top100.jsonl"
+      },
+      {
+        "source_name": "hybrid",
+        "qa_predictions": "outputs/generation/pubmedqa_hybrid_qa_test.jsonl",
+        "evidence_predictions": "outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl"
+      },
+      {
+        "source_name": "hgb",
+        "qa_predictions": "outputs/generation/pubmedqa_hgb_qa_test.jsonl",
+        "evidence_predictions": "outputs/rerank/pubmedqa_learning_hgb_test_top100.jsonl"
+      }
+    ]
+  },
+  "metric_definitions": {
+    "citation_support_rate": "Fraction of answer rows whose top-k retrieved passages include at least one gold PubMedQA evidence passage.",
+    "answer_label_accuracy": "Fraction of answer rows where the selected yes/no/maybe label equals the PubMedQA gold label.",
+    "answer_supported_rate": "Fraction of answer rows with both a supported citation set and the correct PubMedQA label.",
+    "unsupported_claim_rate": "One minus answer_supported_rate; strict rule-based diagnostic, not an LLM judge.",
+    "answer_evidence_entity_consistency": "Among questions with extracted entities, fraction whose top-k evidence shares at least one extracted entity with the question."
+  },
+  "results": [
+    {
+      "source_name": "dense",
+      "method": "lexical_rule",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.975,
+        "answer_label_accuracy": 0.485,
+        "answer_supported_rate": 0.46,
+        "unsupported_claim_rate": 0.54,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.4387755102040816
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "lexical_rule",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.985,
+        "answer_label_accuracy": 0.415,
+        "answer_supported_rate": 0.4,
+        "unsupported_claim_rate": 0.6,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5102040816326531
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "lexical_rule",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.38,
+        "answer_supported_rate": 0.375,
+        "unsupported_claim_rate": 0.625,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5306122448979592
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "lexical_rule",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.325,
+        "answer_supported_rate": 0.325,
+        "unsupported_claim_rate": 0.675,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "majority",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.975,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.54,
+        "unsupported_claim_rate": 0.45999999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.4387755102040816
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "majority",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.985,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.545,
+        "unsupported_claim_rate": 0.45499999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5102040816326531
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "majority",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.545,
+        "unsupported_claim_rate": 0.45499999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5306122448979592
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "majority",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.55,
+        "unsupported_claim_rate": 0.44999999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "tfidf_logreg",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.975,
+        "answer_label_accuracy": 0.5,
+        "answer_supported_rate": 0.49,
+        "unsupported_claim_rate": 0.51,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.4387755102040816
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "tfidf_logreg",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.985,
+        "answer_label_accuracy": 0.535,
+        "answer_supported_rate": 0.525,
+        "unsupported_claim_rate": 0.475,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5102040816326531
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "tfidf_logreg",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.535,
+        "answer_supported_rate": 0.525,
+        "unsupported_claim_rate": 0.475,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5306122448979592
+      }
+    },
+    {
+      "source_name": "dense",
+      "method": "tfidf_logreg",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.55,
+        "answer_supported_rate": 0.545,
+        "unsupported_claim_rate": 0.45499999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "lexical_rule",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.98,
+        "answer_label_accuracy": 0.475,
+        "answer_supported_rate": 0.46,
+        "unsupported_claim_rate": 0.54,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.4489795918367347
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "lexical_rule",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.415,
+        "answer_supported_rate": 0.405,
+        "unsupported_claim_rate": 0.595,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "lexical_rule",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.36,
+        "answer_supported_rate": 0.355,
+        "unsupported_claim_rate": 0.645,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5306122448979592
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "lexical_rule",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 1.0,
+        "answer_label_accuracy": 0.32,
+        "answer_supported_rate": 0.32,
+        "unsupported_claim_rate": 0.6799999999999999,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "majority",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.98,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.545,
+        "unsupported_claim_rate": 0.45499999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.4489795918367347
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "majority",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.545,
+        "unsupported_claim_rate": 0.45499999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "majority",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.55,
+        "unsupported_claim_rate": 0.44999999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5306122448979592
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "majority",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 1.0,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.555,
+        "unsupported_claim_rate": 0.44499999999999995,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "tfidf_logreg",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.98,
+        "answer_label_accuracy": 0.53,
+        "answer_supported_rate": 0.525,
+        "unsupported_claim_rate": 0.475,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.4489795918367347
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "tfidf_logreg",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.515,
+        "answer_supported_rate": 0.505,
+        "unsupported_claim_rate": 0.495,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "tfidf_logreg",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.5,
+        "answer_supported_rate": 0.495,
+        "unsupported_claim_rate": 0.505,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5306122448979592
+      }
+    },
+    {
+      "source_name": "hgb",
+      "method": "tfidf_logreg",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 1.0,
+        "answer_label_accuracy": 0.48,
+        "answer_supported_rate": 0.48,
+        "unsupported_claim_rate": 0.52,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "lexical_rule",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.98,
+        "answer_label_accuracy": 0.475,
+        "answer_supported_rate": 0.46,
+        "unsupported_claim_rate": 0.54,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.42857142857142855
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "lexical_rule",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.405,
+        "answer_supported_rate": 0.405,
+        "unsupported_claim_rate": 0.595,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5408163265306123
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "lexical_rule",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.355,
+        "answer_supported_rate": 0.355,
+        "unsupported_claim_rate": 0.645,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5408163265306123
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "lexical_rule",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 1.0,
+        "answer_label_accuracy": 0.35,
+        "answer_supported_rate": 0.35,
+        "unsupported_claim_rate": 0.65,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "majority",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.98,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.545,
+        "unsupported_claim_rate": 0.45499999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.42857142857142855
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "majority",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.55,
+        "unsupported_claim_rate": 0.44999999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5408163265306123
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "majority",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.55,
+        "unsupported_claim_rate": 0.44999999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5408163265306123
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "majority",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 1.0,
+        "answer_label_accuracy": 0.555,
+        "answer_supported_rate": 0.555,
+        "unsupported_claim_rate": 0.44499999999999995,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "tfidf_logreg",
+      "top_k": 1,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.98,
+        "answer_label_accuracy": 0.535,
+        "answer_supported_rate": 0.53,
+        "unsupported_claim_rate": 0.47,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.42857142857142855
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "tfidf_logreg",
+      "top_k": 3,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.99,
+        "answer_label_accuracy": 0.545,
+        "answer_supported_rate": 0.54,
+        "unsupported_claim_rate": 0.45999999999999996,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5408163265306123
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "tfidf_logreg",
+      "top_k": 5,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 0.995,
+        "answer_label_accuracy": 0.54,
+        "answer_supported_rate": 0.535,
+        "unsupported_claim_rate": 0.46499999999999997,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5408163265306123
+      }
+    },
+    {
+      "source_name": "hybrid",
+      "method": "tfidf_logreg",
+      "top_k": 10,
+      "metrics": {
+        "num_eval": 200,
+        "citation_support_rate": 1.0,
+        "answer_label_accuracy": 0.505,
+        "answer_supported_rate": 0.505,
+        "unsupported_claim_rate": 0.495,
+        "entity_evaluable": 98,
+        "answer_evidence_entity_consistency": 0.5510204081632653
+      }
+    }
+  ],
+  "notes": [
+    "These diagnostics evaluate answer selection over PubMedQA labels, not free-form clinical generation.",
+    "No LLM-as-judge is used; support is measured by qrels, gold labels, and deterministic entity overlap."
+  ]
+}

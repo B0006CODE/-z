@@ -236,16 +236,19 @@ Enhanced first-stage retrieval status:
 - [x] Use top-k retrieved evidence as answer-selection context.
 - [x] Save PubMedQA answer-selection predictions under `outputs/generation/`.
 - [x] Evaluate answer accuracy where labels support it.
-- [ ] Evaluate citation support rate.
-- [ ] Evaluate unsupported claim rate with rule-based or mixed protocol.
-- [ ] Evaluate answer-evidence entity consistency.
-- [ ] Ensure LLM-as-judge is not the only faithfulness metric.
+- [x] Evaluate citation support rate.
+- [x] Evaluate unsupported claim rate with rule-based or mixed protocol.
+- [x] Evaluate answer-evidence entity consistency.
+- [x] Ensure LLM-as-judge is not the only faithfulness metric.
 
 Current PubMedQA QA diagnostic:
 
 - Lightweight answer selection is implemented in `scripts/run_pubmedqa_qa.py`.
 - Summary table is saved to `results/tables/pubmedqa_qa_accuracy.md`.
+- Rule-based answer-support diagnostics are implemented in `scripts/evaluate_pubmedqa_faithfulness.py`.
+- Faithfulness summary table is saved to `results/tables/pubmedqa_faithfulness.md`.
 - PubMedQA test evidence hit@10 is near 1.0 for Dense, Hybrid, and HGB outputs.
+- Hybrid and HGB top-10 citation support are both `1.0000`, but supported-answer rate remains bounded by lightweight answer selection (`0.5550` for the majority baseline).
 - Simple majority, lexical-rule, and TF-IDF logistic baselines do not yet improve accuracy beyond the majority baseline; this should be reported as a limitation and used to motivate a stronger controlled answer selector before LLM generation.
 
 ## 10. Secondary Dataset Robustness
@@ -309,7 +312,7 @@ Current PubMedQA status:
 - [x] Verify initial `references.bib` entries.
 - [x] Compile English PDF.
 - [x] Compile Chinese PDF.
-- [ ] Confirm both language versions are synchronized before submission.
+- [x] Confirm both language versions are synchronized before submission.
 
 ## 13. Quality Gates
 

@@ -21,3 +21,7 @@ On the same enhanced candidate pool, the true MedCPT Cross-Encoder baseline reac
 \input{tables/enhanced_bioasq_significance}
 
 The comparison with MedCPT Cross-Encoder is the stricter test for the proposed reranker. It shows that KCH-MedRank improves evidence coverage at top 10 beyond a strong biomedical semantic reranker, but the rank-sensitive MRR and nDCG gains should be described as positive trends rather than significant improvements. These results support the paper's evidence-retrieval claim. They do not yet justify making answer generation the primary contribution.
+
+\subsection{Answer-Support Diagnostics}
+
+PubMedQA answer-selection diagnostics further separate evidence retrieval from answer correctness. For Hybrid and HGB evidence at top 10, the rule-based citation support rate is 1.0000 because at least one gold evidence passage is retrieved for each evaluated question. However, answer-supported rate remains limited by the lightweight yes/no/maybe answer selector: the majority baseline reaches 0.5550 supported answers, while TF-IDF logistic regression reaches 0.5050 for Hybrid and 0.4800 for HGB at top 10. Among the 98 questions with extracted question entities, answer-evidence entity consistency is 0.5510 at top 10. These diagnostics use qrels, gold labels, and deterministic entity overlap rather than an LLM judge. They support keeping generation secondary until stronger answer and faithfulness modeling is added.

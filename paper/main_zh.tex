@@ -19,7 +19,7 @@
 \maketitle
 
 \begin{abstract}
-医学检索增强生成系统需要准确且具有医学依据的证据检索能力。本文研究 KCH-MedRank：一种轻量、可复现、知识约束的局部超图学习排序框架，用于生物医学证据检索与重排序。当前版本是中英双语 LaTeX 论文骨架，已同步记录经过验证的实验主线：增强候选生成提高 top-100 证据召回上限，KCH-MedRank 在 BioASQ 留出测试集上相对于强 Hybrid RRF 与 MedCPT Cross-Encoder 基线提升 top-10 证据检索效果。回答生成仍作为次要任务，需等待受控回答准确率与证据支持指标完善后再作为正式贡献。
+医学检索增强生成系统需要准确且具有医学依据的证据检索能力。本文研究 KCH-MedRank：一种轻量、可复现、知识约束的局部超图学习排序框架，用于生物医学证据检索与重排序。增强候选生成提高 top-100 证据召回上限，KCH-MedRank 在 BioASQ 留出测试集上相对于强 Hybrid RRF 与 MedCPT Cross-Encoder 基线提升 top-10 证据检索效果。PubMedQA 诊断显示检索证据具有较高引用支持率，但轻量答案选择的标签支持仍有限，因此答案生成仍从属于证据检索与 grounding。
 \end{abstract}
 
 \input{sections_zh/01_introduction}

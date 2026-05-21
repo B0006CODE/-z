@@ -92,6 +92,7 @@ Current evidence-retrieval conclusions:
 - BioASQ HGB reranking improves held-out Hybrid RRF Recall@10 from `0.4636` to `0.4730`, with paired bootstrap `p < 0.001`.
 - PubMedQA HGB reranking improves same-split Hybrid RRF Recall@10 from `0.8200` to `0.8953`, while MRR@10 is near saturation.
 - Current QA answer selection does not yet improve beyond the majority baseline, so generation should not be the main claim.
+- Rule-based PubMedQA answer-support diagnostics are saved to `results/tables/pubmedqa_faithfulness.md`; Hybrid and HGB top-10 citation support are both `1.0000`, but supported-answer rate remains limited by lightweight answer selection.
 - The current strongest BioASQ retrieval path is enhanced first-stage retrieval followed by KCH-MedRank reranking.
 
 ## KCH-MedRank Upgrade
