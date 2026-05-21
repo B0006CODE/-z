@@ -6,6 +6,8 @@ from typing import Any
 
 import numpy as np
 
+from src.knowledge.mesh_hierarchy import ancestor_trees, descriptor_tree_numbers, parent_tree
+
 
 @dataclass(frozen=True)
 class Hyperedge:
@@ -38,6 +40,11 @@ def _type_node(entity_type: str) -> str:
 
 def _mesh_node(mesh_ui: str) -> str:
     return f"mesh:{mesh_ui}"
+
+
+def _mesh_tree_node(tree_number: str) -> str:
+    safe_tree = tree_number.replace(".", "_")
+    return f"mesh_tree:{safe_tree}"
 
 
 def _document_node(document_id: str) -> str:
@@ -84,6 +91,7 @@ def build_local_hypergraph(
     passage_entities: dict[str, list[dict[str, Any]]],
     question_mesh: list[dict[str, Any]] | None = None,
     passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
+    mesh_hierarchy: dict[str, Any] | None = None,
     entity_relations: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
@@ -93,6 +101,7 @@ def build_local_hypergraph(
     candidate_edge_weight: float = 0.15,
     type_edge_weight: float = 0.2,
     mesh_edge_weight: float = 0.9,
+    mesh_hierarchy_edge_weight: float = 0.45,
     relation_edge_weight: float = 0.65,
 ) -> LocalHypergraph:
     if structure not in {"knowledge_hypergraph", "no_knowledge_hypergraph", "pairwise_graph"}:
@@ -104,6 +113,7 @@ def build_local_hypergraph(
     passage_nodes: dict[str, str] = {}
     question_mesh = question_mesh or []
     passage_mesh = passage_mesh or {}
+    mesh_hierarchy = mesh_hierarchy or {}
     entity_relations = entity_relations or {}
 
     def add_node(node_id: str, node_type: str) -> None:
@@ -123,6 +133,40 @@ def build_local_hypergraph(
             else:
                 hyperedges.append(Hyperedge(edge_id=edge_id, edge_type=edge_type, nodes=deduped, weight=weight))
 
+    def add_mesh_hierarchy_edges(owner_id: str, owner_node: str, mesh_ids: list[str]) -> None:
+        if not mesh_hierarchy:
+            return
+        for mesh_ui in mesh_ids:
+            mesh_node = _mesh_node(mesh_ui)
+            for tree_number in descriptor_tree_numbers(mesh_ui, mesh_hierarchy):
+                tree_node = _mesh_tree_node(tree_number)
+                add_node(tree_node, "mesh_tree")
+                add_edge(
+                    f"mh:{owner_id}:{mesh_ui}:{tree_number}",
+                    "mesh_hierarchy",
+                    [owner_node, mesh_node, tree_node],
+                    mesh_hierarchy_edge_weight,
+                )
+                for ancestor in sorted(ancestor_trees(tree_number, include_self=False)):
+                    ancestor_node = _mesh_tree_node(ancestor)
+                    add_node(ancestor_node, "mesh_tree")
+                    add_edge(
+                        f"mh_ancestor:{mesh_ui}:{tree_number}:{ancestor}",
+                        "mesh_ancestor",
+                        [mesh_node, tree_node, ancestor_node],
+                        mesh_hierarchy_edge_weight * 0.6,
+                    )
+                parent = parent_tree(tree_number)
+                if parent:
+                    parent_node = _mesh_tree_node(parent)
+                    add_node(parent_node, "mesh_tree")
+                    add_edge(
+                        f"mh_parent:{mesh_ui}:{tree_number}:{parent}",
+                        "mesh_parent",
+                        [mesh_node, tree_node, parent_node],
+                        mesh_hierarchy_edge_weight,
+                    )
+
     question_node = f"question:{question_id}"
     add_node(question_node, "question")
 
@@ -135,6 +179,7 @@ def build_local_hypergraph(
         for mesh_ui in q_mesh_ids:
             add_node(_mesh_node(mesh_ui), "mesh")
         add_edge(f"qm:{question_id}", "question_mesh", [question_node, *(_mesh_node(ui) for ui in q_mesh_ids)], 1.1)
+        add_mesh_hierarchy_edges(f"q:{question_id}", question_node, q_mesh_ids)
 
     entity_to_passages: dict[str, list[str]] = defaultdict(list)
     entity_types: dict[str, str] = {}
@@ -164,6 +209,7 @@ def build_local_hypergraph(
                 [d_node, *(_mesh_node(ui) for ui in p_mesh_ids)],
                 mesh_edge_weight,
             )
+            add_mesh_hierarchy_edges(f"p:{passage_id}", d_node, p_mesh_ids)
 
         p_entities = passage_entities.get(passage_id, [])[:max_passage_entities]
         p_entity_ids = _entity_ids(p_entities, max_entities=max_passage_entities)
@@ -301,6 +347,15 @@ def diffuse(
     return {node_id: float(scores[idx]) for node_id, idx in node_index.items()}
 
 
+def weighted_degree_centrality(graph: LocalHypergraph) -> dict[str, float]:
+    centrality = {node_id: 0.0 for node_id in graph.nodes}
+    for edge in graph.hyperedges:
+        contribution = float(edge.weight) * max(len(edge.nodes) - 1, 1)
+        for node_id in edge.nodes:
+            centrality[node_id] += contribution
+    return centrality
+
+
 def hypergraph_features(
     question_id: str,
     candidates: list[dict[str, Any]],
@@ -308,6 +363,7 @@ def hypergraph_features(
     passage_entities: dict[str, list[dict[str, Any]]],
     question_mesh: list[dict[str, Any]] | None = None,
     passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
+    mesh_hierarchy: dict[str, Any] | None = None,
     entity_relations: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
@@ -323,6 +379,7 @@ def hypergraph_features(
         passage_entities,
         question_mesh=question_mesh,
         passage_mesh=passage_mesh,
+        mesh_hierarchy=mesh_hierarchy,
         entity_relations=entity_relations,
         structure=structure,
         max_passage_entities=max_passage_entities,
@@ -336,6 +393,13 @@ def hypergraph_features(
         *(_mesh_node(mesh_ui) for mesh_ui in q_mesh_ids),
     ]
     node_scores = diffuse(graph, seed_nodes, iterations=iterations, damping=damping)
+    node_centrality = weighted_degree_centrality(graph)
+    passage_centrality_values = [
+        node_centrality.get(p_node, 0.0)
+        for p_node in graph.passage_nodes.values()
+    ]
+    centrality_min = min(passage_centrality_values) if passage_centrality_values else 0.0
+    centrality_max = max(passage_centrality_values) if passage_centrality_values else 0.0
 
     q_entity_set = set(q_entity_ids)
     q_mesh_set = set(q_mesh_ids)
@@ -361,6 +425,12 @@ def hypergraph_features(
         }
         features[passage_id] = {
             "hypergraph_score": node_scores.get(p_node, 0.0),
+            "hypergraph_degree_centrality": node_centrality.get(p_node, 0.0),
+            "hypergraph_degree_centrality_norm": (
+                1.0
+                if centrality_max <= centrality_min
+                else (node_centrality.get(p_node, 0.0) - centrality_min) / (centrality_max - centrality_min)
+            ),
             "entity_overlap_count": float(len(overlap)),
             "entity_jaccard": len(overlap) / len(union) if union else 0.0,
             "question_entity_coverage": len(overlap) / len(q_entity_set) if q_entity_set else 0.0,
@@ -376,6 +446,9 @@ def hypergraph_features(
             "local_shared_entity_edges": float(edge_type_counts.get("shared_entity_passages", 0)),
             "local_question_mesh_edges": float(edge_type_counts.get("question_mesh", 0)),
             "local_document_mesh_edges": float(edge_type_counts.get("document_mesh", 0)),
+            "local_mesh_hierarchy_edges": float(edge_type_counts.get("mesh_hierarchy", 0)),
+            "local_mesh_parent_edges": float(edge_type_counts.get("mesh_parent", 0)),
+            "local_mesh_ancestor_edges": float(edge_type_counts.get("mesh_ancestor", 0)),
             "local_primekg_relation_edges": float(edge_type_counts.get("primekg_relation", 0)),
             "local_structure_is_pairwise": float(structure == "pairwise_graph"),
             "local_structure_no_knowledge": float(structure == "no_knowledge_hypergraph"),

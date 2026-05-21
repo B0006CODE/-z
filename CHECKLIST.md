@@ -139,6 +139,85 @@ Status legend:
 - [x] Sensitivity: top-M values 20, 50, 100.
 - [ ] Sensitivity: top-k values 1, 3, 5, 10.
 
+## 8A. KCH-MedRank Method Upgrade
+
+Working method name:
+
+```text
+KCH-MedRank: Knowledge-Constrained Hypergraph Learning-to-Rank with Biomedical Semantic Reranking
+```
+
+Rationale:
+
+- Current HGB reranking gives statistically significant but modest BioASQ gains over Hybrid RRF.
+- PubMedQA Recall@10 gains are stronger, but MRR is near saturation.
+- Dictionary entities and exact PrimeKG matching are too sparse to support a strong medical-knowledge claim.
+- The next method version should combine biomedical semantic relevance, MeSH hierarchy-aware constraints, local hypergraph diffusion, and query-group learning-to-rank.
+
+Implementation tasks:
+
+- [ ] Create or update a branch for the method upgrade, preferably `codex/kch-medrank`.
+- [x] Add MedCPT or another PubMed-trained biomedical reranking score as a reusable feature.
+  - Current full BioASQ run uses `hybrid_metadata.dense_score_fallback` because local CPU MedCPT smoke tests timed out; metrics record this source explicitly and should not be described as full MedCPT evidence.
+- [x] Keep a `MedCPT-only` or biomedical-reranker-only baseline.
+- [x] Implement MeSH hierarchy loading, including descriptor tree numbers when available.
+- [x] Build MeSH hierarchy-aware features:
+  - [x] exact descriptor match.
+  - [x] parent or ancestor match.
+  - [x] sibling match.
+  - [x] tree-distance similarity.
+  - [x] query concept coverage.
+  - [x] passage concept specificity.
+  - [x] shared-MeSH candidate cluster features.
+- [x] Extend local hypergraph construction with MeSH hierarchy hyperedges.
+  - Implemented behind `--enable-mesh-hierarchy-graph-edges`; full CPU run keeps hierarchy-aware features enabled but does not expand all ancestor hyperedges by default for runtime control.
+- [x] Keep PrimeKG relation features optional and report coverage before using them in claims.
+- [x] Implement LambdaMART / LightGBM ranking under `src/rerank/`.
+- [x] Use query-level candidate groups for learning-to-rank.
+- [x] Tune ranking hyperparameters on validation only.
+- [x] Save KCH-MedRank predictions to `outputs/rerank/`.
+- [x] Save KCH-MedRank metrics to `results/metrics/`.
+- [x] Save KCH-MedRank summary tables to `results/tables/`.
+
+Required KCH-MedRank comparisons:
+
+- [x] BM25.
+- [x] Dense biomedical retriever.
+- [x] Hybrid RRF.
+- [x] Biomedical semantic reranker only.
+- [x] Retrieval-feature-only LambdaMART.
+- [x] LambdaMART + biomedical semantic reranker, without hypergraph features.
+- [x] Pairwise graph learning-to-rank.
+- [x] Hypergraph learning-to-rank without medical knowledge constraints.
+- [x] Full KCH-MedRank.
+
+Required KCH-MedRank ablations:
+
+- [x] Remove biomedical semantic reranker score.
+- [x] Remove MeSH hierarchy features.
+- [x] Remove biomedical entity features.
+- [x] Remove hypergraph diffusion and centrality features.
+- [x] Remove PrimeKG relation features.
+- [x] Replace hypergraph with ordinary pairwise graph.
+
+Required diagnostic evaluations:
+
+- [x] Full held-out test evaluation.
+- [x] Hard reranking subset: Hybrid top-100 contains gold evidence, but Hybrid top-10 misses gold evidence.
+- [x] Paired bootstrap significance against Hybrid RRF.
+- [x] Paired bootstrap significance against biomedical semantic reranker only.
+- [x] Feature importance table for the learning-to-rank model.
+- [ ] Case studies showing rescued evidence passages and their MeSH / hypergraph paths.
+- [ ] Failure analysis for cases where KCH-MedRank loses top-10 evidence.
+
+Current KCH-MedRank BioASQ status:
+
+- Full held-out test results are saved to `results/tables/kch_medrank_bioasq_retrieval.md` and `results/metrics/kch_medrank_bioasq_metrics.json`.
+- Full KCH-MedRank improves BioASQ held-out Hybrid RRF MRR@10 from `0.7550` to `0.7664`, Recall@10 / evidence coverage from `0.4636` to `0.4768`, and nDCG@10 from `0.5848` to `0.6013`.
+- Paired bootstrap against Hybrid RRF: MRR@10 delta `+0.0114`, p=`0.0050`; Recall@10 delta `+0.0132`, p=`0.0002`; nDCG@10 delta `+0.0165`, p=`0.0002`.
+- Hard subset contains 26 held-out questions. Hybrid top10 is intentionally zero on this subset; Full KCH-MedRank recovers Recall@10 / evidence coverage `0.1447`.
+- Feature importance is saved to `results/tables/kch_medrank_bioasq_feature_importance.md`. PrimeKG remains low-importance / auxiliary and should not be overclaimed.
+
 ## 9. Generation And Faithfulness
 
 - [ ] Add evidence-grounded answer generation only after retrieval is stable.

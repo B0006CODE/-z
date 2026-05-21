@@ -9,7 +9,28 @@ The project starts with a conservative baseline:
 3. evaluate retrieval quality on a 10-question sanity sample;
 4. expand only after the first-stage retrieval baseline is measured.
 
-The later method will add dense retrieval, hybrid retrieval, biomedical entity processing, knowledge-constrained local hypergraph reranking, ablations, and optional evidence-grounded generation.
+The later method adds dense retrieval, hybrid retrieval, biomedical entity processing, knowledge-constrained local hypergraph reranking, ablations, and optional evidence-grounded generation.
+
+## Current Experimental Direction
+
+The current project direction is to upgrade the existing hypergraph reranker into:
+
+```text
+KCH-MedRank: Knowledge-Constrained Hypergraph Learning-to-Rank with Biomedical Semantic Reranking
+```
+
+This is an upgrade inside the same project, not a new research topic. The main task remains evidence retrieval and reranking for medical QA.
+
+The next method version should combine:
+
+1. Hybrid BM25 + dense RRF first-stage retrieval.
+2. A biomedical semantic reranking feature, preferably MedCPT or another PubMed-trained reranker.
+3. MeSH hierarchy-aware concept features, not only exact MeSH overlap.
+4. Local cross-granularity hypergraph diffusion over question, passage, document, entity, and MeSH concept nodes.
+5. LambdaMART / LightGBM query-group learning-to-rank.
+6. Full held-out evaluation plus a hard reranking subset where Hybrid top-100 contains gold evidence but Hybrid top-10 misses it.
+
+PrimeKG remains optional and auxiliary until concept normalization improves its coverage. Generation remains secondary unless controlled answer accuracy and evidence-support metrics improve.
 
 ## Setup
 
@@ -61,9 +82,49 @@ The Git repository tracks source code, configs, documentation, logs, metrics, an
 
 ## Current Scope
 
-The current implementation covers data preparation, BM25 retrieval, dense retrieval, hybrid RRF retrieval, and retrieval evaluation. Hypergraph reranking should be implemented only after the first-stage retrieval baselines are measured and checked.
+The current implementation covers data preparation, BM25 retrieval, dense retrieval, hybrid RRF retrieval, PubMed MeSH features, PrimeKG relation filtering, local hypergraph reranking, supervised HGB reranking, PubMedQA robustness experiments, cross-encoder smoke tests, paired bootstrap significance, and PubMedQA answer-selection diagnostics.
 
 Current full-dataset first-stage result table is saved to `results/tables/first_stage_retrieval.md`.
+
+Current evidence-retrieval conclusions:
+
+- BioASQ HGB reranking improves held-out Hybrid RRF MRR@10 from `0.7550` to `0.7696`, with paired bootstrap `p < 0.001`.
+- BioASQ HGB reranking improves held-out Hybrid RRF Recall@10 from `0.4636` to `0.4730`, with paired bootstrap `p < 0.001`.
+- PubMedQA HGB reranking improves same-split Hybrid RRF Recall@10 from `0.8200` to `0.8953`, while MRR@10 is near saturation.
+- Current QA answer selection does not yet improve beyond the majority baseline, so generation should not be the main claim.
+- The next priority is KCH-MedRank: biomedical semantic reranking features, MeSH hierarchy features, LambdaMART listwise ranking, and hard-subset evaluation.
+
+## KCH-MedRank Upgrade
+
+The KCH-MedRank implementation adds:
+
+- MeSH descriptor hierarchy loading from official descriptor XML into `data/external_knowledge/mesh_hierarchy_2026.jsonl`.
+- Hierarchy-aware MeSH features: exact, parent/ancestor, sibling, tree-distance similarity, query coverage, passage specificity, and shared candidate clusters.
+- Local hypergraph diffusion and degree-centrality features.
+- LightGBM LambdaMART query-group ranking under `src/rerank/lambdamart.py`.
+- Full held-out test, hard reranking subset, paired bootstrap significance, and feature-importance tables.
+
+Build hierarchy and run a smoke test:
+
+```powershell
+python scripts/build_mesh_hierarchy.py --config configs/default.yaml
+python scripts/run_kch_medrank.py --config configs/default.yaml --output-prefix kch_medrank_sample --max-qids 20 --top-k 20 --num-leaves-grid 7 --learning-rate-grid 0.05 --n-estimators-grid 40 --blend-grid 0,0.2 --ks 1 3 5 10 20 --bootstrap-samples 200
+```
+
+Run the BioASQ full held-out experiment:
+
+```powershell
+python scripts/run_kch_medrank.py --config configs/default.yaml --output-prefix kch_medrank_bioasq --num-leaves-grid 15 --learning-rate-grid 0.05 --n-estimators-grid 80 --blend-grid 0,0.2 --ks 1 3 5 10 20 50 100 --bootstrap-samples 10000
+```
+
+Current BioASQ KCH-MedRank result:
+
+- Hybrid RRF test MRR@10 `0.7550`, Recall@10 / evidence coverage `0.4636`, nDCG@10 `0.5848`.
+- Full KCH-MedRank test MRR@10 `0.7664`, Recall@10 / evidence coverage `0.4768`, nDCG@10 `0.6013`.
+- Paired bootstrap vs Hybrid RRF: MRR@10 delta `+0.0114`, p=`0.0050`; Recall@10 delta `+0.0132`, p=`0.0002`; nDCG@10 delta `+0.0165`, p=`0.0002`.
+- Hard reranking subset has 26 held-out questions; Full KCH-MedRank recovers Recall@10 / evidence coverage `0.1447` where Hybrid top10 has no gold evidence by construction.
+
+Important limitation: the current full run records `semantic_source = hybrid_metadata.dense_score_fallback`. Full MedCPT cross-encoder scoring previously timed out on CPU, so these results must be described as using a biomedical semantic fallback feature, not as a completed MedCPT full experiment.
 
 ## Entity Features
 

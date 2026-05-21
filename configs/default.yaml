@@ -37,6 +37,7 @@ paths:
   pubmed_mesh: data/external_knowledge/pubmed_mesh.jsonl
   question_mesh: data/processed/bioasq_question_mesh.jsonl
   passage_mesh: data/processed/bioasq_passage_mesh.jsonl
+  mesh_hierarchy: data/external_knowledge/mesh_hierarchy_2026.jsonl
   primekg_relations: data/external_knowledge/primekg_project_relations.jsonl
   rerank_diagnostics: results/metrics/rerank_diagnostics_hybrid_top100.json
   pubmedqa_questions: data/processed/pubmedqa_pqa_labeled_questions.jsonl

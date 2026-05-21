@@ -46,6 +46,7 @@ def build_feature_rows(
     passage_mesh: dict[str, list[dict[str, Any]]] | None = None,
     entity_relations: dict[str, list[dict[str, Any]]] | None = None,
     *,
+    mesh_hierarchy: dict[str, Any] | None = None,
     structure: str = "knowledge_hypergraph",
     top_k: int = 100,
     rrf_k: int = 60,
@@ -58,6 +59,7 @@ def build_feature_rows(
     features_by_qid: dict[str, list[dict[str, Any]]] = {}
     question_mesh = question_mesh or {}
     passage_mesh = passage_mesh or {}
+    mesh_hierarchy = mesh_hierarchy or {}
     entity_relations = entity_relations or {}
 
     for qid in sorted(preds_by_qid):
@@ -69,6 +71,7 @@ def build_feature_rows(
             passage_entities,
             question_mesh=question_mesh.get(qid, []),
             passage_mesh=passage_mesh,
+            mesh_hierarchy=mesh_hierarchy,
             entity_relations=entity_relations,
             structure=structure,
             iterations=iterations,
