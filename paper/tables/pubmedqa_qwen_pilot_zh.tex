@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{PubMedQA Qwen3-8B 下游生成 pilot，样本为 100 个问题。所有方法使用相同 prompt、top-5 证据、temperature 0，且不进行微调。PubMedQA cross-encoder 条件使用当前可用的语义 cross-encoder 输出，不等同于已完成的 MedCPT PubMedQA 实验。}
+\label{tab:pubmedqa-qwen-pilot}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+证据来源 + LLM & Accuracy & Macro-F1 & 引用支持 & 无支持声明 & 实体一致性 \\
+\midrule
+Hybrid RRF + Qwen3-8B & 0.3400 & 0.3506 & 0.9900 & 0.0100 & 0.5594 \\
+语义 cross-encoder + Qwen3-8B & 0.3400 & 0.3504 & 0.9900 & 0.0100 & 0.5782 \\
+KCH 风格超图重排序 + Qwen3-8B & 0.3700 & 0.3760 & 0.9900 & 0.0100 & 0.5751 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

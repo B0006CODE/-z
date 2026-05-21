@@ -35,3 +35,7 @@ Enhanced KCH-MedRank 达到 Recall@10 = 0.5332、MRR@10 = 0.7882、nDCG@10 = 0.6
 \subsection{答案支持分析}
 
 PubMedQA 答案选择分析进一步区分了证据检索与答案正确性。对于 Hybrid 和 HGB 的 top 10 证据，规则化引用支持率均为 1.0000，因为每个评估问题都至少检索到一个金标准证据段落。然而，答案支持率仍受轻量 yes/no/maybe 答案选择器限制：多数类基线的支持答案比例为 0.5550，而 TF-IDF 逻辑回归在 Hybrid 与 HGB top 10 上分别为 0.5050 和 0.4800。在 98 个抽取到问题实体的问题中，top 10 答案-证据实体一致性为 0.5510。这些分析使用 qrels、金标准标签和确定性实体重叠，而不是 LLM 评审。因此，在加入更强答案与忠实性建模前，答案生成仍应作为次要任务。
+
+表~\ref{tab:pubmedqa-qwen-pilot} 报告受控 Qwen3-8B pilot。在 100 个 PubMedQA 问题上，相对于 Hybrid RRF 证据，KCH 风格超图证据在相同 prompt 和解码设置下将答案准确率从 0.3400 提高到 0.3700，将 Macro-F1 从 0.3506 提高到 0.3760。三个证据来源的引用支持率均为 0.9900，因此该 pilot 未显示引用支持差异；主要结论是证据排序可能影响下游标签选择。由于 PubMedQA cross-encoder 条件使用的是当前可用的语义 cross-encoder 输出，而不是已完成的 MedCPT PubMedQA 复现实验，该结果被报告为诊断性 RAG 闭环，而不是完整第二数据集主张。
+
+\input{tables/pubmedqa_qwen_pilot_zh}

@@ -4,7 +4,7 @@
 
 主数据集为 \texttt{rag-datasets/rag-mini-bioasq}，作为紧凑的 BioASQ 风格生物医学证据检索设置。完整处理后数据包含 4,719 个问题。我们使用基于问题标识符桶的确定性问题级划分：除验证和测试桶外的问题用于训练，模 5 后余数为 3 的问题用于验证，余数为 4 的问题用于测试。在增强 BioASQ 实验中，训练集包含 2,832 个问题，验证集包含 944 个问题，留出测试集包含 943 个问题。该划分在模型选择之前固定。
 
-每个问题对应一组金标准证据段落标识符。评估在段落级别进行。重排序器只能接收第一阶段检索池返回的候选，因此候选生成器的 Recall@100 被报告为召回上限分析。PubMedQA 用作次要鲁棒性数据集，而不是主结果来源。
+每个问题对应一组金标准证据段落标识符。评估在段落级别进行。重排序器只能接收第一阶段检索池返回的候选，因此候选生成器的 Recall@100 被报告为召回上限分析。划分在问题级完成，测试问题中的段落不会作为重排序器的正例训练标签使用。PubMedQA 用作次要诊断数据集，而不是主结果来源。
 
 \subsection{基线}
 
@@ -14,7 +14,7 @@
 
 \subsection{评估}
 
-主要检索指标包括 Recall@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage，其中 $k \in \{1,3,5,10,20,50,100\}$。在二值段落证据设置下，Recall@$k$ 与 evidence coverage 数值相同，但保留两个名称是因为 evidence coverage 更贴近医学问答证据覆盖的表述。MRR@$k$ 衡量首个相关段落的排名，nDCG@$k$ 奖励多个相关证据段落靠前出现。
+主要检索指标包括 Recall@$k$、Hit@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage，其中 $k \in \{1,3,5,10,20,50,100\}$。当一个问题有多个金标准证据段落时，Recall@$k$ 定义为 macro evidence coverage：先计算每个问题 top $k$ 中命中的金标准段落占该问题全部金标准段落的比例，再对问题取平均。Hit@$k$ 是查询级成功指标：top $k$ 中至少出现一个金标准段落则为 1，否则为 0。MRR@$k$ 也是查询级指标：取 top $k$ 内首个金标准段落排名的倒数；若无命中则为 0。nDCG@$k$ 使用 qrel 相关性作为 gain；由于当前证据标签为二值，实际为二值 gain 的 DCG，并以截至 $k$ 的理想金标准排序归一化。Evidence coverage 与 Recall@$k$ 数值相同，用于强调医学证据 grounding 的覆盖解释。
 
 统计检验采用基于留出测试问题的成对 bootstrap，使用 10,000 次重采样和固定随机种子。我们报告相对于原始或增强 Hybrid RRF 以及可用时相对于真实 MedCPT Cross-Encoder 基线的置信区间和双侧 p 值。困难重排序子集仅用于诊断：该子集包含 Hybrid top-100 中存在至少一个金标准段落但 Hybrid top-10 未命中任何金标准段落的测试问题。该子集不替代完整留出测试集评估。
 
@@ -22,4 +22,10 @@
 
 表~\ref{tab:enhanced-candidate-selection} 报告增强候选生成的验证集选择结果。被选中的 w122 设置以 BM25 和稠密检索为基础来源，以 fielded BM25 作为更强召回来源，并加入 MedCPT dual-encoder 检索作为额外生物医学语义来源。该设置因最大化验证集 Recall@100 而被选择，符合重排序阶段提升候选上限的目标。
 
+完整候选融合搜索空间包括 BM25、dense、fielded BM25 与 MedCPT dual encoder 权重分别为 $(1.0,1.0,0.0,0.0)$ 的原始 Hybrid 设置，以及 w052 $(1.0,1.0,0.5,0.2)$、w084 $(1.0,1.0,0.8,0.4)$、w102 $(1.0,1.0,1.0,0.2)$ 和 w122 $(1.0,1.0,1.2,0.2)$。这些设置只根据验证集 Recall@100 选择；留出测试集仅在选择完成后评估。LambdaMART 超参数搜索空间在第 4 节给出，模型选择同样只使用验证集。
+
 \input{tables/enhanced_candidate_selection_zh}
+
+\subsection{下游生成 Pilot}
+
+为连接证据选择与 medical RAG 设置，本文使用 DashScope OpenAI-compatible Qwen3-8B 端点运行受控 PubMedQA pilot。评估使用 100 个 PubMedQA 问题，来自 Hybrid RRF、当前可用 PubMedQA 语义 cross-encoder 输出和 KCH 风格超图重排序输出共同覆盖的问题集合。每个条件使用相同 top-5 证据段落、相同 prompt 模板、temperature 0、最多 256 个输出 token，且不进行微调。模型必须返回 \texttt{yes}、\texttt{no} 或 \texttt{maybe} 之一，并给出段落引用。本文报告 Accuracy、Macro-F1、引用支持率、无支持声明率和答案-证据实体一致性。该实验是 pilot 诊断，不替代 BioASQ 检索评估。

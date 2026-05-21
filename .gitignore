@@ -12,6 +12,8 @@ venv/
 Thumbs.db
 .idea/
 .vscode/
+.env
+.env.*
 
 # Reproducible generated data and indexes
 data/raw/**

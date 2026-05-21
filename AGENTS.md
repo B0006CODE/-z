@@ -641,9 +641,23 @@ Reference rules:
 Claim and result rules:
 
 - Manuscript claims must match the current experimental evidence.
-- The contribution should be framed as a lightweight, reproducible, knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking.
+- The contribution should be framed as an interpretable medical evidence control layer for retrieval-augmented generation, implemented through a reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking.
 - Do not claim to invent RAG, GraphRAG, or HyperGraphRAG.
-- Do not make QA generation the main contribution unless later controlled metrics support it.
+- Do include a controlled downstream LLM generation loop when feasible, using fixed retrieved evidence and fixed prompts, to show whether better evidence selection improves answer accuracy, citation support, and unsupported-claim behavior. Do not make QA generation the main contribution unless controlled metrics support it.
 - Do not present PrimeKG as the primary source of improvement; treat it as auxiliary unless validation and feature analysis support a stronger claim.
 - Result tables should preferentially come from `results/tables/` and `results/metrics/`.
 - After each major manuscript edit, attempt to compile both English and Chinese PDFs and report any LaTeX environment limitations.
+
+Post-review manuscript revision rules:
+
+- The internal academic-paper-reviewer decision for the current English manuscript is Major Revision before external submission.
+- The main review risk is that the current ablation evidence does not prove that knowledge-constrained hypergraph features are the dominant source of improvement. Treat hypergraph, MeSH hierarchy, entity, and relation features as complementary and interpretable unless additional significance tests show stronger evidence.
+- Remove self-undermining manuscript language such as `modest claim`, `intended contribution is modest`, and unnecessary `secondary component` wording. Preserve scientific caution by being precise about evidence, not by calling the contribution small.
+- Reposition the manuscript away from `traditional IR reranker` framing and toward `white-box / interpretable medical evidence control for RAG`.
+- Before strengthening any hypergraph contribution claim, compare Full KCH-MedRank against the strongest ablation variants, especially `LambdaMART + semantic, no hypergraph`, `Pairwise graph LTR`, `Remove MeSH hierarchy`, and `Remove hypergraph diffusion/centrality`, using paired confidence intervals and p-values.
+- Clarify metric definitions before submission: state exactly how Recall@k, Hit@k, MRR@k, nDCG@k, and evidence coverage are computed when each question may have multiple gold evidence passages.
+- Add or maintain an algorithm box / pseudocode for local hypergraph construction, hyperedge weighting, diffusion, feature extraction, and query-group LambdaMART scoring.
+- Document the complete validation search space for enhanced RRF fusion and ranking hyperparameters. Make clear that validation, not test performance, selected weights and model settings.
+- PubMedQA should be described as a secondary diagnostic unless the same KCH-MedRank configuration is rerun on PubMedQA. However, PubMedQA is the preferred first dataset for the downstream LLM generation loop because it supports answer-label evaluation.
+- For the downstream LLM loop, compare Hybrid RRF + LLM, MedCPT Cross-Encoder + LLM, and KCH-MedRank + LLM under the same prompt template, same top-k evidence count, same model, and same decoding settings. Report Accuracy / Macro-F1 where labels allow, plus citation support rate, unsupported claim rate, and answer-evidence entity consistency.
+- English and Chinese manuscripts must be updated together for any claim, metric, limitation, table, or conclusion changed during these revisions.

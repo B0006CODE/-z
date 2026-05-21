@@ -4,7 +4,7 @@
 
 The primary dataset is \texttt{rag-datasets/rag-mini-bioasq}, used as a compact BioASQ-style biomedical evidence retrieval setting. The full processed set contains 4,719 questions. We use a deterministic question-level split based on question identifier buckets: training questions are all buckets except validation and test, validation uses bucket remainder 3, and test uses bucket remainder 4 under modulo 5. In the enhanced BioASQ experiment, this gives 2,832 training questions, 944 validation questions, and 943 held-out test questions. The split is fixed before model selection.
 
-Each question is paired with a set of gold evidence passage identifiers. Evaluation is performed at the passage level. The reranker receives only candidates returned by the first-stage retrieval pool, so Recall@100 of the candidate generator is reported as an upper-bound analysis. PubMedQA is used as a secondary robustness dataset rather than the main result source.
+Each question is paired with a set of gold evidence passage identifiers. Evaluation is performed at the passage level. The reranker receives only candidates returned by the first-stage retrieval pool, so Recall@100 of the candidate generator is reported as an upper-bound analysis. The split is question-level, and passages from test questions are not used as positive training labels for the reranker. PubMedQA is used as a secondary diagnostic dataset rather than the main result source.
 
 \subsection{Baselines}
 
@@ -14,7 +14,7 @@ The reranking baselines are MedCPT Cross-Encoder on the same enhanced candidate 
 
 \subsection{Evaluation}
 
-The main retrieval metrics are Recall@$k$, MRR@$k$, nDCG@$k$, and evidence coverage for $k \in \{1,3,5,10,20,50,100\}$. Recall@$k$ and evidence coverage are identical in the binary passage-evidence setting, but both names are retained because evidence coverage is used in the medical QA framing. MRR@$k$ measures the rank of the first relevant passage, and nDCG@$k$ rewards placing multiple relevant evidence passages near the top.
+The main retrieval metrics are Recall@$k$, Hit@$k$, MRR@$k$, nDCG@$k$, and evidence coverage for $k \in \{1,3,5,10,20,50,100\}$. With multiple gold passages per question, Recall@$k$ is macro evidence coverage: for each question, it is the fraction of that question's gold passages appearing in the top $k$, then averaged over questions. Hit@$k$ is query-level success: it is 1 if at least one gold passage appears in the top $k$ and 0 otherwise. MRR@$k$ is also query-level: it is the reciprocal rank of the first gold passage within the top $k$, or 0 if no gold passage appears. nDCG@$k$ uses qrel relevance values as gains; because the current evidence labels are binary, it reduces to binary-gain DCG normalized by the ideal ordering of all available gold passages up to $k$. Evidence coverage is reported as the same macro passage recall value as Recall@$k$ to connect the metric to the medical evidence-grounding interpretation.
 
 Statistical testing uses paired bootstrap over held-out test questions with 10,000 resamples and a fixed random seed. We report confidence intervals and two-sided p-values against original or enhanced Hybrid RRF and against the true MedCPT Cross-Encoder baseline when available. A hard reranking subset is used for diagnosis: it contains test questions for which Hybrid top-100 includes at least one gold passage but Hybrid top-10 misses all gold passages. This subset is not a replacement for the full held-out test evaluation.
 
@@ -22,4 +22,10 @@ Statistical testing uses paired bootstrap over held-out test questions with 10,0
 
 Table~\ref{tab:enhanced-candidate-selection} reports the enhanced candidate-generation validation selection. The selected w122 setting uses BM25 and dense retrieval as base sources, fielded BM25 as a stronger recall source, and MedCPT dual-encoder retrieval as an additional biomedical semantic source. It is selected because it maximizes validation Recall@100, matching the reranking objective of improving the candidate ceiling.
 
+The complete candidate-fusion search space contains the original Hybrid setting $(1.0,1.0,0.0,0.0)$ for BM25, dense, fielded BM25, and MedCPT dual encoder weights, plus w052 $(1.0,1.0,0.5,0.2)$, w084 $(1.0,1.0,0.8,0.4)$, w102 $(1.0,1.0,1.0,0.2)$, and w122 $(1.0,1.0,1.2,0.2)$. Only validation Recall@100 is used to choose among these settings; the held-out test split is evaluated after this selection. The LambdaMART hyperparameter search space is specified in Section~4, and model selection is likewise validation-only.
+
 \input{tables/enhanced_candidate_selection}
+
+\subsection{Downstream Generation Pilot}
+
+To connect evidence selection with the medical RAG setting, we run a controlled PubMedQA pilot with DashScope's OpenAI-compatible Qwen3-8B endpoint. The evaluation uses 100 PubMedQA questions from the common subset covered by Hybrid RRF, the available semantic cross-encoder PubMedQA output, and the KCH-style hypergraph reranker output. Each condition uses the same top-5 evidence passages, prompt template, temperature 0, maximum 256 output tokens, and no fine-tuning. The model must return one of \texttt{yes}, \texttt{no}, or \texttt{maybe} with passage citations. We report Accuracy, Macro-F1, citation support rate, unsupported claim rate, and answer-evidence entity consistency. This is a pilot diagnostic, not a replacement for the BioASQ retrieval evaluation.

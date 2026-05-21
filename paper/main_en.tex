@@ -13,7 +13,7 @@
 \emergencystretch=3em
 \Urlmuskip=0mu plus 1mu
 
-\title{Knowledge-Constrained Hypergraph Retrieval-Augmented Generation for Evidence-Grounded Medical Question Answering}
+\title{KCH-MedRank: An Interpretable Medical Evidence Control Layer for Evidence-Grounded Retrieval-Augmented Generation}
 \author{Anonymous Authors}
 \date{\today}
 
@@ -22,7 +22,7 @@
 \maketitle
 
 \begin{abstract}
-Medical retrieval-augmented generation systems require evidence retrieval that is both accurate and medically grounded. This paper presents KCH-MedRank, a lightweight and reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. Enhanced candidate generation improves the top-100 evidence ceiling, and KCH-MedRank improves top-10 evidence retrieval over strong Hybrid RRF on the held-out BioASQ test split. Against a true MedCPT Cross-Encoder baseline on the same candidate pool, KCH-MedRank significantly improves Recall@10, while MRR@10 and nDCG@10 show positive but non-significant trends. PubMedQA retrieval and answer-support diagnostics show improved evidence coverage but limited answer-label support for lightweight answer selection, so answer generation is treated as a secondary component rather than the main contribution.
+Medical retrieval-augmented generation systems require evidence selection that is accurate, medically grounded, and inspectable before answer generation. This paper presents KCH-MedRank, an interpretable medical evidence control layer implemented as a reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. Enhanced candidate generation improves the top-100 evidence ceiling, and KCH-MedRank improves top-10 evidence retrieval over strong Hybrid RRF on the held-out BioASQ test split. Against a true MedCPT Cross-Encoder baseline on the same candidate pool, KCH-MedRank significantly improves Recall@10, while MRR@10 and nDCG@10 show positive but non-significant trends. A PubMedQA Qwen3-8B pilot suggests that improved evidence selection can increase answer accuracy and macro-F1 in a controlled downstream loop, while citation support is already high for all compared evidence sources. The results position KCH-MedRank as a white-box evidence selection module for medical RAG rather than as a clinical decision system.
 \end{abstract}
 
 \input{sections_en/01_introduction}

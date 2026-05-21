@@ -314,6 +314,81 @@ Current PubMedQA status:
 - [x] Compile Chinese PDF.
 - [x] Confirm both language versions are synchronized before submission.
 
+## 12B. English Manuscript Major-Revision Tasks From Internal Review
+
+Internal review decision:
+
+```text
+Major Revision before external submission.
+```
+
+Core review finding:
+
+- The manuscript is promising and appropriately cautious about clinical claims, but the current ablation table does not yet prove that the knowledge-constrained hypergraph is the dominant source of improvement.
+- The safest current contribution framing is: an interpretable medical evidence control layer for retrieval-augmented generation, implemented as a reproducible biomedical semantic learning-to-rank reranking framework with knowledge-constrained local hypergraph features.
+- Do not claim that hyperedges or medical constraints alone drive the performance gains unless additional significance tests support that claim.
+- Remove self-undermining language such as `modest claim`, `intended contribution is modest`, and unnecessary `secondary component` wording. The manuscript should remain scientifically cautious without telling reviewers that the contribution is small.
+- The paper should connect retrieval improvements to the current LLM-based medical RAG setting by adding a controlled downstream LLM generation loop, without training or fine-tuning a large model.
+
+Required manuscript and analysis tasks:
+
+- [x] Add paired significance tests comparing Full KCH-MedRank against the strongest ablation variants:
+  - [x] `LambdaMART + semantic, no hypergraph`.
+  - [x] `Pairwise graph LTR`.
+  - [x] `Remove MeSH hierarchy`.
+  - [x] `Remove hypergraph diffusion/centrality`.
+- [x] Report confidence intervals and p-values for these ablation comparisons, preferably in `results/metrics/` and `paper/tables/`.
+- [x] Clarify metric definitions in the Experimental Setup:
+  - [x] whether Recall@k is evidence-level coverage, micro passage recall, macro passage recall, or query-level success.
+  - [x] how MRR@k is computed when each question may have multiple gold passages.
+  - [x] how nDCG@k handles binary versus graded relevance.
+- [x] Add Hit@k or another explicit query-level success metric if MRR is query-level.
+- [x] Add an algorithm box or compact pseudocode for:
+  - [x] local hypergraph construction.
+  - [x] hyperedge weighting and normalization.
+  - [x] diffusion propagation.
+  - [x] passage-level feature extraction.
+  - [x] LambdaMART query-group training and final scoring.
+- [x] Specify the complete validation search space for enhanced candidate fusion weights and ranking hyperparameters.
+- [x] State explicitly that fusion weight selection and model selection were performed only on validation data.
+- [x] Expand reproducibility details:
+  - [x] corpus size and passage construction.
+  - [x] qrel / gold evidence construction.
+  - [x] question-level split rule and leakage checks.
+  - [x] model names and hardware where relevant.
+- [x] Reframe PubMedQA as a secondary diagnostic unless the same KCH-MedRank configuration is rerun on PubMedQA.
+- [x] Revise the title, abstract, introduction, discussion, and conclusion to present KCH-MedRank as an interpretable medical evidence control layer for RAG rather than as a purely traditional IR reranker.
+- [x] Delete or rewrite self-deprecating phrases:
+  - [x] `modest claim`.
+  - [x] `intended contribution is modest`.
+  - [x] unnecessary `secondary component` wording.
+  - [x] language implying the contribution is small before reviewers judge it.
+- [x] Add a controlled downstream LLM generation evaluation if compute permits:
+  - [x] choose one fixed open-source instruction LLM, such as Qwen or Llama-family model available locally / reproducibly.
+  - [x] use the same prompt template for all retrieval conditions.
+  - [ ] compare at least Hybrid RRF + LLM, MedCPT Cross-Encoder + LLM, and KCH-MedRank + LLM.
+  - [x] run on PubMedQA first because labels support answer accuracy evaluation.
+  - [x] report Accuracy and Macro-F1 where labels allow.
+  - [x] report citation support rate, unsupported claim rate, and answer-evidence entity consistency.
+  - [x] keep LLM parameters fixed and document model name, decoding settings, prompt, top-k evidence count, and hardware.
+  - [x] if answer accuracy does not improve, still report whether evidence support or unsupported-claim metrics improve.
+- [x] If downstream LLM generation improves answer accuracy or support metrics, elevate the framing from `retrieval-only reranker` to `white-box evidence selection and control module for medical RAG`.
+- [ ] If downstream LLM generation does not improve, keep the main claim focused on evidence retrieval and explicitly discuss this as a limitation rather than hiding the result.
+- [x] Update claims in English and Chinese manuscripts together:
+  - [x] avoid "hypergraph dominates" or equivalent wording.
+  - [x] emphasize significant Recall@10 over MedCPT Cross-Encoder, while describing MRR@10 and nDCG@10 as non-significant positive trends.
+  - [x] avoid overclinical claims while still presenting downstream LLM generation as an important RAG-system validation if controlled metrics support it.
+- [x] After revision, compile both `paper/main_en.tex` and `paper/main_zh.tex`.
+- [x] Review `git status`, stage only appropriate source / manuscript / lightweight result files, commit, and push to `origin main`.
+
+Current 12B revision status:
+
+- Strong-ablation paired bootstrap outputs are saved under `results/metrics/kch_medrank_enhanced_bioasq_bootstrap_vs_*.json` and summarized in `results/tables/kch_medrank_enhanced_strong_ablation_significance.md`.
+- Paper tables are saved as `paper/tables/strong_ablation_significance*.tex`.
+- PubMedQA Qwen3-8B pilot uses 100 questions, top-5 evidence, temperature 0, fixed JSON citation prompt, and DashScope OpenAI-compatible `qwen3-8b`; metrics are saved to `results/metrics/pubmedqa_qwen3_8b_pilot_metrics.json` and `results/tables/pubmedqa_qwen3_8b_pilot.md`.
+- PubMedQA currently compares Hybrid RRF, the available semantic cross-encoder PubMedQA output, and KCH-style hypergraph evidence. A true PubMedQA MedCPT Cross-Encoder condition remains unchecked because the previous local CPU MedCPT smoke test timed out; the manuscript labels this condition honestly as semantic cross-encoder rather than MedCPT.
+- Both English and Chinese PDFs compile with bundled Tectonic when `PYTHONUTF8=1` is set. TeX Live is not installed locally; remaining warnings are minor underfull table/case-study boxes and a small candidate-fusion overfull line.
+
 ## 13. Quality Gates
 
 - [x] All scripts expose CLI arguments for paths and model names.

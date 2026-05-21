@@ -37,7 +37,7 @@ def main() -> None:
         "Metric",
         "k",
         "Baseline",
-        "HGB",
+        "Candidate",
         "Delta",
         "95% CI",
         "Relative",

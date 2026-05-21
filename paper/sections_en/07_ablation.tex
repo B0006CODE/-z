@@ -10,4 +10,8 @@ The ablation table suggests four points. First, learning-to-rank over retrieval 
 
 Third, graph structure and medical constraints are best interpreted as complementary features. Pairwise graph LTR and full KCH-MedRank are close, while the no-medical-knowledge hypergraph variant is weaker than the full model on Recall@10 and MRR@10. This supports the use of medical constraints but does not justify claiming that hyperedges alone dominate the improvement. Fourth, PrimeKG is not a primary driver in this implementation. Removing PrimeKG relation features still leaves Recall@10 of 0.5252 and MRR@10 of 0.7834, consistent with the observed sparsity of exact-name relation matching.
 
+Table~\ref{tab:strong-ablation-significance} adds paired bootstrap tests against the strongest ablations. Full KCH-MedRank is significantly better than Pairwise graph LTR on Recall@10 and nDCG@10, but its differences against LambdaMART + semantic without hypergraph, Remove MeSH hierarchy, and Remove hypergraph diffusion/centrality are not statistically significant. This result narrows the supported claim: the local hypergraph and medical-knowledge features improve interpretability and contribute useful signals, but the present evidence does not prove that any single feature group dominates the ranking gain.
+
+\input{tables/strong_ablation_significance}
+
 Taken together, the ablations support a combined framework: high-recall candidate generation, biomedical semantic reranking features, supervised listwise learning, and interpretable local hypergraph knowledge features together improve evidence retrieval.

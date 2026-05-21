@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-05-21T14:31:01.638183+00:00",
+  "dataset": "qiaojin/PubMedQA/pqa_labeled",
+  "model": "qwen3-8b",
+  "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "top_k": 5,
+  "max_questions": 100,
+  "num_common_qids": 200,
+  "num_selected_qids": 100,
+  "temperature": 0.0,
+  "max_tokens": 256,
+  "prompt_version": "pubmedqa_json_cited_label_v1",
+  "metric_definitions": {
+    "citation_support_rate": "Fraction of responses with at least one model-cited passage that overlaps a PubMedQA gold evidence passage.",
+    "unsupported_claim_rate": "One minus citation_support_rate under this rule-based pilot protocol.",
+    "answer_evidence_entity_consistency": "Mean fraction of non-stopword rationale terms that appear in the supplied evidence, over evaluable responses."
+  },
+  "method_order": [
+    "hybrid",
+    "semantic_ce",
+    "kch_medrank"
+  ],
+  "methods": {
+    "hybrid": {
+      "num_eval": 100,
+      "accuracy": 0.34,
+      "macro_f1": 0.35055555555555556,
+      "citation_support_rate": 0.99,
+      "unsupported_claim_rate": 0.01,
+      "entity_consistency_evaluable": 100,
+      "answer_evidence_entity_consistency": 0.5593655203030086,
+      "display_name": "Hybrid RRF + Qwen3-8B",
+      "predictions": "outputs/retrieval/pubmedqa_hybrid_full_top100.jsonl"
+    },
+    "semantic_ce": {
+      "num_eval": 100,
+      "accuracy": 0.34,
+      "macro_f1": 0.3503751803751804,
+      "citation_support_rate": 0.99,
+      "unsupported_claim_rate": 0.01,
+      "entity_consistency_evaluable": 100,
+      "answer_evidence_entity_consistency": 0.5782028785948022,
+      "display_name": "Semantic cross-encoder + Qwen3-8B",
+      "predictions": "outputs/rerank/pubmedqa_cross_encoder_full_top100.jsonl"
+    },
+    "kch_medrank": {
+      "num_eval": 100,
+      "accuracy": 0.37,
+      "macro_f1": 0.37597996697801,
+      "citation_support_rate": 0.99,
+      "unsupported_claim_rate": 0.01,
+      "entity_consistency_evaluable": 100,
+      "answer_evidence_entity_consistency": 0.5750752697092443,
+      "display_name": "KCH-style hypergraph reranker + Qwen3-8B",
+      "predictions": "outputs/rerank/pubmedqa_learning_hgb_test_top100.jsonl"
+    }
+  }
+}
