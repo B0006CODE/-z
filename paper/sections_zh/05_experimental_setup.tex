@@ -2,15 +2,21 @@
 
 \subsection{数据集}
 
-主数据集为 `rag-datasets/rag-mini-bioasq`，作为紧凑的 BioASQ 风格生物医学证据检索设置。当前留出测试集包含 943 个问题，采用项目指标文件中描述的确定性划分规则。PubMedQA 保持为次要鲁棒性数据集，目前还不是论文主结果。
+主数据集为 \texttt{rag-datasets/rag-mini-bioasq}，作为紧凑的 BioASQ 风格生物医学证据检索设置。完整处理后数据包含 4,719 个问题。我们使用基于问题标识符桶的确定性问题级划分：除验证和测试桶外的问题用于训练，模 5 后余数为 3 的问题用于验证，余数为 4 的问题用于测试。在当前增强 BioASQ 实验中，训练集包含 2,832 个问题，验证集包含 944 个问题，留出测试集包含 943 个问题。该划分在模型选择之前固定。
+
+每个问题对应一组金标准证据段落标识符。评估在段落级别进行。重排序器只能接收第一阶段检索池返回的候选，因此候选生成器的 Recall@100 被报告为上限诊断。PubMedQA 保持为次要鲁棒性数据集，目前还不是论文主结果。
 
 \subsection{基线}
 
-论文骨架跟踪以下必要基线：BM25、稠密生物医学检索、Hybrid BM25 + dense RRF、增强 Hybrid RRF、同一增强候选池上的 MedCPT Cross-Encoder、仅检索特征的 LambdaMART、带生物医学语义但不含超图特征的 LambdaMART、成对图学习排序、不含医学知识的超图学习排序，以及完整 KCH-MedRank。
+我们同时比较第一阶段检索基线和重排序基线。第一阶段基线包括 BM25、稠密生物医学检索、原始 Hybrid BM25 + dense RRF、带 MeSH 扩展的 fielded BM25、MedCPT dual-encoder 检索和增强 Hybrid RRF。增强 Hybrid RRF 不在测试集上调参；其 w122 权重由验证集 Recall@100 选择。
+
+重排序基线包括同一增强候选池上的 MedCPT Cross-Encoder、仅检索特征的 LambdaMART、带生物医学语义特征但不含超图特征的 LambdaMART、成对图学习排序、不含医学知识的超图学习排序，以及完整 KCH-MedRank。我们还报告移除单个特征组的消融实验，包括移除生物医学语义分数、MeSH 层级特征、生物医学实体特征、超图扩散与中心性，以及 PrimeKG 关系特征。
 
 \subsection{评估}
 
-主要检索指标包括 Recall@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage。与 Hybrid RRF 和强语义重排序基线的比较报告成对 bootstrap 置信区间与 p 值。hard reranking subset 仅用于诊断分析，不替代完整留出测试集评估。
+主要检索指标包括 Recall@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage，其中 $k \in \{1,3,5,10,20,50,100\}$。在当前二值段落证据设置下，Recall@$k$ 与 evidence coverage 数值相同，但保留两个名称是因为 evidence coverage 更贴近医学问答证据覆盖的表述。MRR@$k$ 衡量首个相关段落的排名，nDCG@$k$ 奖励多个相关证据段落靠前出现。
+
+统计检验采用基于留出测试问题的成对 bootstrap，使用 10,000 次重采样和固定随机种子。我们报告相对于原始或增强 Hybrid RRF 以及可用时相对于真实 MedCPT Cross-Encoder 基线的置信区间和双侧 p 值。困难重排序子集仅用于诊断：该子集包含 Hybrid top-100 中存在至少一个金标准段落但 Hybrid top-10 未命中任何金标准段落的测试问题。该子集不替代完整留出测试集评估。
 
 \subsection{验证集选择}
 

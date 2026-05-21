@@ -4,17 +4,41 @@
 
 \subsection{First-Stage Retrieval}
 
-The first stage retrieves top-$M$ evidence candidates using BM25, dense biomedical retrieval, and hybrid Reciprocal Rank Fusion. The enhanced candidate-generation path adds fielded BM25 with MeSH expansion and MedCPT dual-encoder dense retrieval. Fusion weights are selected on the validation split, where the selected w122 configuration maximizes Recall@100 rather than test performance.
+The first stage retrieves a high-recall candidate pool before any knowledge-aware reranking is applied. We use BM25 as the lexical baseline, dense retrieval as the semantic baseline, and Reciprocal Rank Fusion (RRF) as the default hybrid retriever. For a retrieval source $s$, let $r_s(q,d)$ be the rank of passage $d$ for question $q$. The fused score is:
+\[
+  \mathrm{RRF}(q,d)=\sum_{s \in S}\frac{w_s}{k+r_s(q,d)},
+\]
+where $S$ is the set of retrieval sources, $w_s$ is a source weight, and $k=60$ in the current experiments. The original Hybrid RRF uses BM25 and dense retrieval with equal weights.
+
+The enhanced candidate-generation path is designed to raise the top-100 ceiling for reranking. It adds fielded BM25 with title, text, and MeSH expansion fields, plus MedCPT dual-encoder dense retrieval as an additional biomedical semantic source. Fusion weights are selected on the validation split only. The selected w122 configuration gives BM25 and dense retrieval weight 1.0, fielded BM25 weight 1.2, and MedCPT dual-encoder retrieval weight 0.2. This setting is selected for validation Recall@100 rather than test performance, because reranking can improve only passages already present in the candidate pool.
 
 \subsection{Knowledge-Constrained Local Hypergraph}
 
-For each question and top-$M$ candidates, KCH-MedRank builds a local hypergraph with question, passage, document, biomedical entity, MeSH concept, and optional relation nodes. Hyperedges connect query concepts, passage concepts, document-MeSH labels, shared concepts, hierarchy relations, and auxiliary PrimeKG-style relation signals.
+For each question and its top-$M$ candidates, KCH-MedRank builds a local hypergraph $H_q=(V_q,\mathcal{E}_q)$. The node set includes a question node, candidate passage nodes, document nodes, biomedical entity nodes, MeSH concept nodes, optional MeSH tree nodes, and optional relation nodes. The hyperedge set connects multiple nodes at once and therefore represents higher-order relations that are not naturally captured by pairwise similarity alone.
+
+The main hyperedge types are question-entity, question-MeSH, question-passage candidate, passage-entity, passage-document, document-MeSH, shared-entity passages, entity-type concept, MeSH hierarchy, and auxiliary PrimeKG relation edges. Pairwise graph and no-medical-knowledge variants are constructed from the same candidate pool for ablation: the pairwise variant decomposes multi-node hyperedges into anchor-based pairwise edges, while the no-knowledge variant keeps only rank-band and candidate structure.
 
 The local design avoids constructing a global graph over millions of biomedical passages. It also keeps the method interpretable: feature inspection and case studies can report which concept overlaps, hierarchy links, shared candidate clusters, or hypergraph centrality signals influenced reranking.
 
+\subsection{Hypergraph Diffusion and Structural Features}
+
+KCH-MedRank uses hypergraph diffusion as an interpretable feature rather than as a standalone ranking formula. The seed distribution places mass on the question node, question entity nodes, and question MeSH nodes. At each iteration, scores are propagated through weighted hyperedges:
+\[
+  x^{(t+1)}=(1-\alpha)x^{(0)}+\alpha \cdot \mathrm{Propagate}(x^{(t)},\mathcal{E}_q),
+\]
+where $\alpha=0.85$ and the current implementation uses three diffusion iterations. Passage-level diffusion scores are then min-max normalized within each question candidate set. We also compute weighted degree centrality, local node and hyperedge counts, shared-entity edge counts, document-MeSH edge counts, and optional hierarchy-edge counts.
+
+\subsection{Biomedical Knowledge Features}
+
+The reranker uses several medically motivated feature groups. Entity features include entity overlap count, entity Jaccard similarity, question entity coverage, and passage entity count. Exact MeSH features include MeSH overlap, MeSH Jaccard similarity, question MeSH coverage, and passage MeSH count. Hierarchy-aware MeSH features include exact descriptor overlap, parent match, ancestor match, sibling match, tree-distance similarity, query concept coverage, passage hierarchy coverage, passage concept specificity, and shared candidate clusters over MeSH terms or parent concepts.
+
+PrimeKG-derived features are included only as auxiliary relation signals: relation count, question relation coverage, and local relation-edge count. Because current exact-name relation coverage is sparse, these features are not treated as the main source of improvement.
+
 \subsection{Learning-to-Rank}
 
-The main supervised reranker is a query-group learning-to-rank model using LightGBM/LambdaMART-style gradient boosted decision trees \citep{ke2017lightgbm}. Features include initial rank scores, BM25 and dense scores, biomedical semantic score, MeSH hierarchy-aware features, entity overlap, local hypergraph diffusion and degree centrality, and auxiliary relation features. Hypergraph diffusion is used as an interpretable feature, not as the sole hand-tuned scoring rule.
+The main supervised reranker is a query-group learning-to-rank model using LightGBM/LambdaMART-style gradient boosted decision trees \citep{ke2017lightgbm}. Each question forms one ranking group, candidate passages form rows, and binary relevance labels are derived from gold evidence annotations. The feature vector combines retrieval scores, biomedical semantic scores, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and local hypergraph structural features.
+
+Hyperparameters are selected on the validation split. The grid includes number of leaves, learning rate, number of estimators, and an optional blend weight that interpolates model scores with the original candidate rank score. Selection prioritizes validation MRR@10, then Recall@10 and nDCG@10. After validation selection, the final model is trained on train plus validation questions and evaluated once on the held-out test split.
 
 \input{tables/feature_importance_summary}
 

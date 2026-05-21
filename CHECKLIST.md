@@ -299,8 +299,8 @@ Current PubMedQA status:
 - [x] Build method diagram.
 - [ ] Write Introduction in English and Chinese.
 - [ ] Write Related Work after verifying literature metadata.
-- [ ] Write Method in English and Chinese.
-- [ ] Write Experimental Setup in English and Chinese.
+- [x] Write Method in English and Chinese.
+- [x] Write Experimental Setup in English and Chinese.
 - [ ] Write Results in English and Chinese.
 - [ ] Write Ablation Study in English and Chinese.
 - [ ] Write Case Study and Failure Analysis in English and Chinese.
