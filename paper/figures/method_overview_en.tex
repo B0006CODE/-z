@@ -2,43 +2,29 @@
 \centering
 \resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
-  font=\small,
-  box/.style={draw=black!45, rounded corners=2pt, line width=0.55pt, align=center, minimum width=2.85cm, minimum height=0.82cm, fill=white},
-  source/.style={box, fill=blue!5},
-  evidence/.style={box, fill=cyan!5},
-  knowledge/.style={box, fill=orange!9},
-  model/.style={box, fill=green!8},
-  output/.style={box, fill=purple!6},
-  lane/.style={draw=black!18, rounded corners=4pt, fill=black!2},
-  arrow/.style={-{Latex[length=2.1mm]}, line width=0.65pt, draw=black!70},
-  softarrow/.style={-{Latex[length=1.8mm]}, line width=0.55pt, draw=black!45}
+  node distance=1.45cm and 1.9cm,
+  block/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=gray!8},
+  knowledge/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.9cm, fill=blue!7},
+  model/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=green!8},
+  output/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=orange!10},
+  arrow/.style={-{Latex[length=2mm]}, thick}
 ]
-\node[source] (q) at (0,1.45) {\textbf{Input}\\medical question $q$};
-\node[evidence] (retrieval) at (3.35,1.45) {\textbf{Candidate generation}\\BM25, dense, fielded BM25,\\MedCPT dual encoder};
-\node[evidence] (pool) at (6.95,1.45) {\textbf{Top-$M$ evidence pool}\\validation-selected\\weighted RRF};
-\node[knowledge] (kg) at (3.35,-0.15) {\textbf{Medical constraints}\\entities, MeSH hierarchy,\\PrimeKG auxiliary links};
-\node[knowledge] (hg) at (6.95,-0.15) {\textbf{Local hypergraph}\\question, passage, document,\\entity and concept nodes};
-\node[model] (features) at (10.45,-0.15) {\textbf{Interpretable features}\\semantic score, hierarchy,\\diffusion, centrality};
-\node[model] (ltr) at (10.45,1.45) {\textbf{Query-group LTR}\\LambdaMART scoring};
-\node[output] (out) at (13.75,1.45) {\textbf{Output}\\ranked evidence top-$k$\\and optional paths};
-
-\begin{scope}[on background layer]
-  \node[lane, fit=(q)(retrieval)(pool), inner sep=8pt] (laneA) {};
-  \node[lane, fit=(kg)(hg)(features), inner sep=8pt] (laneB) {};
-\end{scope}
-\node[anchor=west, font=\footnotesize\bfseries, text=black!62] at ($(laneA.north west)+(0.12,-0.18)$) {retrieval layer};
-\node[anchor=west, font=\footnotesize\bfseries, text=black!62] at ($(laneB.north west)+(0.12,-0.18)$) {evidence control layer};
-
-\draw[arrow] (q) -- (retrieval);
-\draw[arrow] (retrieval) -- (pool);
+\node[block] (q) {Medical question\\$q$};
+\node[block, right=of q] (first) {First-stage retrieval\\BM25 + dense + RRF};
+\node[block, right=of first] (pool) {Top-$M$ candidate\\evidence passages};
+\node[knowledge, below=of first] (kg) {Medical constraints\\MeSH hierarchy\\entities\\PrimeKG auxiliary relations};
+\node[knowledge, below=of pool] (hg) {Local hypergraph\\question, passage, document,\\entity, concept nodes};
+\node[model, right=of pool] (ltr) {Query-group\\LambdaMART reranker};
+\node[output, right=of ltr] (out) {Ranked evidence\\top-$k$ passages\\optional paths};
+\draw[arrow] (q) -- (first);
+\draw[arrow] (first) -- (pool);
 \draw[arrow] (pool) -- (ltr);
 \draw[arrow] (ltr) -- (out);
-\draw[softarrow] (kg) -- (hg);
-\draw[softarrow] (pool) -- (hg);
-\draw[softarrow] (q.south) |- (hg.west);
-\draw[softarrow] (hg) -- (features);
-\draw[softarrow] (features) -- (ltr);
+\draw[arrow] (kg) -- (hg);
+\draw[arrow] (pool) -- (hg);
+\draw[arrow] (q) |- (hg);
+\draw[arrow] (hg) -- node[below, align=center] {diffusion, centrality,\\hierarchy features} (ltr);
 \end{tikzpicture}}
-\caption{Publication-style overview of KCH-MedRank. Candidate generation provides a high-recall evidence pool; the evidence-control layer converts biomedical constraints and local hypergraph structure into interpretable features; the query-group ranker produces the final evidence order for downstream medical RAG.}
+\caption{Overview of KCH-MedRank. The method first builds a high-recall candidate pool, constructs a local knowledge-constrained hypergraph around each question and candidate set, and uses hypergraph and biomedical semantic features in query-group learning-to-rank.}
 \label{fig:method-overview}
 \end{figure}
