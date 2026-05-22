@@ -2,30 +2,43 @@
 \centering
 \resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
-  node distance=1.45cm and 1.9cm,
-  block/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=gray!8},
-  knowledge/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.9cm, fill=blue!7},
-  model/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=green!8},
-  output/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.95cm, fill=orange!10},
-  arrow/.style={-{Latex[length=2mm]}, thick}
+  font=\small,
+  box/.style={draw=black!45, rounded corners=2pt, line width=0.55pt, align=center, minimum width=2.85cm, minimum height=0.82cm, fill=white},
+  source/.style={box, fill=blue!5},
+  evidence/.style={box, fill=cyan!5},
+  knowledge/.style={box, fill=orange!9},
+  model/.style={box, fill=green!8},
+  output/.style={box, fill=purple!6},
+  lane/.style={draw=black!18, rounded corners=4pt, fill=black!2},
+  arrow/.style={-{Latex[length=2.1mm]}, line width=0.65pt, draw=black!70},
+  softarrow/.style={-{Latex[length=1.8mm]}, line width=0.55pt, draw=black!45}
 ]
-\node[block] (q) {医学问题\\$q$};
-\node[block, right=of q] (first) {第一阶段检索\\BM25 + 稠密 + RRF};
-\node[block, right=of first] (pool) {Top-$M$ 候选\\证据段落};
-\node[knowledge, below=of first] (kg) {医学约束\\MeSH 层级\\实体\\PrimeKG 辅助关系};
-\node[knowledge, below=of pool] (hg) {局部超图\\问题、段落、文档、\\实体、概念节点};
-\node[model, right=of pool] (ltr) {查询分组\\LambdaMART 重排序};
-\node[output, right=of ltr] (out) {排序证据\\top-$k$ 段落\\可选路径};
-\draw[arrow] (q) -- (first);
-\draw[arrow] (first) -- (pool);
+\node[source] (q) at (0,1.45) {\textbf{输入}\\医学问题 $q$};
+\node[evidence] (retrieval) at (3.35,1.45) {\textbf{候选生成}\\BM25、稠密、fielded BM25、\\MedCPT 双编码器};
+\node[evidence] (pool) at (6.95,1.45) {\textbf{Top-$M$ 证据池}\\验证集选择的\\加权 RRF};
+\node[knowledge] (kg) at (3.35,-0.15) {\textbf{医学约束}\\实体、MeSH 层级、\\PrimeKG 辅助链接};
+\node[knowledge] (hg) at (6.95,-0.15) {\textbf{局部超图}\\问题、段落、文档、\\实体与概念节点};
+\node[model] (features) at (10.45,-0.15) {\textbf{可解释特征}\\语义分数、层级、\\扩散、中心性};
+\node[model] (ltr) at (10.45,1.45) {\textbf{查询分组 LTR}\\LambdaMART 打分};
+\node[output] (out) at (13.75,1.45) {\textbf{输出}\\排序证据 top-$k$\\与可选路径};
+
+\begin{scope}[on background layer]
+  \node[lane, fit=(q)(retrieval)(pool), inner sep=8pt] (laneA) {};
+  \node[lane, fit=(kg)(hg)(features), inner sep=8pt] (laneB) {};
+\end{scope}
+\node[anchor=west, font=\footnotesize\bfseries, text=black!62] at ($(laneA.north west)+(0.12,-0.18)$) {检索层};
+\node[anchor=west, font=\footnotesize\bfseries, text=black!62] at ($(laneB.north west)+(0.12,-0.18)$) {证据控制层};
+
+\draw[arrow] (q) -- (retrieval);
+\draw[arrow] (retrieval) -- (pool);
 \draw[arrow] (pool) -- (ltr);
 \draw[arrow] (ltr) -- (out);
-\draw[arrow] (kg) -- (hg);
-\draw[arrow] (pool) -- (hg);
-\draw[arrow] (q) |- (hg);
-\draw[arrow] (hg) -- node[below, align=center] {扩散、中心性、\\层级特征} (ltr);
+\draw[softarrow] (kg) -- (hg);
+\draw[softarrow] (pool) -- (hg);
+\draw[softarrow] (q.south) |- (hg.west);
+\draw[softarrow] (hg) -- (features);
+\draw[softarrow] (features) -- (ltr);
 \end{tikzpicture}}
-\caption{KCH-MedRank 方法概览。该方法先构建高召回候选池，再围绕每个问题和候选集合构建知识约束局部超图，并将超图特征与生物医学语义特征用于查询分组学习排序。}
+\caption{KCH-MedRank 的论文风格方法总览。候选生成阶段提供高召回证据池；证据控制层将生物医学约束和局部超图结构转换为可解释特征；查询分组排序器输出用于下游 medical RAG 的最终证据顺序。}
 \label{fig:method-overview}
 \end{figure}
-

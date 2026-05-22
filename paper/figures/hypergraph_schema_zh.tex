@@ -1,0 +1,62 @@
+\begin{figure}[t]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  font=\small,
+  node/.style={circle, draw=black!48, line width=0.55pt, align=center, minimum size=0.72cm, inner sep=1pt, fill=white},
+  qnode/.style={node, fill=blue!10, minimum size=0.86cm},
+  pnode/.style={node, fill=cyan!9},
+  dnode/.style={node, fill=gray!10},
+  enode/.style={node, fill=orange!13},
+  mnode/.style={node, fill=green!12},
+  rnode/.style={node, fill=purple!9},
+  hedge/.style={draw, rounded corners=8pt, line width=0.7pt, fill opacity=0.18},
+  edge/.style={draw=black!45, line width=0.55pt},
+  arrow/.style={-{Latex[length=1.8mm]}, draw=black!55, line width=0.55pt},
+  legend/.style={draw=black!20, rounded corners=2pt, fill=black!2, align=left, inner sep=4pt}
+]
+\node[qnode] (q) at (0,0.5) {$q$};
+\node[pnode] (p1) at (2.3,1.45) {$p_1$};
+\node[pnode] (p2) at (2.25,-0.35) {$p_2$};
+\node[pnode] (p3) at (4.1,0.55) {$p_3$};
+\node[dnode] (d1) at (5.9,1.45) {$d_A$};
+\node[dnode] (d2) at (5.9,-0.35) {$d_B$};
+\node[enode] (e1) at (1.0,2.75) {实体};
+\node[enode] (e2) at (3.35,2.75) {实体};
+\node[mnode] (m1) at (7.2,2.65) {MeSH};
+\node[mnode] (m2) at (8.65,1.45) {父级};
+\node[mnode] (m3) at (8.65,-0.35) {兄弟};
+\node[rnode] (rel) at (7.2,-1.55) {关系};
+
+\begin{scope}[on background layer]
+  \node[hedge, draw=blue!70, fill=blue!25, fit=(q)(e1)(e2), inner sep=7pt] {};
+  \node[hedge, draw=cyan!70, fill=cyan!28, fit=(p1)(p2)(e1), inner sep=7pt] {};
+  \node[hedge, draw=green!55!black, fill=green!25, fit=(d1)(m1)(m2), inner sep=7pt] {};
+  \node[hedge, draw=orange!75!black, fill=orange!30, fit=(p2)(p3)(rel), inner sep=7pt] {};
+\end{scope}
+
+\draw[edge] (q) -- (p1);
+\draw[edge] (q) -- (p2);
+\draw[edge] (q) -- (p3);
+\draw[edge] (p1) -- (d1);
+\draw[edge] (p2) -- (d2);
+\draw[edge] (p3) -- (d1);
+\draw[arrow] (m1) -- (m2);
+\draw[arrow] (m1) -- (m3);
+\draw[edge] (rel) -- (d2);
+
+\node[legend, anchor=west] at (9.65,1.95) {
+  \textbf{超边类型}\\
+  查询--概念\\
+  段落--概念\\
+  文档--MeSH\\
+  共享候选簇\\
+  层级 / 关系
+};
+\node[anchor=west, font=\footnotesize, text=black!62, align=left] at (9.65,-0.72) {
+  扩散与中心性在每个\\问题的局部图内计算。
+};
+\end{tikzpicture}}
+\caption{KCH-MedRank 使用的知识约束局部超图。超边连接两个以上的类型化节点，使候选段落能够从共享生物医学实体、MeSH 层级结构、文档标注和辅助关系信号中获得证据。}
+\label{fig:local-hypergraph}
+\end{figure}

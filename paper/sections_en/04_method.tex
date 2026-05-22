@@ -20,6 +20,8 @@ The main hyperedge types are question-entity, question-MeSH, question-passage ca
 
 The local design avoids constructing a global graph over millions of biomedical passages. It also keeps the method interpretable: feature inspection and case studies can report which concept overlaps, hierarchy links, shared candidate clusters, or hypergraph centrality signals influenced reranking.
 
+\input{figures/hypergraph_schema_en}
+
 \subsection{Hypergraph Diffusion and Structural Features}
 
 KCH-MedRank uses hypergraph diffusion as an interpretable feature rather than as a standalone ranking formula. The seed distribution places mass on the question node, question entity nodes, and question MeSH nodes. At each iteration, scores are propagated through weighted hyperedges:
