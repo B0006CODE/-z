@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-05-22T01:18:34.644467+00:00",
+  "candidate_predictions": "outputs/retrieval/enhanced_hybrid_w122_full_top100.jsonl",
+  "semantic_predictions": "outputs/retrieval/medcpt_dense_full_top100.jsonl",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "top_m": 100,
+  "top_k": 100,
+  "sample_limit": null,
+  "split": {
+    "modulo": 5,
+    "validation_remainders": [
+      3
+    ],
+    "test_remainders": [
+      4
+    ],
+    "test_qids": 943
+  },
+  "fairness_note": "Timing excludes first-stage candidate generation, one-time data/model loading, and offline LambdaMART training. MedCPT Cross-Encoder timing includes tokenizer preprocessing and neural forward scoring. KCH-MedRank timing includes test-time local feature construction, matrix creation, LightGBM scoring, and sorting.",
+  "cross_encoder": {
+    "method": "MedCPT Cross-Encoder",
+    "model_name": "ncbi/MedCPT-Cross-Encoder",
+    "backend": "transformers_sequence_classification",
+    "device": "cuda",
+    "batch_size": 64,
+    "max_length": 256,
+    "model_load_seconds": 2.317412900000136,
+    "rerank_seconds": 699.4572555,
+    "num_questions": 943,
+    "num_candidates": 94300,
+    "candidates_per_second": 134.8188173880484,
+    "seconds_per_query": 0.7417362200424178,
+    "gpu_peak_memory_mb": 972.2333984375,
+    "metrics": {
+      "recall@10": 0.5172083502019578,
+      "mrr@10": 0.7774819471797202,
+      "ndcg@10": 0.6389959063015686
+    }
+  },
+  "kch_medrank": {
+    "method": "KCH-MedRank",
+    "device": "CPU tabular scoring",
+    "selected_hyperparameters": {
+      "num_leaves": 31,
+      "learning_rate": 0.05,
+      "n_estimators": 160,
+      "blend_weight": 0.0,
+      "validation_mrr@10": 0.7915708232445521,
+      "validation_recall@10": 0.5575713528290549,
+      "validation_ndcg@10": 0.6592553619599095
+    },
+    "offline_train_feature_seconds": 138.75767730000007,
+    "offline_train_seconds": 2.194683300000179,
+    "rerank_feature_seconds": 33.442637900000136,
+    "rerank_scoring_seconds": 2.8675223999998707,
+    "rerank_seconds": 36.31016030000001,
+    "num_questions": 943,
+    "num_candidates": 94300,
+    "candidates_per_second": 2597.069228581731,
+    "seconds_per_query": 0.03850494199363733,
+    "num_features": 45,
+    "metrics": {
+      "recall@10": 0.5332155125589457,
+      "mrr@10": 0.7882105404904981,
+      "ndcg@10": 0.6446155854128816
+    }
+  },
+  "speedup_cross_encoder_over_kch": 19.263403127966907
+}

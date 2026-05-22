@@ -14,6 +14,10 @@ PubMedQA Qwen3-8B pilot 增加了下游 RAG 系统诊断。在固定证据数量
 
 \input{tables/efficiency_analysis_zh}
 
-表~\ref{tab:efficiency-analysis} 总结了实验日志中可获得的计算 profile。局部超图只围绕每个问题的 top-$M$ 候选构建，而不是在全局生物医学语料上构建，因此图构建和扩散成本随候选池和局部特征覆盖率扩展。在增强 BioASQ 设置中，最终学习排序矩阵包含 45 个特征和 377,600 条训练加验证样本，使重排序保持在常规表格排序问题范围内。稠密生物医学检索受益于 GPU 加速。Cross-Encoder 重打分成本明显更高：早期通用 cross-encoder 的 BioASQ CPU 运行在 2,400 秒后超时，而最终 MedCPT Cross-Encoder 基线需要单独的受控完整测试运行。这些观察支持将 KCH-MedRank 视为实用的离线证据重排序模块；系统性的 wall-clock 和内存基准留待后续工作完成。
+表~\ref{tab:efficiency-analysis} 总结了实验日志中可获得的计算 profile。局部超图只围绕每个问题的 top-$M$ 候选构建，而不是在全局生物医学语料上构建，因此图构建和扩散成本随候选池和局部特征覆盖率扩展。在增强 BioASQ 设置中，最终学习排序矩阵包含 45 个特征和 377,600 条训练加验证样本，使重排序保持在常规表格排序问题范围内。稠密生物医学检索受益于 GPU 加速。Cross-Encoder 重打分成本明显更高：早期通用 cross-encoder 的 BioASQ CPU 运行在 2,400 秒后超时，而最终 MedCPT Cross-Encoder 基线需要单独的受控完整测试运行。
+
+\input{tables/reranking_efficiency_zh}
+
+表~\ref{tab:reranking-efficiency} 报告了 BioASQ 留出测试集上的受控重排序阶段计时。两种方法使用相同的增强 top-100 候选池，共 943 个问题和 94,300 个候选段落。该比较不包含第一阶段候选生成和离线 LambdaMART 训练。在这一设置下，MedCPT Cross-Encoder 在 CUDA 上完成打分需要 699.46 秒，而 KCH-MedRank 在 CPU 上完成测试时特征构建和 LightGBM 打分需要 36.31 秒。因此，KCH-MedRank 在重排序阶段快 19.3 倍，同时在同一候选池上获得更高的 Recall@10、MRR@10 和 nDCG@10。这强化了主结果的实用解释：相对于 MedCPT Cross-Encoder 的 Recall@10 增益虽然不大，但它是在更低重排序延迟和可检查特征下获得的。包含第一阶段检索和数据加载开销的端到端生产环境基准仍留待后续工作。
 
 未来工作应改进生物医学概念归一化，加强同义词和缩写处理，并在证据支持指标完整后扩大受控答案生成评估。更强的生成实验应衡量引用支持率、无支持声明和答案-证据实体一致性，而不仅是答案准确率。

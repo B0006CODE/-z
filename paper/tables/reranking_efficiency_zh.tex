@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{BioASQ 留出测试集上的重排序阶段效率对比。两种方法使用相同的增强 top-100 候选池。计时不包含第一阶段候选生成和离线 LambdaMART 训练；KCH-MedRank 包含测试时特征构建与 LightGBM 打分，MedCPT Cross-Encoder 包含分词与前向打分。}
+\label{tab:reranking-efficiency}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrl}
+\toprule
+方法 & 秒 & ms/问题 & 候选/秒 & Recall@10 & MRR@10 & nDCG@10 & 说明 \\
+\midrule
+MedCPT Cross-Encoder & 699.46 & 741.74 & 134.82 & 0.5172 & 0.7775 & 0.6390 & 分词 + 前向打分 \\
+KCH-MedRank & 36.31 & 38.50 & 2597.07 & 0.5332 & 0.7882 & 0.6446 & 特征 + LightGBM \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

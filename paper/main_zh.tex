@@ -22,7 +22,7 @@
 \maketitle
 
 \begin{abstract}
-医学检索增强生成系统在答案生成之前需要准确、具有医学依据且可检查的证据选择能力。本文提出 KCH-MedRank：一种可解释医学证据控制层，其实现形式是可复现、知识约束的局部超图学习排序框架，用于生物医学证据检索与重排序。增强候选生成提高 top-100 证据召回上限，KCH-MedRank 在 BioASQ 留出测试集上相对于强 Hybrid RRF 提升 top-10 证据检索效果。相对于同一候选池上的真实 MedCPT Cross-Encoder 基线，KCH-MedRank 的 Recall@10 提升达到统计显著，而 MRR@10 与 nDCG@10 为正向但未显著的趋势。PubMedQA Qwen3-8B pilot 表明，在受控下游生成闭环中，更好的证据选择可以提升答案准确率和 Macro-F1，但所有比较证据来源的引用支持率都已较高。结果将 KCH-MedRank 定位为 medical RAG 的白盒证据选择模块，而不是临床决策系统。
+医学检索增强生成系统在答案生成之前需要准确、具有医学依据且可检查的证据选择能力。本文提出 KCH-MedRank：一种可解释医学证据控制层，其实现形式是可复现、知识约束的局部超图学习排序框架，用于生物医学证据检索与重排序。增强候选生成提高 top-100 证据召回上限，KCH-MedRank 在 BioASQ 留出测试集上相对于强 Hybrid RRF 提升 top-10 证据检索效果。相对于同一候选池上的真实 MedCPT Cross-Encoder 基线，KCH-MedRank 的 Recall@10 提升达到统计显著，而排序敏感的 MRR@10 与 nDCG@10 为正向但未显著的趋势。受控重排序阶段计时显示，在留出测试候选池上，KCH-MedRank 获得上述指标的同时，重排序速度比 MedCPT Cross-Encoder 快 19.3 倍。诊断性 PubMedQA Qwen3-8B pilot 表明，在受控下游生成闭环中，更好的证据选择可能影响答案准确率和 Macro-F1，但所有比较证据来源的引用支持率都已较高。结果将 KCH-MedRank 定位为 medical RAG 的白盒证据选择模块，而不是临床决策系统。
 \end{abstract}
 
 \input{sections_zh/01_introduction}
