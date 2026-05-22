@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Interpretation of structural ablation results. Knowledge$\times$Structure interaction is the difference between the hypergraph with and without medical knowledge constraints.}
+\label{tab:structural-ablation-interpretation}
+\begin{tabular}{lrrrc}
+\toprule
+Component & $\Delta$Rec@10 & $\Delta$MRR@10 & $\Delta$nDCG@10 & Role \\
+\midrule
+Biomedical semantics & +0.0101** & +0.0080* & +0.0153** & independent gain \\
+Hypergraph alone (no med) & $-$0.0044 & $-$0.0089** & $-$0.0074** & introduces noise \\
+Medical knowledge constraint & +0.0063** & +0.0085** & +0.0071** & transforms noise to signal \\
+Knowledge $\times$ Structure & +0.0107 & +0.0174 & +0.0145 & net interaction effect \\
+\bottomrule
+\end{tabular}
+\end{table}

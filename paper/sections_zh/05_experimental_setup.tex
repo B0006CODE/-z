@@ -4,7 +4,14 @@
 
 主数据集为 \texttt{rag-datasets/rag-mini-bioasq}，作为紧凑的 BioASQ 风格生物医学证据检索设置。完整处理后数据包含 4,719 个问题。我们使用基于问题标识符桶的确定性问题级划分：除验证和测试桶外的问题用于训练，模 5 后余数为 3 的问题用于验证，余数为 4 的问题用于测试。在增强 BioASQ 实验中，训练集包含 2,832 个问题，验证集包含 944 个问题，留出测试集包含 943 个问题。该划分在模型选择之前固定。
 
-每个问题对应一组金标准证据段落标识符。评估在段落级别进行。重排序器只能接收第一阶段检索池返回的候选，因此候选生成器的 Recall@100 被报告为召回上限分析。划分在问题级完成，测试问题中的段落不会作为重排序器的正例训练标签使用。PubMedQA 用作次要诊断数据集，而不是主结果来源。
+每个问题对应一组金标准证据段落标识符。评估在段落级别进行。重排序器只能接收第一阶段检索池返回的候选，因此候选生成器的 Recall@100 被报告为召回上限分析。划分在问题级完成，测试问题中的段落不会作为重排序器的正例训练标签使用。PubMedQA 用作次要诊断数据集，而不是主结果来源。BEIR NFCorpus 作为外部 retrieval-only 稳健性诊断，使用其官方 train、validation 和 test qrels；由于本文项目特定的 MeSH、实体、PrimeKG 与局部超图特征未直接为 NFCorpus 构建，该诊断仅比较 BM25、稠密检索、Hybrid RRF 和仅检索特征的 LambdaMART。
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_04.png}
+\caption{候选生成、重排序基线、消融实验、仅验证集模型选择、留出测试评估和成对统计检验的受控实验设计。}
+\label{fig:gpt-experimental-design}
+\end{figure}
 
 \subsection{基线}
 
@@ -28,4 +35,4 @@
 
 \subsection{下游生成 Pilot}
 
-为连接证据选择与 medical RAG 设置，本文使用 DashScope OpenAI-compatible Qwen3-8B 端点运行受控 PubMedQA pilot。评估使用 100 个 PubMedQA 问题，来自 Hybrid RRF、当前可用 PubMedQA 语义 cross-encoder 输出和 KCH 风格超图重排序输出共同覆盖的问题集合。每个条件使用相同 top-5 证据段落、相同 prompt 模板、temperature 0、最多 256 个输出 token，且不进行微调。模型必须返回 \texttt{yes}、\texttt{no} 或 \texttt{maybe} 之一，并给出段落引用。本文报告 Accuracy、Macro-F1、引用支持率、无支持声明率和答案-证据实体一致性。该实验是 pilot 诊断，不替代 BioASQ 检索评估。
+为连接证据选择与 medical RAG 设置，同时避免把生成扩展为主张，本文将 DashScope OpenAI-compatible Qwen3-8B 端点上的受控 PubMedQA pilot 保留为附录式诊断。评估使用 100 个 PubMedQA 问题，来自 Hybrid RRF、当前可用 PubMedQA 语义 cross-encoder 输出和 KCH 风格超图重排序输出共同覆盖的问题集合。每个条件使用相同 top-5 证据段落、相同 prompt 模板、temperature 0、最多 256 个输出 token，且不进行微调。模型必须返回 \texttt{yes}、\texttt{no} 或 \texttt{maybe} 之一，并给出段落引用。本文报告 Accuracy、Macro-F1、引用支持率、无支持声明率和答案-证据实体一致性。该 pilot 不替代 BioASQ 或 NFCorpus 检索评估。

@@ -22,7 +22,7 @@
 \maketitle
 
 \begin{abstract}
-Medical retrieval-augmented generation systems require evidence selection that is accurate, medically grounded, and inspectable before answer generation. This paper presents KCH-MedRank, an interpretable medical evidence control layer implemented as a reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. Enhanced candidate generation improves the top-100 evidence ceiling, and KCH-MedRank improves top-10 evidence retrieval over strong Hybrid RRF on the held-out BioASQ test split. Against a true MedCPT Cross-Encoder baseline on the same candidate pool, KCH-MedRank significantly improves Recall@10, while the rank-sensitive MRR@10 and nDCG@10 gains remain positive but non-significant. A controlled reranking-stage timing comparison shows that KCH-MedRank obtains these metrics while running 19.3$\times$ faster than MedCPT Cross-Encoder on the held-out test pool. A diagnostic PubMedQA Qwen3-8B pilot suggests that improved evidence selection can affect answer accuracy and macro-F1 in a controlled downstream loop, while citation support is already high for all compared evidence sources. The results position KCH-MedRank as a white-box evidence selection module for medical RAG rather than as a clinical decision system.
+Medical retrieval-augmented generation systems require evidence selection that is accurate, medically grounded, and inspectable before answer generation. This paper presents KCH-MedRank, an interpretable medical evidence control layer implemented as a reproducible knowledge-constrained local hypergraph learning-to-rank framework for biomedical evidence retrieval and reranking. Enhanced candidate generation improves the top-100 evidence ceiling, and KCH-MedRank improves top-10 evidence retrieval over strong Hybrid RRF on the held-out BioASQ test split. Against a true MedCPT Cross-Encoder baseline on the same candidate pool, KCH-MedRank significantly improves Recall@10, while MRR@10 and nDCG@10 remain positive but non-significant. A structural ablation reveals that the hypergraph topology alone introduces noise relative to semantic-only learning-to-rank, but incorporating medical knowledge constraints (MeSH hierarchy, biomedical entities, and relation features) reverses this effect: the Knowledge$\times$Structure interaction yields a statistically significant improvement across all top-10 metrics ($p < 0.01$). A controlled timing comparison shows that KCH-MedRank uses a precomputed dense biomedical semantic feature and runs 18.6$\times$ faster than MedCPT Cross-Encoder. An external BEIR NFCorpus retrieval-only diagnostic provides an additional robustness check. The results position KCH-MedRank as a white-box evidence selection module for medical RAG rather than as a clinical decision system.
 \end{abstract}
 
 \input{sections_en/01_introduction}
@@ -35,6 +35,8 @@ Medical retrieval-augmented generation systems require evidence selection that i
 \input{sections_en/08_case_study}
 \input{sections_en/09_discussion}
 \input{sections_en/10_conclusion}
+\appendix
+\input{sections_en/11_appendix}
 
 \bibliographystyle{plainnat}
 \bibliography{references}

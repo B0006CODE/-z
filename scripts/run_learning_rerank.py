@@ -105,7 +105,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--metrics-output", default="results/metrics/learning_rerank_test_top100_metrics.json")
     parser.add_argument("--top-k", type=int, default=100)
     parser.add_argument("--rrf-k", type=int, default=60)
-    parser.add_argument("--iterations", type=int, default=3)
+    parser.add_argument("--iterations", type=int, default=5)
     parser.add_argument("--damping", type=float, default=0.85)
     parser.add_argument("--max-passage-entities", type=int, default=48)
     parser.add_argument("--max-passage-mesh", type=int, default=32)

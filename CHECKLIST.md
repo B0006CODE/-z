@@ -389,6 +389,70 @@ Current 12B revision status:
 - PubMedQA currently compares Hybrid RRF, the available semantic cross-encoder PubMedQA output, and KCH-style hypergraph evidence. A true PubMedQA MedCPT Cross-Encoder condition remains unchecked because the previous local CPU MedCPT smoke test timed out; the manuscript labels this condition honestly as semantic cross-encoder rather than MedCPT.
 - Both English and Chinese PDFs compile with bundled Tectonic when `PYTHONUTF8=1` is set. TeX Live is not installed locally; remaining warnings are minor underfull table/case-study boxes and a small candidate-fusion overfull line.
 
+## 12C. Major-Revision Priority Actions After Strict Review
+
+Immediate priority:
+
+- The next work should address reviewer-blocking risks before adding more generation experiments.
+- The main risk is an unfair or unclear efficiency claim if KCH-MedRank uses an expensive semantic feature but the feature-generation cost is excluded.
+- The second risk is overclaiming hypergraph / medical-knowledge contribution when strong ablations show that `LambdaMART + semantic, no hypergraph` is nearly tied with the full model.
+
+Required next experiments and edits:
+
+- [x] Audit every manuscript/table phrase that says `MedCPT Cross-Encoder score`, `cross-encoder score`, `biomedical semantic score`, or `semantic reranker score`.
+- [x] Confirm the exact semantic feature used by enhanced KCH-MedRank on BioASQ:
+  - [x] if it comes from MedCPT Cross-Encoder, include online CE scoring time in KCH runtime.
+  - [x] if it comes from MedCPT dense / dual-encoder retrieval or another precomputed score, state this explicitly and do not describe it as Cross-Encoder scoring.
+- [x] Rebuild a fair efficiency table with at least these rows:
+  - [x] MedCPT Cross-Encoder, with online CE tokenization and forward scoring.
+  - [x] Full KCH-MedRank with the currently used semantic feature, reporting whether the semantic feature is precomputed.
+  - [x] KCH-MedRank without Cross-Encoder / without semantic feature.
+  - [x] Retrieval-feature-only LambdaMART.
+- [x] Report for each efficiency row:
+  - [x] whether CE score is used.
+  - [x] whether CE is run online.
+  - [x] Recall@10.
+  - [x] MRR@10.
+  - [x] nDCG@10.
+  - [x] total reranking time.
+  - [x] what costs are excluded, such as first-stage retrieval, model loading, offline training, or precomputed semantic scoring.
+- [x] If KCH full depends on online CE scoring, remove the unconditional `19.3x faster` claim and replace it with a conditional statement such as: once semantic features are available, the tabular reranking layer is cheaper than full cross-encoder scoring.
+- [x] If no-CE / no-semantic KCH remains competitive with MedCPT CE, report it as the stronger efficiency result.
+- [x] Add at least one external retrieval-only dataset or official retrieval split before submission if compute permits:
+  - [ ] official BioASQ snippet/document retrieval split, preferred if practical.
+  - [x] BEIR biomedical subset such as NFCorpus or TREC-COVID.
+  - [ ] PubMedQA retrieval-only diagnostic if the above are too costly.
+- [x] Do not expand Qwen3-8B PubMedQA generation until the fair runtime / no-semantic diagnostics are complete.
+- [x] Move weak or small PubMedQA generation results to appendix / diagnostic framing unless controlled metrics show clear answer-quality or evidence-support gains.
+
+Required claim edits:
+
+- [x] Reframe the main contribution as a white-box biomedical evidence reranking / evidence-control layer for medical RAG.
+- [x] State that enhanced candidate generation, semantic relevance features, and query-group supervised LTR are the dominant measured performance drivers.
+- [x] State that hypergraph, MeSH, entity, and PrimeKG relation features provide interpretable complementary signals unless new significance tests show a stronger independent effect.
+- [x] Avoid saying or implying that hypergraph learning or medical knowledge constraints are the primary source of the total performance gain.
+- [x] Keep PrimeKG as an auxiliary relation source unless normalization and feature analysis show stronger coverage and importance.
+- [x] Keep English and Chinese manuscripts synchronized for all claim, limitation, table, and conclusion changes.
+
+Current 12C status:
+
+- Fair efficiency diagnostics are implemented in `scripts/run_efficiency_comparison.py`.
+- Full fair efficiency outputs are saved to `results/metrics/efficiency_comparison_bioasq.json`, `results/tables/efficiency_comparison_bioasq.md`, and `paper/tables/reranking_efficiency.tex`.
+- The enhanced KCH-MedRank semantic feature source is `outputs/retrieval/medcpt_dense_full_top100.jsonl`; the script classifies it as `dense_or_dual_encoder_predictions`, with `uses_ce_score=false` and `online_ce=false`.
+- The previous unconditional `19.3x` speedup wording has been replaced with a fair `18.6x` reranking-stage comparison that states KCH-MedRank does not use Cross-Encoder scores.
+- On the held-out BioASQ test split, Full KCH-MedRank reports Recall@10 `0.5332`, MRR@10 `0.7882`, nDCG@10 `0.6446`, and reranking time `37.59s`.
+- The no-semantic KCH diagnostic reports Recall@10 `0.5244`, MRR@10 `0.7790`, nDCG@10 `0.6330`, and reranking time `37.50s`.
+- Retrieval-feature-only LambdaMART reports Recall@10 `0.5208`, MRR@10 `0.7791`, nDCG@10 `0.6282`, and reranking time `0.84s`.
+- MedCPT Cross-Encoder timing is reused from the previous completed CUDA run: Recall@10 `0.5172`, MRR@10 `0.7775`, nDCG@10 `0.6390`, and reranking time `699.46s`.
+- English and Chinese PDFs compile with bundled Tectonic after the fair-efficiency update. Remaining warnings are layout/citation rerun warnings already present in the manuscript workflow.
+- External BEIR NFCorpus retrieval-only diagnostic is implemented in `scripts/prepare_nfcorpus.py` and `scripts/run_nfcorpus_ltr_diagnostic.py`.
+- NFCorpus normalized files are written under `data/processed/`, retrieval predictions under `outputs/retrieval/nfcorpus_*`, and retrieval-feature LambdaMART predictions under `outputs/rerank/nfcorpus_retrieval_ltr_test_top100.jsonl`.
+- NFCorpus official split sizes are train `2590`, validation `324`, and test `323` queries. The diagnostic deliberately uses only retrieval features, not project-specific MeSH/entity/PrimeKG/hypergraph features.
+- NFCorpus test results are saved to `results/metrics/nfcorpus_retrieval_diagnostic.json` and `results/tables/nfcorpus_retrieval_diagnostic.md`: Retrieval-feature LambdaMART improves Hybrid RRF Recall@10 from `0.1676` to `0.1770`, MRR@10 from `0.5530` to `0.5725`, and nDCG@10 from `0.3436` to `0.3627`.
+- NFCorpus paired bootstrap against Hybrid RRF is saved to `results/metrics/nfcorpus_bootstrap_ltr_vs_hybrid.json` and `results/tables/nfcorpus_bootstrap_ltr_vs_hybrid.md`: Recall@10 delta `+0.0093`, p=`0.0034`; nDCG@10 delta `+0.0190`, p=`0.0002`; MRR@10 delta `+0.0195`, p=`0.0592`.
+- English and Chinese manuscripts now include NFCorpus as an external retrieval-only robustness diagnostic and move the PubMedQA Qwen3-8B pilot to appendix-style diagnostic framing.
+- English and Chinese PDFs compile with bundled Tectonic after the NFCorpus and appendix updates. Remaining warnings are non-blocking underfull/overfull box warnings already consistent with the manuscript workflow.
+
 ## 13. Quality Gates
 
 - [x] All scripts expose CLI arguments for paths and model names.

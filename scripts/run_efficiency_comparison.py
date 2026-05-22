@@ -110,6 +110,50 @@ def metric_value(metrics: dict[str, Any], key: str) -> float | None:
     return float(value) if value is not None else None
 
 
+def infer_semantic_source(path: str | None) -> dict[str, Any]:
+    raw = str(path or "").lower()
+    if not raw:
+        return {
+            "semantic_source_type": "none",
+            "uses_cross_encoder_score": False,
+            "runs_cross_encoder_online": False,
+            "description": "no external semantic score file",
+        }
+    if "cross_encoder" in raw or "cross-encoder" in raw or "ce_" in raw:
+        return {
+            "semantic_source_type": "cross_encoder_predictions",
+            "uses_cross_encoder_score": True,
+            "runs_cross_encoder_online": False,
+            "description": str(path),
+        }
+    if "medcpt_dense" in raw or "dense" in raw:
+        return {
+            "semantic_source_type": "dense_or_dual_encoder_predictions",
+            "uses_cross_encoder_score": False,
+            "runs_cross_encoder_online": False,
+            "description": str(path),
+        }
+    return {
+        "semantic_source_type": "precomputed_predictions",
+        "uses_cross_encoder_score": False,
+        "runs_cross_encoder_online": False,
+        "description": str(path),
+    }
+
+
+def previous_cross_encoder_result(path: str | Path) -> dict[str, Any] | None:
+    json_path = Path(path)
+    if not json_path.exists():
+        return None
+    try:
+        with json_path.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except json.JSONDecodeError:
+        return None
+    result = payload.get("cross_encoder")
+    return result if isinstance(result, dict) else None
+
+
 def build_cross_encoder_pairs(
     qids: set[str],
     candidates_by_qid: dict[str, list[dict[str, Any]]],
@@ -145,10 +189,28 @@ def format_metric(value: float | None) -> str:
     return f"{value:.4f}"
 
 
+def latex_escape(value: str) -> str:
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+    }
+    return "".join(replacements.get(char, char) for char in value)
+
+
 def write_markdown(path: str | Path, rows: list[dict[str, str]]) -> None:
     columns = [
         "method",
         "device",
+        "uses_ce_score",
+        "online_ce",
         "questions",
         "candidates",
         "rerank_seconds",
@@ -172,14 +234,16 @@ def write_latex(path: str | Path, rows: list[dict[str, str]]) -> None:
         method_rows.append(
             " & ".join(
                 [
-                    row["method"],
+                    latex_escape(row["method"]),
+                    latex_escape(row["uses_ce_score"]),
+                    latex_escape(row["online_ce"]),
                     row["rerank_seconds"],
                     row["ms_per_query"],
                     row["candidates_per_second"],
                     row["recall@10"],
                     row["mrr@10"],
                     row["ndcg@10"],
-                    row["notes"],
+                    latex_escape(row["notes"]),
                 ]
             )
             + r" \\"
@@ -189,12 +253,12 @@ def write_latex(path: str | Path, rows: list[dict[str, str]]) -> None:
             r"\begin{table}[t]",
             r"\centering",
             r"\small",
-            r"\caption{Reranking-stage efficiency on the held-out BioASQ test split using the same enhanced top-100 candidate pool. Timing excludes first-stage candidate generation and offline LambdaMART training; KCH-MedRank includes test-time feature construction and LightGBM scoring, while MedCPT Cross-Encoder includes tokenization and forward scoring.}",
+            r"\caption{Reranking-stage efficiency on the held-out BioASQ test split using the same enhanced top-100 candidate pool. Timing excludes first-stage candidate generation, one-time model loading, and offline LambdaMART training. The table separates whether a method uses Cross-Encoder scores and whether Cross-Encoder scoring is run online.}",
             r"\label{tab:reranking-efficiency}",
             r"\resizebox{\textwidth}{!}{%",
-            r"\begin{tabular}{lrrrrrrl}",
+            r"\begin{tabular}{lccrrrrrrl}",
             r"\toprule",
-            r"Method & Seconds & ms/query & Cand./s & Recall@10 & MRR@10 & nDCG@10 & Notes \\",
+            r"Method & CE score & Online CE & Seconds & ms/query & Cand./s & Recall@10 & MRR@10 & nDCG@10 & Notes \\",
             r"\midrule",
             *method_rows,
             r"\bottomrule",
@@ -206,6 +270,117 @@ def write_latex(path: str | Path, rows: list[dict[str, str]]) -> None:
     )
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(content, encoding="utf-8")
+
+
+def build_retrieval_feature_rows(
+    predictions: list[dict[str, Any]],
+    *,
+    top_k: int,
+    rrf_k: int,
+) -> dict[str, list[dict[str, Any]]]:
+    grouped = group_predictions(predictions, top_k)
+    features_by_qid: dict[str, list[dict[str, Any]]] = {}
+    for qid, rows in grouped.items():
+        items = []
+        top_count = max(min(len(rows), top_k), 1)
+        for row in rows[:top_k]:
+            rank = int(row["rank"])
+            metadata = row.get("metadata", {})
+            source_scores = metadata.get("source_scores", {})
+            source_ranks = metadata.get("source_ranks", {})
+            features = {
+                "base_rank_score": 1.0 / (rrf_k + rank),
+                "hybrid_score": float(row.get("score", 0.0)),
+                "bm25_score": float(source_scores.get("bm25", 0.0)),
+                "dense_score": float(source_scores.get("dense", 0.0)),
+                "bm25_rank_score": 1.0 / (rrf_k + int(source_ranks["bm25"])) if "bm25" in source_ranks else 0.0,
+                "dense_rank_score": 1.0 / (rrf_k + int(source_ranks["dense"])) if "dense" in source_ranks else 0.0,
+                "rank_percentile": 1.0 - ((rank - 1) / max(top_count - 1, 1)),
+            }
+            items.append({"row": row, "features": features, "base_rank": rank})
+        features_by_qid[qid] = items
+    return features_by_qid
+
+
+def fit_ranker_for_setting(
+    features_by_qid: dict[str, list[dict[str, Any]]],
+    qids: set[str],
+    qrels_by_qid: dict[str, dict[str, float]],
+    feature_names: list[str],
+    selected: dict[str, Any],
+    seed: int,
+) -> tuple[Any, float]:
+    train_x, train_y, train_group, _ = matrix_for_qids(features_by_qid, qids, qrels_by_qid, feature_names)
+    train_start = now()
+    ranker = make_ranker(
+        seed,
+        num_leaves=int(selected["num_leaves"]),
+        learning_rate=float(selected["learning_rate"]),
+        n_estimators=int(selected["n_estimators"]),
+    )
+    ranker.fit(train_x, train_y, group=train_group)
+    return ranker, elapsed(train_start)
+
+
+def timed_prediction_result(
+    *,
+    method: str,
+    device_label: str,
+    features_by_qid: dict[str, list[dict[str, Any]]],
+    test_qids: set[str],
+    qrels_by_qid: dict[str, dict[str, float]],
+    test_qrels: list[dict[str, Any]],
+    feature_names: list[str],
+    ranker: Any,
+    selected: dict[str, Any],
+    top_k: int,
+    feature_seconds: float,
+    train_seconds: float,
+    metrics_override: dict[str, Any] | None,
+    uses_cross_encoder_score: bool,
+    runs_cross_encoder_online: bool,
+    semantic_source_type: str,
+    notes: str,
+) -> dict[str, Any]:
+    scoring_start = now()
+    predictions = rerank_with_model(
+        ranker,
+        features_by_qid,
+        test_qids,
+        qrels_by_qid,
+        feature_names,
+        blend_weight=float(selected["blend_weight"]),
+        top_k=top_k,
+        retriever_name=f"{method.lower().replace(' ', '_')}_timing",
+    )
+    scoring_seconds = elapsed(scoring_start)
+    total_seconds = feature_seconds + scoring_seconds
+    measured_metrics = evaluate_retrieval(test_qrels, predictions, [10])
+    metrics_source = metrics_override or measured_metrics
+    num_candidates = sum(len(features_by_qid.get(qid, [])) for qid in test_qids)
+    return {
+        "method": method,
+        "device": device_label,
+        "selected_hyperparameters": selected,
+        "offline_train_seconds": train_seconds,
+        "rerank_feature_seconds": feature_seconds,
+        "rerank_scoring_seconds": scoring_seconds,
+        "rerank_seconds": total_seconds,
+        "num_questions": len(test_qids),
+        "num_candidates": num_candidates,
+        "candidates_per_second": num_candidates / total_seconds if total_seconds else None,
+        "seconds_per_query": total_seconds / len(test_qids) if test_qids else None,
+        "num_features": len(feature_names),
+        "uses_cross_encoder_score": uses_cross_encoder_score,
+        "runs_cross_encoder_online": runs_cross_encoder_online,
+        "semantic_source_type": semantic_source_type,
+        "notes": notes,
+        "metrics": {
+            "recall@10": metric_value(metrics_source, "recall@10"),
+            "mrr@10": metric_value(metrics_source, "mrr@10"),
+            "ndcg@10": metric_value(metrics_source, "ndcg@10"),
+        },
+    }
 
 
 def main() -> None:
@@ -239,6 +414,8 @@ def main() -> None:
     )
     test_qids = set(sorted(splits["test"])[: args.sample_limit]) if args.sample_limit else set(splits["test"])
     train_validation_qids = splits["train"] | splits["validation"]
+    if args.sample_limit:
+        train_validation_qids = set(sorted(train_validation_qids)[: max(args.sample_limit * 4, 20)])
     question_by_id = {str(row["question_id"]): row for row in questions}
     passage_by_id = {str(row["passage_id"]): row for row in corpus}
     test_candidates = flatten_by_qids(candidates_by_qid, test_qids)
@@ -248,10 +425,9 @@ def main() -> None:
 
     medcpt_metrics = load_metrics(args.medcpt_metrics)
     kch_metrics_payload = load_metrics(args.kch_metrics)
-    kch_metrics = kch_metrics_payload.get("setting_metrics", {}).get("Full KCH-MedRank") or load_metrics(
-        "results/metrics/kch_medrank_enhanced_bioasq_full_kch_medrank_metrics.json"
-    )
-    selected = kch_metrics_payload["diagnostics"]["full_kch_medrank"]["selected"]
+    setting_metrics = kch_metrics_payload.get("setting_metrics", {})
+    diagnostics = kch_metrics_payload["diagnostics"]
+    semantic_source = infer_semantic_source(args.semantic_predictions)
 
     cross_encoder_result: dict[str, Any] | None = None
     if not args.skip_cross_encoder:
@@ -292,7 +468,12 @@ def main() -> None:
                 "mrr@10": metric_value(medcpt_metrics, "mrr@10"),
                 "ndcg@10": metric_value(medcpt_metrics, "ndcg@10"),
             },
+            "uses_cross_encoder_score": True,
+            "runs_cross_encoder_online": True,
+            "notes": "tokenization + forward scoring",
         }
+    else:
+        cross_encoder_result = previous_cross_encoder_result(args.output_json)
 
     question_entities = entity_map(read_jsonl(question_entities_path), "question_id")
     passage_entities = entity_map(read_jsonl(passage_entities_path), "passage_id")
@@ -301,7 +482,6 @@ def main() -> None:
     mesh_hierarchy = load_mesh_hierarchy(read_jsonl(args.mesh_hierarchy)) if Path(args.mesh_hierarchy).exists() else {}
     entity_relations = relations_map(read_jsonl(relations_path)) if Path(relations_path).exists() else {}
     semantic_scores = read_score_predictions(args.semantic_predictions)
-    feature_names = feature_names_for("full_kch_medrank")
 
     train_feature_start = now()
     train_validation_features = build_all_feature_rows(
@@ -323,21 +503,6 @@ def main() -> None:
         max_passage_mesh=32,
     )
     train_feature_seconds = elapsed(train_feature_start)
-    train_x, train_y, train_group, _ = matrix_for_qids(
-        train_validation_features,
-        train_validation_qids,
-        qrels_by_qid,
-        feature_names,
-    )
-    train_start = now()
-    ranker = make_ranker(
-        seed,
-        num_leaves=int(selected["num_leaves"]),
-        learning_rate=float(selected["learning_rate"]),
-        n_estimators=int(selected["n_estimators"]),
-    )
-    ranker.fit(train_x, train_y, group=train_group)
-    train_seconds = elapsed(train_start)
 
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
@@ -361,50 +526,126 @@ def main() -> None:
         max_passage_mesh=32,
     )
     kch_feature_seconds = elapsed(feature_start)
-    scoring_start = now()
-    kch_predictions = rerank_with_model(
-        ranker,
-        test_features,
-        test_qids,
-        qrels_by_qid,
-        feature_names,
-        blend_weight=float(selected["blend_weight"]),
-        top_k=args.top_k,
-        retriever_name="full_kch_medrank_timing",
-    )
-    kch_scoring_seconds = elapsed(scoring_start)
-    kch_total_seconds = kch_feature_seconds + kch_scoring_seconds
-    measured_kch_metrics = evaluate_retrieval(test_qrels, kch_predictions, [10])
 
-    kch_result = {
-        "method": "KCH-MedRank",
-        "device": "CPU tabular scoring",
-        "selected_hyperparameters": selected,
-        "offline_train_feature_seconds": train_feature_seconds,
-        "offline_train_seconds": train_seconds,
-        "rerank_feature_seconds": kch_feature_seconds,
-        "rerank_scoring_seconds": kch_scoring_seconds,
-        "rerank_seconds": kch_total_seconds,
-        "num_questions": len(test_qids),
-        "num_candidates": len(test_candidates),
-        "candidates_per_second": len(test_candidates) / kch_total_seconds if kch_total_seconds else None,
-        "seconds_per_query": kch_total_seconds / len(test_qids) if test_qids else None,
-        "num_features": len(feature_names),
-        "metrics": {
-            "recall@10": metric_value(kch_metrics, "recall@10") if args.sample_limit is None else metric_value(measured_kch_metrics, "recall@10"),
-            "mrr@10": metric_value(kch_metrics, "mrr@10") if args.sample_limit is None else metric_value(measured_kch_metrics, "mrr@10"),
-            "ndcg@10": metric_value(kch_metrics, "ndcg@10") if args.sample_limit is None else metric_value(measured_kch_metrics, "ndcg@10"),
-        },
-    }
+    retrieval_train_feature_start = now()
+    train_validation_retrieval_features = build_retrieval_feature_rows(
+        train_validation_candidates,
+        top_k=args.top_k,
+        rrf_k=60,
+    )
+    retrieval_train_feature_seconds = elapsed(retrieval_train_feature_start)
+    retrieval_test_feature_start = now()
+    test_retrieval_features = build_retrieval_feature_rows(
+        test_candidates,
+        top_k=args.top_k,
+        rrf_k=60,
+    )
+    retrieval_feature_seconds = elapsed(retrieval_test_feature_start)
+
+    results: dict[str, dict[str, Any]] = {}
+
+    full_feature_names = feature_names_for("full_kch_medrank")
+    full_selected = diagnostics["full_kch_medrank"]["selected"]
+    full_ranker, full_train_seconds = fit_ranker_for_setting(
+        train_validation_features,
+        train_validation_qids,
+        qrels_by_qid,
+        full_feature_names,
+        full_selected,
+        seed,
+    )
+    full_metrics_override = None if args.sample_limit else setting_metrics.get("Full KCH-MedRank")
+    results["kch_medrank"] = timed_prediction_result(
+        method="KCH-MedRank",
+        device_label="CPU tabular scoring",
+        features_by_qid=test_features,
+        test_qids=test_qids,
+        qrels_by_qid=qrels_by_qid,
+        test_qrels=test_qrels,
+        feature_names=full_feature_names,
+        ranker=full_ranker,
+        selected=full_selected,
+        top_k=args.top_k,
+        feature_seconds=kch_feature_seconds,
+        train_seconds=full_train_seconds,
+        metrics_override=full_metrics_override,
+        uses_cross_encoder_score=bool(semantic_source["uses_cross_encoder_score"]),
+        runs_cross_encoder_online=False,
+        semantic_source_type=str(semantic_source["semantic_source_type"]),
+        notes=f"features + LightGBM; semantic={semantic_source['semantic_source_type']}",
+    )
+
+    no_semantic_feature_names = feature_names_for("remove_semantic")
+    no_semantic_selected = diagnostics["remove_semantic"]["selected"]
+    no_semantic_ranker, no_semantic_train_seconds = fit_ranker_for_setting(
+        train_validation_features,
+        train_validation_qids,
+        qrels_by_qid,
+        no_semantic_feature_names,
+        no_semantic_selected,
+        seed,
+    )
+    no_semantic_metrics_override = None if args.sample_limit else setting_metrics.get("Remove biomedical semantic reranker")
+    results["kch_medrank_no_semantic"] = timed_prediction_result(
+        method="KCH-MedRank without semantic feature",
+        device_label="CPU tabular scoring",
+        features_by_qid=test_features,
+        test_qids=test_qids,
+        qrels_by_qid=qrels_by_qid,
+        test_qrels=test_qrels,
+        feature_names=no_semantic_feature_names,
+        ranker=no_semantic_ranker,
+        selected=no_semantic_selected,
+        top_k=args.top_k,
+        feature_seconds=kch_feature_seconds,
+        train_seconds=no_semantic_train_seconds,
+        metrics_override=no_semantic_metrics_override,
+        uses_cross_encoder_score=False,
+        runs_cross_encoder_online=False,
+        semantic_source_type="excluded_from_features",
+        notes="knowledge/hypergraph features + LightGBM; semantic columns removed",
+    )
+
+    retrieval_feature_names = feature_names_for("retrieval_ltr")
+    retrieval_selected = diagnostics["retrieval_ltr"]["selected"]
+    retrieval_ranker, retrieval_train_seconds = fit_ranker_for_setting(
+        train_validation_retrieval_features,
+        train_validation_qids,
+        qrels_by_qid,
+        retrieval_feature_names,
+        retrieval_selected,
+        seed,
+    )
+    retrieval_metrics_override = None if args.sample_limit else setting_metrics.get("Retrieval-feature-only LambdaMART")
+    results["retrieval_ltr"] = timed_prediction_result(
+        method="Retrieval-feature-only LambdaMART",
+        device_label="CPU tabular scoring",
+        features_by_qid=test_retrieval_features,
+        test_qids=test_qids,
+        qrels_by_qid=qrels_by_qid,
+        test_qrels=test_qrels,
+        feature_names=retrieval_feature_names,
+        ranker=retrieval_ranker,
+        selected=retrieval_selected,
+        top_k=args.top_k,
+        feature_seconds=retrieval_feature_seconds,
+        train_seconds=retrieval_train_seconds,
+        metrics_override=retrieval_metrics_override,
+        uses_cross_encoder_score=False,
+        runs_cross_encoder_online=False,
+        semantic_source_type="none",
+        notes="retrieval metadata features + LightGBM",
+    )
 
     speedup = None
-    if cross_encoder_result and cross_encoder_result["rerank_seconds"] and kch_result["rerank_seconds"]:
-        speedup = cross_encoder_result["rerank_seconds"] / kch_result["rerank_seconds"]
+    if cross_encoder_result and cross_encoder_result.get("rerank_seconds") and results["kch_medrank"]["rerank_seconds"]:
+        speedup = cross_encoder_result["rerank_seconds"] / results["kch_medrank"]["rerank_seconds"]
 
     payload = {
         "timestamp": datetime.now(UTC).isoformat(),
         "candidate_predictions": args.candidate_predictions,
         "semantic_predictions": args.semantic_predictions,
+        "semantic_source": semantic_source,
         "qrels": qrels_path,
         "top_m": args.top_m,
         "top_k": args.top_k,
@@ -418,10 +659,17 @@ def main() -> None:
         "fairness_note": (
             "Timing excludes first-stage candidate generation, one-time data/model loading, and offline LambdaMART training. "
             "MedCPT Cross-Encoder timing includes tokenizer preprocessing and neural forward scoring. "
-            "KCH-MedRank timing includes test-time local feature construction, matrix creation, LightGBM scoring, and sorting."
+            "KCH-MedRank timing includes test-time local feature construction, matrix creation, LightGBM scoring, and sorting. "
+            "Rows explicitly report whether Cross-Encoder scores are used and whether Cross-Encoder scoring is run online."
         ),
+        "offline_train_feature_seconds": {
+            "knowledge_hypergraph_features": train_feature_seconds,
+            "retrieval_only_features": retrieval_train_feature_seconds,
+        },
         "cross_encoder": cross_encoder_result,
-        "kch_medrank": kch_result,
+        "kch_medrank": results["kch_medrank"],
+        "kch_medrank_no_semantic": results["kch_medrank_no_semantic"],
+        "retrieval_ltr": results["retrieval_ltr"],
         "speedup_cross_encoder_over_kch": speedup,
     }
     write_json(args.output_json, payload)
@@ -432,6 +680,8 @@ def main() -> None:
             {
                 "method": "MedCPT Cross-Encoder",
                 "device": cross_encoder_result["device"],
+                "uses_ce_score": "yes",
+                "online_ce": "yes",
                 "questions": str(cross_encoder_result["num_questions"]),
                 "candidates": str(cross_encoder_result["num_candidates"]),
                 "rerank_seconds": format_seconds(cross_encoder_result["rerank_seconds"]),
@@ -443,21 +693,25 @@ def main() -> None:
                 "notes": "tokenization + forward",
             }
         )
-    rows.append(
-        {
-            "method": "KCH-MedRank",
-            "device": "CPU",
-            "questions": str(kch_result["num_questions"]),
-            "candidates": str(kch_result["num_candidates"]),
-            "rerank_seconds": format_seconds(kch_result["rerank_seconds"]),
-            "ms_per_query": format_ms(kch_result["seconds_per_query"]),
-            "candidates_per_second": format_seconds(kch_result["candidates_per_second"]),
-            "recall@10": format_metric(kch_result["metrics"]["recall@10"]),
-            "mrr@10": format_metric(kch_result["metrics"]["mrr@10"]),
-            "ndcg@10": format_metric(kch_result["metrics"]["ndcg@10"]),
-            "notes": "features + LightGBM",
-        }
-    )
+    for key in ["kch_medrank", "kch_medrank_no_semantic", "retrieval_ltr"]:
+        result = results[key]
+        rows.append(
+            {
+                "method": result["method"],
+                "device": "CPU",
+                "uses_ce_score": "yes" if result["uses_cross_encoder_score"] else "no",
+                "online_ce": "yes" if result["runs_cross_encoder_online"] else "no",
+                "questions": str(result["num_questions"]),
+                "candidates": str(result["num_candidates"]),
+                "rerank_seconds": format_seconds(result["rerank_seconds"]),
+                "ms_per_query": format_ms(result["seconds_per_query"]),
+                "candidates_per_second": format_seconds(result["candidates_per_second"]),
+                "recall@10": format_metric(result["metrics"]["recall@10"]),
+                "mrr@10": format_metric(result["metrics"]["mrr@10"]),
+                "ndcg@10": format_metric(result["metrics"]["ndcg@10"]),
+                "notes": result["notes"],
+            }
+        )
     write_markdown(args.output_md, rows)
     write_latex(args.output_tex, rows)
     print(json.dumps(payload, ensure_ascii=False, indent=2))

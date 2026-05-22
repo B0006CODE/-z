@@ -6,6 +6,13 @@ The failure analysis compares Enhanced Hybrid w122 with Enhanced KCH-MedRank at 
 
 \input{figures/case_study_en}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_05.png}
+\caption{Illustrative case-study schematic showing how KCH-MedRank can promote a supporting evidence passage that a strong Hybrid RRF baseline ranks too low by using biomedical entities, MeSH hierarchy, shared candidate clusters, and local hypergraph links.}
+\label{fig:gpt-case-study}
+\end{figure}
+
 Table~\ref{tab:case-study} illustrates one rescued case and one lost case. In the rescued p-crAssphage example, the gold passage moves from rank 54 to rank 1. The main alignment signal is the shared bacteriophage concept, supported by a local cluster of phage-related candidates. This pattern is consistent with the method design: MeSH and local hypergraph features can promote evidence that is medically aligned even when the initial enhanced hybrid ordering places it outside the top 10.
 
 The lost ubiquitination case shows the opposite behavior. A gold passage drops from rank 2 to rank 18 even though it discusses mono-ubiquitinated LDH-A and poly-ubiquitinated LDH. The question and passage contain related biochemical terminology, but the synonym and hierarchy features do not fully align the surface forms and broader post-translational-processing concepts. Similar losses occur for thyroid hormone analogs, cilengitide receptors, dasatinib treatment, GIST treatment, and Fanconi anemia. These examples motivate future improvements in biomedical concept normalization rather than stronger claims about the relation features.

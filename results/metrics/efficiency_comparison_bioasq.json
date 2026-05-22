@@ -1,7 +1,13 @@
 {
-  "timestamp": "2026-05-22T01:18:34.644467+00:00",
+  "timestamp": "2026-05-22T06:55:06.736390+00:00",
   "candidate_predictions": "outputs/retrieval/enhanced_hybrid_w122_full_top100.jsonl",
   "semantic_predictions": "outputs/retrieval/medcpt_dense_full_top100.jsonl",
+  "semantic_source": {
+    "semantic_source_type": "dense_or_dual_encoder_predictions",
+    "uses_cross_encoder_score": false,
+    "runs_cross_encoder_online": false,
+    "description": "outputs/retrieval/medcpt_dense_full_top100.jsonl"
+  },
   "qrels": "data/processed/bioasq_qrels.jsonl",
   "top_m": 100,
   "top_k": 100,
@@ -16,7 +22,11 @@
     ],
     "test_qids": 943
   },
-  "fairness_note": "Timing excludes first-stage candidate generation, one-time data/model loading, and offline LambdaMART training. MedCPT Cross-Encoder timing includes tokenizer preprocessing and neural forward scoring. KCH-MedRank timing includes test-time local feature construction, matrix creation, LightGBM scoring, and sorting.",
+  "fairness_note": "Timing excludes first-stage candidate generation, one-time data/model loading, and offline LambdaMART training. MedCPT Cross-Encoder timing includes tokenizer preprocessing and neural forward scoring. KCH-MedRank timing includes test-time local feature construction, matrix creation, LightGBM scoring, and sorting. Rows explicitly report whether Cross-Encoder scores are used and whether Cross-Encoder scoring is run online.",
+  "offline_train_feature_seconds": {
+    "knowledge_hypergraph_features": 140.6551397000003,
+    "retrieval_only_features": 2.5693687999992108
+  },
   "cross_encoder": {
     "method": "MedCPT Cross-Encoder",
     "model_name": "ncbi/MedCPT-Cross-Encoder",
@@ -49,21 +59,86 @@
       "validation_recall@10": 0.5575713528290549,
       "validation_ndcg@10": 0.6592553619599095
     },
-    "offline_train_feature_seconds": 138.75767730000007,
-    "offline_train_seconds": 2.194683300000179,
-    "rerank_feature_seconds": 33.442637900000136,
-    "rerank_scoring_seconds": 2.8675223999998707,
-    "rerank_seconds": 36.31016030000001,
+    "offline_train_seconds": 2.4418726000003517,
+    "rerank_feature_seconds": 34.59383119999984,
+    "rerank_scoring_seconds": 2.9953391999988526,
+    "rerank_seconds": 37.58917039999869,
     "num_questions": 943,
     "num_candidates": 94300,
-    "candidates_per_second": 2597.069228581731,
-    "seconds_per_query": 0.03850494199363733,
+    "candidates_per_second": 2508.7012827503977,
+    "seconds_per_query": 0.039861262354187375,
     "num_features": 45,
+    "uses_cross_encoder_score": false,
+    "runs_cross_encoder_online": false,
+    "semantic_source_type": "dense_or_dual_encoder_predictions",
+    "notes": "features + LightGBM; semantic=dense_or_dual_encoder_predictions",
     "metrics": {
       "recall@10": 0.5332155125589457,
       "mrr@10": 0.7882105404904981,
       "ndcg@10": 0.6446155854128816
     }
   },
-  "speedup_cross_encoder_over_kch": 19.263403127966907
+  "kch_medrank_no_semantic": {
+    "method": "KCH-MedRank without semantic feature",
+    "device": "CPU tabular scoring",
+    "selected_hyperparameters": {
+      "num_leaves": 15,
+      "learning_rate": 0.05,
+      "n_estimators": 160,
+      "blend_weight": 0.0,
+      "validation_mrr@10": 0.7852905569007264,
+      "validation_recall@10": 0.5512577935233799,
+      "validation_ndcg@10": 0.650310263030158
+    },
+    "offline_train_seconds": 1.5026254999975208,
+    "rerank_feature_seconds": 34.59383119999984,
+    "rerank_scoring_seconds": 2.9090723999979673,
+    "rerank_seconds": 37.50290359999781,
+    "num_questions": 943,
+    "num_candidates": 94300,
+    "candidates_per_second": 2514.4719727782763,
+    "seconds_per_query": 0.039769781124069786,
+    "num_features": 43,
+    "uses_cross_encoder_score": false,
+    "runs_cross_encoder_online": false,
+    "semantic_source_type": "excluded_from_features",
+    "notes": "knowledge/hypergraph features + LightGBM; semantic columns removed",
+    "metrics": {
+      "recall@10": 0.5243584054506719,
+      "mrr@10": 0.7790284300358532,
+      "ndcg@10": 0.6329565821909073
+    }
+  },
+  "retrieval_ltr": {
+    "method": "Retrieval-feature-only LambdaMART",
+    "device": "CPU tabular scoring",
+    "selected_hyperparameters": {
+      "num_leaves": 31,
+      "learning_rate": 0.05,
+      "n_estimators": 160,
+      "blend_weight": 0.0,
+      "validation_mrr@10": 0.783221516007533,
+      "validation_recall@10": 0.5464779231128621,
+      "validation_ndcg@10": 0.6447995397779273
+    },
+    "offline_train_seconds": 1.1326418000026024,
+    "rerank_feature_seconds": 0.17581829999835463,
+    "rerank_scoring_seconds": 0.6593919000006281,
+    "rerank_seconds": 0.8352101999989827,
+    "num_questions": 943,
+    "num_candidates": 94300,
+    "candidates_per_second": 112905.70924554663,
+    "seconds_per_query": 0.0008856948038165246,
+    "num_features": 7,
+    "uses_cross_encoder_score": false,
+    "runs_cross_encoder_online": false,
+    "semantic_source_type": "none",
+    "notes": "retrieval metadata features + LightGBM",
+    "metrics": {
+      "recall@10": 0.520787580632874,
+      "mrr@10": 0.7791458364894208,
+      "ndcg@10": 0.6282137439570264
+    }
+  },
+  "speedup_cross_encoder_over_kch": 18.607946066828447
 }

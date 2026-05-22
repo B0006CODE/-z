@@ -50,7 +50,7 @@ def build_feature_rows(
     structure: str = "knowledge_hypergraph",
     top_k: int = 100,
     rrf_k: int = 60,
-    iterations: int = 3,
+    iterations: int = 5,
     damping: float = 0.85,
     max_passage_entities: int = 48,
     max_passage_mesh: int = 32,

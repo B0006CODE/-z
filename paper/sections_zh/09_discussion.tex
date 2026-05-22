@@ -6,9 +6,9 @@
 
 额外的选择诊断也支持保持这一克制解释。一个补充实验将完整 KCH-MedRank 的验证选择主指标改为 Recall@10，但其留出测试 Recall@10 为 0.5294，低于本文报告的以验证 MRR 为主选择的主模型 0.5332。因此，本文保留原验证选择策略，而不是在观察留出测试结果后改调目标。该诊断也说明，单纯改变选择优先级不足以稳定提分；未来提升更可能来自更好的生物医学概念归一化和更稳定的特征组选择。
 
-PubMedQA Qwen3-8B pilot 增加了下游 RAG 系统诊断。在固定证据数量、prompt、模型和解码设置下，KCH 风格超图证据在 100 个 PubMedQA 问题上相对于 Hybrid RRF 证据提高了答案准确率和 Macro-F1。由于所有方法的引用支持率都已较高，该 pilot 不能被解读为忠实性显著改善的证明；它表明白盒证据选择可以在不训练或微调大模型的情况下影响下游 medical RAG 答案闭环。这强化了将 KCH-MedRank 视为证据控制层的动机，但完整生成评估和 PubMedQA MedCPT 重排序条件仍需后续完成。
+PubMedQA Qwen3-8B pilot 被保留为附录式下游 RAG 系统诊断。在固定证据数量、prompt、模型和解码设置下，KCH 风格超图证据在 100 个 PubMedQA 问题上相对于 Hybrid RRF 证据提高了答案准确率和 Macro-F1。由于所有方法的引用支持率都已较高，该 pilot 不能被解读为忠实性显著改善的证明；它表明白盒证据选择可以在不训练或微调大模型的情况下影响下游 medical RAG 答案闭环，但规模和条件仍不足以支撑主要答案生成主张。
 
-仍存在若干限制。第一，方法依赖强候选池；如果 top-100 召回较低，重排序无法恢复缺失证据。第二，PrimeKG 精确名称映射较稀疏，不能过度宣称。第三，强消融 bootstrap 检验显示完整 KCH-MedRank 与若干接近消融之间差异并不显著，因此超图、MeSH 层级、实体和关系信号应被描述为互补且可解释的信号，而不是单独占主导的因素。第四，Qwen3-8B 生成结果是 100 个 PubMedQA 问题的 pilot；在作为中心答案生成主张前，需要扩大规模并补充完整的生物医学 cross-encoder 条件。
+仍存在若干限制。第一，方法依赖强候选池；如果 top-100 召回较低，重排序无法恢复缺失证据。第二，PrimeKG 精确名称映射较稀疏，不能过度宣称。第三，强消融 bootstrap 检验显示完整 KCH-MedRank 与若干接近消融之间差异并不显著，因此超图、MeSH 层级、实体和关系信号应被描述为互补且可解释的信号，而不是单独占主导的因素。第四，NFCorpus 实验是 retrieval-only 且只使用检索特征，因此它支持监督重排序的稳健性，但不能证明 BioASQ 知识约束超图特征完整迁移。第五，Qwen3-8B 生成结果是 100 个 PubMedQA 问题的 pilot；在作为中心答案生成主张前，需要扩大规模并补充完整的生物医学 cross-encoder 条件。
 
 \subsection{计算 Profile}
 
@@ -18,6 +18,6 @@ PubMedQA Qwen3-8B pilot 增加了下游 RAG 系统诊断。在固定证据数量
 
 \input{tables/reranking_efficiency_zh}
 
-表~\ref{tab:reranking-efficiency} 报告了 BioASQ 留出测试集上的受控重排序阶段计时。两种方法使用相同的增强 top-100 候选池，共 943 个问题和 94,300 个候选段落。该比较不包含第一阶段候选生成和离线 LambdaMART 训练。在这一设置下，MedCPT Cross-Encoder 在 CUDA 上完成打分需要 699.46 秒，而 KCH-MedRank 在 CPU 上完成测试时特征构建和 LightGBM 打分需要 36.31 秒。因此，KCH-MedRank 在重排序阶段快 19.3 倍，同时在同一候选池上获得更高的 Recall@10、MRR@10 和 nDCG@10。这强化了主结果的实用解释：相对于 MedCPT Cross-Encoder 的 Recall@10 增益虽然不大，但它是在更低重排序延迟和可检查特征下获得的。包含第一阶段检索和数据加载开销的端到端生产环境基准仍留待后续工作。
+表~\ref{tab:reranking-efficiency} 报告了 BioASQ 留出测试集上的受控重排序阶段计时。所有行使用相同的增强 top-100 候选池，共 943 个问题和 94,300 个候选段落。该比较不包含第一阶段候选生成、一次性模型加载和离线 LambdaMART 训练，并明确区分是否使用 Cross-Encoder 分数以及是否在线运行 Cross-Encoder 打分。MedCPT Cross-Encoder 在 CUDA 上完成打分需要 699.46 秒。KCH-MedRank 使用预计算的稠密生物医学语义特征，而不是 Cross-Encoder 特征；其在 CPU 上完成测试时特征构建和 LightGBM 打分需要 37.59 秒，在该计时口径下对应 18.6 倍的重排序阶段加速。no-semantic KCH 诊断在 Recall@10 上仍与 MedCPT Cross-Encoder 具有竞争力（0.5244 对 0.5172），而仅检索特征的 LambdaMART 明显更快，但 top-10 证据质量低于完整 KCH-MedRank。该结果强化了主结果的实用解释，同时避免把速度比较建立在隐藏 Cross-Encoder 特征上。包含第一阶段检索和数据加载开销的端到端生产环境基准仍留待后续工作。
 
 未来工作应改进生物医学概念归一化，加强同义词和缩写处理，并在证据支持指标完整后扩大受控答案生成评估。更强的生成实验应衡量引用支持率、无支持声明和答案-证据实体一致性，而不仅是答案准确率。

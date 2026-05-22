@@ -171,6 +171,14 @@ def hierarchy_feature_values(
     covered_q = exact_overlap | ancestor_matches | parent_matches | sibling_matches
     covered_p |= exact_overlap
 
+    all_zero = (
+        len(exact_overlap) == 0
+        and len(parent_matches) == 0
+        and len(ancestor_matches) == 0
+        and len(sibling_matches) == 0
+        and len(best_similarities) == 0
+    )
+
     return {
         "mesh_hierarchy_exact_count": float(len(exact_overlap)),
         "mesh_parent_match_count": float(len(parent_matches)),
@@ -182,6 +190,8 @@ def hierarchy_feature_values(
         "question_mesh_hierarchy_coverage": len(covered_q) / len(q_set) if q_set else 0.0,
         "passage_mesh_hierarchy_coverage": len(covered_p) / len(p_set) if p_set else 0.0,
         "passage_mesh_specificity": sum(p_depths) / len(p_depths) if p_depths else 0.0,
+        "mesh_fallback_specificity": sum(p_depths) / len(p_depths) if (p_depths and all_zero) else 0.0,
+        "mesh_fallback_count": float(len(p_ids)) if (p_ids and all_zero) else 0.0,
     }
 
 

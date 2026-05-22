@@ -32,10 +32,12 @@ Enhanced KCH-MedRank 达到 Recall@10 = 0.5332、MRR@10 = 0.7882、nDCG@10 = 0.6
 
 \input{tables/pubmedqa_retrieval_diagnostic_zh}
 
-\subsection{答案支持分析}
+表~\ref{tab:nfcorpus-retrieval-diagnostic} 报告外部 BEIR NFCorpus retrieval-only 诊断。该实验使用官方 train、validation 和 test qrels，分别包含 2,590 个训练查询、324 个验证查询和 323 个测试查询。由于 NFCorpus 不使用本文项目特定的 MeSH、实体、PrimeKG 与局部超图特征文件，该诊断有意限制为 BM25、稠密检索、Hybrid RRF 和仅检索特征的 LambdaMART。相对于 Hybrid RRF，仅检索特征的 LambdaMART 将 Recall@10 从 0.1676 提高到 0.1770，将 MRR@10 从 0.5530 提高到 0.5725，将 nDCG@10 从 0.3436 提高到 0.3627。相对于 Hybrid RRF 的成对 bootstrap 显示 Recall@10 与 nDCG@10 提升显著（$p=0.0034$ 与 $p=0.0002$），MRR@10 为正向趋势（$p=0.0592$）。该结果支持监督重排序层的稳健性，而不声称完整 BioASQ 知识约束超图特征集可不加修改地迁移到 NFCorpus。
+
+\input{tables/nfcorpus_retrieval_diagnostic_zh}
+
+\subsection{诊断性答案支持分析}
 
 PubMedQA 答案选择分析进一步区分了证据检索与答案正确性。对于 Hybrid 和 HGB 的 top 10 证据，规则化引用支持率均为 1.0000，因为每个评估问题都至少检索到一个金标准证据段落。然而，答案支持率仍受轻量 yes/no/maybe 答案选择器限制：多数类基线的支持答案比例为 0.5550，而 TF-IDF 逻辑回归在 Hybrid 与 HGB top 10 上分别为 0.5050 和 0.4800。在 98 个抽取到问题实体的问题中，top 10 答案-证据实体一致性为 0.5510。这些分析使用 qrels、金标准标签和确定性实体重叠，而不是 LLM 评审。因此，在加入更强答案与忠实性建模前，答案生成仍应作为次要任务。
 
-表~\ref{tab:pubmedqa-qwen-pilot} 报告受控 Qwen3-8B pilot。在 100 个 PubMedQA 问题上，相对于 Hybrid RRF 证据，KCH 风格超图证据在相同 prompt 和解码设置下将答案准确率从 0.3400 提高到 0.3700，将 Macro-F1 从 0.3506 提高到 0.3760。三个证据来源的引用支持率均为 0.9900，因此该 pilot 未显示引用支持差异；主要结论是证据排序可能影响下游标签选择。由于 PubMedQA cross-encoder 条件使用的是当前可用的语义 cross-encoder 输出，而不是已完成的 MedCPT PubMedQA 复现实验，该结果被报告为诊断性 RAG 闭环，而不是完整第二数据集主张。
-
-\input{tables/pubmedqa_qwen_pilot_zh}
+Qwen3-8B 下游生成 pilot 已移至附录作为有限诊断。它有助于检查证据排序是否会影响固定下游答案闭环，但不作为主要贡献，也不作为临床可靠生成的证据。

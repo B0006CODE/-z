@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-05-18T09:59:38.369210+00:00",
+  "timestamp": "2026-05-22T07:08:21.912379+00:00",
   "index_action": "loaded",
-  "index_path": "indexes\\bm25\\bioasq_bm25.pkl",
-  "num_questions": 4719,
-  "num_corpus_passages": 40221,
+  "index_path": "indexes\\bm25\\nfcorpus_bm25.pkl",
+  "num_questions": 3237,
+  "num_corpus_passages": 3633,
   "top_k": 100,
-  "num_predictions": 471900,
-  "output": "outputs/retrieval/bm25_full_top100.jsonl"
+  "num_predictions": 215262,
+  "output": "outputs/retrieval/nfcorpus_bm25_full_top100.jsonl"
 }

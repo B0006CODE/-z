@@ -1,7 +1,7 @@
 \begin{table}[t]
 \centering
 \small
-\caption{Ablation summary on the enhanced BioASQ held-out test split. Deltas are relative to enhanced Hybrid RRF.}
+\caption{Complementary leave-one-feature-group diagnostics on the enhanced BioASQ held-out test split. Deltas are relative to enhanced Hybrid RRF. Due to high feature multicollinearity, individual removals do not produce statistically significant differences; see Section~7 for the primary structural ablation.}
 \label{tab:kch-ablation-summary}
 \begin{tabular}{lrrrr}
 \toprule
@@ -9,15 +9,15 @@ Method & Recall@10 & MRR@10 & nDCG@10 & $\Delta$R@10 \\
 \midrule
 Enhanced Hybrid RRF & 0.4660 & 0.7530 & 0.5844 & -- \\
 Retrieval-feature-only LambdaMART & 0.5208 & 0.7791 & 0.6282 & +0.0548 \\
-LambdaMART + semantic, no hypergraph & 0.5328 & 0.7885 & 0.6451 & +0.0669 \\
-Pairwise graph LTR & 0.5292 & 0.7876 & 0.6412 & +0.0632 \\
+LambdaMART + semantic, no hypergraph & 0.5309 & 0.7872 & 0.6436 & +0.0649 \\
+Pairwise graph LTR & 0.5306 & 0.7866 & 0.6409 & +0.0646 \\
 Hypergraph LTR without medical knowledge & 0.5266 & 0.7782 & 0.6362 & +0.0606 \\
-Full KCH-MedRank & 0.5332 & 0.7882 & 0.6446 & +0.0673 \\
-Remove semantic score & 0.5244 & 0.7790 & 0.6330 & +0.0584 \\
-Remove MeSH hierarchy & 0.5355 & 0.7854 & 0.6441 & +0.0696 \\
-Remove entity features & 0.5318 & 0.7893 & 0.6443 & +0.0658 \\
-Remove hypergraph diffusion/centrality & 0.5341 & 0.7872 & 0.6452 & +0.0681 \\
-Remove PrimeKG relations & 0.5252 & 0.7834 & 0.6375 & +0.0592 \\
+Full KCH-MedRank & 0.5329 & 0.7867 & 0.6433 & +0.0669 \\
+Remove semantic score & 0.5276 & 0.7852 & 0.6374 & +0.0616 \\
+Remove MeSH hierarchy & 0.5332 & 0.7871 & 0.6440 & +0.0672 \\
+Remove entity features & 0.5313 & 0.7842 & 0.6403 & +0.0653 \\
+Remove hypergraph diffusion/centrality & 0.5328 & 0.7880 & 0.6453 & +0.0668 \\
+Remove PrimeKG relations & 0.5338 & 0.7863 & 0.6439 & +0.0679 \\
 \bottomrule
 \end{tabular}
 \end{table}

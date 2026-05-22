@@ -8,7 +8,7 @@ Table~\ref{tab:enhanced-bioasq-main-results} summarizes the main held-out BioASQ
 
 \subsection{Main Held-Out Test Results}
 
-Enhanced KCH-MedRank reaches Recall@10 of 0.5332, MRR@10 of 0.7882, nDCG@10 of 0.6446, and Recall@100 of 0.7388. Relative to original Hybrid RRF, this corresponds to gains of +0.0696 Recall@10, +0.0332 MRR@10, and +0.0598 nDCG@10. Relative to the enhanced Hybrid RRF candidate ordering, KCH-MedRank improves Recall@10 by +0.0673, MRR@10 by +0.0352, nDCG@10 by +0.0602, and evidence coverage@10 by +0.0673.
+Enhanced KCH-MedRank reaches Recall@10 of 0.5329, MRR@10 of 0.7867, nDCG@10 of 0.6433, and Recall@100 of 0.7388. Relative to original Hybrid RRF, this corresponds to gains of +0.0693 Recall@10, +0.0317 MRR@10, and +0.0585 nDCG@10. Relative to the enhanced Hybrid RRF candidate ordering, KCH-MedRank improves Recall@10 by +0.0669, MRR@10 by +0.0337, nDCG@10 by +0.0589, and evidence coverage@10 by +0.0669.
 
 Table~\ref{tab:enhanced-bioasq-bootstrap-hybrid} reports paired bootstrap testing against enhanced Hybrid RRF. All four top-10 metrics are significant with $p=0.0002$. This confirms that the improvement is not only a consequence of the stronger candidate pool: the reranking step itself changes the top-10 evidence ordering in a measurable way.
 
@@ -16,15 +16,15 @@ Table~\ref{tab:enhanced-bioasq-bootstrap-hybrid} reports paired bootstrap testin
 
 \subsection{Comparison with Biomedical Semantic Reranking}
 
-On the same enhanced candidate pool, the true MedCPT Cross-Encoder baseline reaches Recall@10 of 0.5172, MRR@10 of 0.7775, and nDCG@10 of 0.6390. Table~\ref{tab:enhanced-bioasq-significance} reports paired bootstrap results against this strong semantic baseline. KCH-MedRank significantly improves Recall@10 ($p=0.0074$), while MRR@10 and nDCG@10 are positive but not statistically significant.
+On the same enhanced candidate pool, the true MedCPT Cross-Encoder baseline reaches Recall@10 of 0.5172, MRR@10 of 0.7775, and nDCG@10 of 0.6390. Table~\ref{tab:enhanced-bioasq-significance} reports paired bootstrap results against this strong semantic baseline. KCH-MedRank significantly improves Recall@10 (+0.0157, $p=0.0076$), while MRR@10 and nDCG@10 are positive but not statistically significant.
 
 \input{tables/enhanced_bioasq_significance}
 
-The comparison with MedCPT Cross-Encoder is the stricter test for the proposed reranker. It shows that KCH-MedRank improves evidence coverage at top 10 beyond a strong biomedical semantic reranker, but the rank-sensitive MRR and nDCG gains should be described as positive trends rather than significant improvements. These results support the paper's evidence-retrieval claim. They do not yet justify making answer generation the primary contribution.
+The comparison with MedCPT Cross-Encoder is the stricter test for the proposed reranker. It shows that KCH-MedRank improves evidence coverage at top 10 beyond a strong biomedical semantic reranker. The rank-sensitive MRR and nDCG gains are positive trends but not significant, consistent with the interpretation that the method is particularly effective at recovering additional relevant evidence into the top-10 set. These results support the paper's evidence-retrieval claim. They do not yet justify making answer generation the primary contribution.
 
 \subsection{Hard Reranking and PubMedQA Diagnostics}
 
-Table~\ref{tab:hard-subset-diagnostic} reports the diagnostic hard subset in which the enhanced Hybrid candidate pool contains gold evidence in the top 100 but misses all gold evidence in the top 10. This subset contains 65 held-out BioASQ questions and is not used as a replacement for the full test set. On this subset, enhanced Hybrid RRF has Recall@10 of 0 by construction, while full KCH-MedRank reaches Recall@10 of 0.4751. The result indicates that the reranker can recover a substantial fraction of missed top-10 evidence when the candidate pool contains recoverable gold passages. The subset also confirms the broader ablation pattern: retrieval and semantic features explain much of the recovery, and hypergraph/medical features should be interpreted as complementary rather than as a standalone source of all gains.
+Table~\ref{tab:hard-subset-diagnostic} reports the diagnostic hard subset in which the enhanced Hybrid candidate pool contains gold evidence in the top 100 but misses all gold evidence in the top 10. This subset contains 65 held-out BioASQ questions and is not used as a replacement for the full test set. On this subset, enhanced Hybrid RRF has Recall@10 of 0 by construction, while full KCH-MedRank reaches Recall@10 of 0.4704 and the retrieval-feature-only LambdaMART reaches 0.4411. The result indicates that the reranker can recover a substantial fraction of missed top-10 evidence when the candidate pool contains recoverable gold passages. Section~7 provides a detailed structural ablation showing that biomedical semantic features and medical knowledge constraints each contribute independently to this recovery.
 
 \input{tables/hard_subset_diagnostic}
 
@@ -32,10 +32,12 @@ Table~\ref{tab:pubmedqa-retrieval-diagnostic} gives a secondary PubMedQA retriev
 
 \input{tables/pubmedqa_retrieval_diagnostic}
 
-\subsection{Answer-Support Analysis}
+Table~\ref{tab:nfcorpus-retrieval-diagnostic} reports the external BEIR NFCorpus retrieval-only diagnostic. This run uses the official train, validation, and test qrels, with 2,590 training queries, 324 validation queries, and 323 test queries. Because NFCorpus does not use the same project-specific MeSH, entity, PrimeKG, and local hypergraph feature files, the diagnostic is intentionally limited to BM25, dense retrieval, Hybrid RRF, and retrieval-feature LambdaMART. Retrieval-feature LambdaMART improves Recall@10 from 0.1676 to 0.1770, MRR@10 from 0.5530 to 0.5725, and nDCG@10 from 0.3436 to 0.3627 over Hybrid RRF. Paired bootstrap against Hybrid RRF gives significant Recall@10 and nDCG@10 improvements ($p=0.0034$ and $p=0.0002$), while MRR@10 is a positive trend ($p=0.0592$). The result supports robustness of the supervised reranking layer, not a claim that the full BioASQ knowledge-constrained hypergraph feature set transfers unchanged to NFCorpus.
+
+\input{tables/nfcorpus_retrieval_diagnostic}
+
+\subsection{Diagnostic Answer-Support Analysis}
 
 PubMedQA answer-selection analysis further separates evidence retrieval from answer correctness. For Hybrid and HGB evidence at top 10, the rule-based citation support rate is 1.0000 because at least one gold evidence passage is retrieved for each evaluated question. However, answer-supported rate remains limited by the lightweight yes/no/maybe answer selector: the majority baseline reaches 0.5550 supported answers, while TF-IDF logistic regression reaches 0.5050 for Hybrid and 0.4800 for HGB at top 10. Among the 98 questions with extracted question entities, answer-evidence entity consistency is 0.5510 at top 10. These analyses use qrels, gold labels, and deterministic entity overlap rather than an LLM judge. They support keeping generation secondary until stronger answer and faithfulness modeling is added.
 
-Table~\ref{tab:pubmedqa-qwen-pilot} reports the controlled Qwen3-8B pilot. On 100 PubMedQA questions, KCH-style hypergraph evidence improves answer accuracy from 0.3400 to 0.3700 and Macro-F1 from 0.3506 to 0.3760 relative to Hybrid RRF evidence under the same prompt and decoding settings. Citation support is 0.9900 for all three evidence sources, so the pilot does not show a citation-support difference; it mainly suggests that evidence ordering can affect downstream label selection. Because the PubMedQA cross-encoder condition uses the available semantic cross-encoder output rather than a completed MedCPT PubMedQA rerun, this result is reported as a diagnostic RAG loop rather than a full secondary-dataset claim.
-
-\input{tables/pubmedqa_qwen_pilot}
+The Qwen3-8B downstream generation pilot is moved to the appendix as a limited diagnostic. It is useful for checking whether evidence ordering can affect a fixed downstream answer loop, but it is not used as a primary contribution or as evidence of clinically reliable generation.

@@ -20,6 +20,13 @@ The main hyperedge types are question-entity, question-MeSH, question-passage ca
 
 The local design avoids constructing a global graph over millions of biomedical passages. It also keeps the method interpretable: feature inspection and case studies can report which concept overlaps, hierarchy links, shared candidate clusters, or hypergraph centrality signals influenced reranking.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_02.png}
+\caption{Local knowledge-constrained hypergraph structure around one question and its candidate passages. Nodes represent questions, passages, documents, biomedical entities, MeSH concepts, and auxiliary relation endpoints; translucent regions and bundled links indicate multi-node hyperedges used for interpretable ranking features.}
+\label{fig:gpt-local-hypergraph}
+\end{figure}
+
 \subsection{Hypergraph Diffusion and Structural Features}
 
 KCH-MedRank uses hypergraph diffusion as an interpretable feature rather than as a standalone ranking formula. The seed distribution places mass on the question node, question entity nodes, and question MeSH nodes. At each iteration, scores are propagated through weighted hyperedges:
@@ -36,6 +43,13 @@ PrimeKG-derived features are included only as auxiliary relation signals: relati
 
 \begin{figure}[t]
 \centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_03.png}
+\caption{Feature extraction and query-group learning-to-rank module. Retrieval scores, precomputed biomedical semantic retrieval features, and knowledge-constrained hypergraph features are combined in a LambdaMART-style ranker to produce the final evidence ordering.}
+\label{fig:gpt-feature-reranker}
+\end{figure}
+
+\begin{figure}[t]
+\centering
 \fbox{
 \begin{minipage}{0.94\textwidth}
 \textbf{Algorithm 1: KCH-MedRank local evidence control and reranking}
@@ -44,7 +58,7 @@ PrimeKG-derived features are included only as auxiliary relation signals: relati
   \item \textbf{Local hypergraph construction.} Create nodes for $q$, candidate passages, documents, extracted biomedical entities, MeSH descriptors, MeSH hierarchy concepts, and optional relation endpoints. Add hyperedges for query-concept, passage-concept, document-MeSH, shared-concept candidate clusters, hierarchy links, candidate membership, and auxiliary PrimeKG relations.
   \item \textbf{Hyperedge weighting and normalization.} Assign edge weights by source reliability and local evidence strength: candidate membership edges use normalized RRF scores; entity and MeSH edges use normalized overlap/coverage; hierarchy edges use inverse tree distance; relation edges are down-weighted because of sparse exact-name coverage. Within each local graph, incident edge weights are normalized before propagation.
   \item \textbf{Diffusion propagation.} Initialize mass on the question, query-entity, and query-MeSH nodes. Run three restart diffusion iterations with $\alpha=0.85$, then normalize passage diffusion scores within the candidate set.
-  \item \textbf{Passage feature extraction.} For each passage, concatenate retrieval scores and ranks, biomedical semantic scores, entity overlap, MeSH exact and hierarchy features, auxiliary relation features, diffusion scores, centrality, and local graph-count features.
+  \item \textbf{Passage feature extraction.} For each passage, concatenate retrieval scores and ranks, precomputed biomedical semantic retrieval features, entity overlap, MeSH exact and hierarchy features, auxiliary relation features, diffusion scores, centrality, and local graph-count features.
   \item \textbf{Query-group LambdaMART scoring.} Train a LightGBM LambdaMART ranker with one group per question on train plus validation after validation-only model selection. Score test candidates once and sort passages by the learned score to produce the final evidence ranking.
 \end{enumerate}
 \end{minipage}}
@@ -54,7 +68,7 @@ PrimeKG-derived features are included only as auxiliary relation signals: relati
 
 \subsection{Learning-to-Rank}
 
-The main supervised reranker is a query-group learning-to-rank model: a LightGBM gradient boosted tree ranker trained with a LambdaMART-style objective \citep{ke2017lightgbm}. Each question forms one ranking group, candidate passages form rows, and binary relevance labels are derived from gold evidence annotations. The feature vector combines retrieval scores, biomedical semantic scores, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and local hypergraph structural features.
+The main supervised reranker is a query-group learning-to-rank model: a LightGBM gradient boosted tree ranker trained with a LambdaMART-style objective \citep{ke2017lightgbm}. Each question forms one ranking group, candidate passages form rows, and binary relevance labels are derived from gold evidence annotations. The feature vector combines retrieval scores, precomputed biomedical semantic retrieval features, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and local hypergraph structural features.
 
 Hyperparameters are selected on the validation split. The reported search space is number of leaves $\{15,31\}$, learning rate $\{0.03,0.05\}$, estimators $\{80,160\}$, and blend weight $\{0,0.1,0.2,0.35\}$, where the blend weight interpolates model scores with the original candidate rank score. Selection prioritizes validation MRR@10, then Recall@10 and nDCG@10. After validation selection, the final model is trained on train plus validation questions and evaluated once on the held-out test split.
 

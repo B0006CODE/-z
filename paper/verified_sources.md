@@ -6,7 +6,7 @@ Accessed date for all links: 2026-05-21.
 | --- | --- | --- |
 | `xiong2024benchmarking` | https://aclanthology.org/2024.findings-acl.372/ | ACL Anthology metadata for MedRAG / medical MIRAGE benchmarking. |
 | `xiong2024imedrag` | https://arxiv.org/abs/2408.00727 | Official arXiv metadata for iterative medical RAG. |
-| `jin2023medcpt` | https://arxiv.org/abs/2307.00589 | Official arXiv metadata for MedCPT. |
+| `jin2023medcpt` | https://academic.oup.com/bioinformatics/article/39/11/btad651/7335842 | Official Bioinformatics article metadata for MedCPT; supersedes the earlier arXiv-only record. |
 | `jin2019pubmedqa` | https://aclanthology.org/D19-1259/ | ACL Anthology metadata for PubMedQA. |
 | `krithara2023bioasqqa` | https://pubmed.ncbi.nlm.nih.gov/36973320/ | PubMed metadata for BioASQ-QA. |
 | `tsatsaronis2015bioasq` | https://link.springer.com/article/10.1186/s12859-015-0564-6 and https://pubmed.ncbi.nlm.nih.gov/25925131/ | Springer/PubMed metadata for BioASQ challenge overview. |
@@ -21,3 +21,4 @@ Accessed date for all links: 2026-05-21.
 | `robertson2009bm25` | https://ir.webis.de/anthology/2009.ftir_journal-ir0anthology0volumeA3A4.0/ | IR Anthology metadata for BM25 and PRF. |
 | `cormack2009rrf` | https://research.google/pubs/reciprocal-rank-fusion-outperforms-condorcet-and-individual-rank-learning-methods/ | Google Research metadata for RRF. |
 | `ke2017lightgbm` | https://proceedings.neurips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html | NeurIPS metadata for LightGBM. |
+| `thakur2021beir` | https://arxiv.org/abs/2104.08663 | Official arXiv metadata for BEIR; used for the external NFCorpus retrieval diagnostic. |

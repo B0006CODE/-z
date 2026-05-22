@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-05-22T07:10:50.674996+00:00",
+  "dataset": "BEIR NFCorpus",
+  "qrels": "data/processed/nfcorpus_qrels_test.jsonl",
+  "baseline_predictions": "outputs/retrieval/nfcorpus_hybrid_full_top100.jsonl",
+  "candidate_predictions": "outputs/rerank/nfcorpus_retrieval_ltr_test_top100.jsonl",
+  "baseline_label": "Hybrid RRF",
+  "candidate_label": "Retrieval-feature LambdaMART",
+  "num_paired_questions": 323,
+  "num_qrels_questions": 323,
+  "num_baseline_questions": 3237,
+  "num_candidate_questions": 323,
+  "num_bootstrap": 10000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.5530112044817926,
+      "candidate_mean": 0.5725133913214409,
+      "delta": 0.01950218683964814,
+      "relative_delta_percent": 3.526544612766563,
+      "ci_lower": -0.000884717922256622,
+      "ci_upper": 0.04022894245417464,
+      "p_value_two_sided": 0.059194080591940805
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.16764600963086718,
+      "candidate_mean": 0.1769896919206852,
+      "delta": 0.009343682289818028,
+      "relative_delta_percent": 5.573459404367271,
+      "ci_lower": 0.002759275791371693,
+      "ci_upper": 0.01772849155328923,
+      "p_value_two_sided": 0.0033996600339966003
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.3436154775394661,
+      "candidate_mean": 0.3626629429891547,
+      "delta": 0.01904746544968862,
+      "relative_delta_percent": 5.543250142887093,
+      "ci_lower": 0.00906088316584599,
+      "ci_upper": 0.029974064365109677,
+      "p_value_two_sided": 0.00019998000199980003
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 0.7213622291021672,
+      "candidate_mean": 0.7461300309597523,
+      "delta": 0.02476780185758514,
+      "relative_delta_percent": 3.4334763948497855,
+      "ci_lower": -0.0030959752321981426,
+      "ci_upper": 0.05263157894736842,
+      "p_value_two_sided": 0.0831916808319168
+    }
+  ]
+}

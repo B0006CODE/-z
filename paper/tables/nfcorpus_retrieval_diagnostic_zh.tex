@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{官方测试划分上的外部 BEIR NFCorpus retrieval-only 诊断。LambdaMART 行仅使用 BM25、dense、Hybrid RRF、分数和排名特征；不使用 NFCorpus 特定的 MeSH、实体、PrimeKG 或超图特征。}
+\label{tab:nfcorpus-retrieval-diagnostic}
+\begin{tabular}{lrrrr}
+\toprule
+方法 & Recall@10 & MRR@10 & nDCG@10 & Recall@100 \\
+\midrule
+BM25 & 0.1379 & 0.5063 & 0.2933 & 0.2228 \\
+Dense & 0.1674 & 0.5399 & 0.3496 & 0.3096 \\
+Hybrid RRF & 0.1676 & 0.5530 & 0.3436 & 0.3242 \\
+Retrieval-feature LambdaMART & 0.1770 & 0.5725 & 0.3627 & 0.3242 \\
+\bottomrule
+\end{tabular}
+\end{table}

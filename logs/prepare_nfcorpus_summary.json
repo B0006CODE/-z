@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-05-22T07:06:46.288187+00:00",
+  "dataset": "BeIR/nfcorpus",
+  "qrels_dataset": "BeIR/nfcorpus-qrels",
+  "license_note": "BeIR/nfcorpus is distributed on Hugging Face with CC-BY-SA-4.0 metadata.",
+  "num_corpus_passages": 3633,
+  "num_queries_with_qrels": 3237,
+  "num_all_qrels": 134294,
+  "split_counts": {
+    "train": {
+      "qrels": 110575,
+      "questions": 2590,
+      "relevance_distribution": {
+        "1.0": 110575
+      }
+    },
+    "validation": {
+      "qrels": 11385,
+      "questions": 324,
+      "relevance_distribution": {
+        "2.0": 521,
+        "1.0": 10864
+      }
+    },
+    "test": {
+      "qrels": 12334,
+      "questions": 323,
+      "relevance_distribution": {
+        "2.0": 576,
+        "1.0": 11758
+      }
+    }
+  },
+  "sample": {
+    "sample_size": 10,
+    "sample_questions": 10,
+    "sample_qrels": 303
+  },
+  "outputs": {
+    "corpus": "data\\processed\\nfcorpus_corpus.jsonl",
+    "questions": "data\\processed\\nfcorpus_questions.jsonl",
+    "qrels_all": "data\\processed\\nfcorpus_qrels_all.jsonl"
+  }
+}

@@ -65,6 +65,8 @@ MESH_HIERARCHY_FEATURES = [
     "shared_mesh_parent_cluster_size",
     "shared_mesh_term_cluster_ratio",
     "shared_mesh_parent_cluster_ratio",
+    "mesh_fallback_specificity",
+    "mesh_fallback_count",
 ]
 PRIMEKG_FEATURES = [
     "primekg_relation_count",
@@ -84,6 +86,11 @@ HYPERGRAPH_FEATURES = [
     "local_mesh_ancestor_edges",
     "local_primekg_relation_edges",
 ]
+INTERACTION_FEATURES = [
+    "hypergraph_x_inverse_rank",
+    "mesh_cluster_x_inverse_semantic",
+    "mesh_specificity_x_inverse_rank",
+]
 ALL_FEATURES = [
     *RETRIEVAL_FEATURES,
     *SEMANTIC_FEATURES,
@@ -92,6 +99,7 @@ ALL_FEATURES = [
     *MESH_HIERARCHY_FEATURES,
     *PRIMEKG_FEATURES,
     *HYPERGRAPH_FEATURES,
+    *INTERACTION_FEATURES,
 ]
 
 
@@ -134,7 +142,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-prefix", default="kch_medrank")
     parser.add_argument("--top-k", type=int, default=100)
     parser.add_argument("--rrf-k", type=int, default=60)
-    parser.add_argument("--iterations", type=int, default=3)
+    parser.add_argument("--iterations", type=int, default=5)
     parser.add_argument("--damping", type=float, default=0.85)
     parser.add_argument("--max-passage-entities", type=int, default=48)
     parser.add_argument("--max-passage-mesh", type=int, default=32)
@@ -270,6 +278,14 @@ def add_enriched_features(
                 )
             )
             features.update(cluster_features.get(pid, {}))
+            hg_score = float(features.get("hypergraph_score_norm", 0.0))
+            rank_pct = float(features.get("rank_percentile", 0.0))
+            sem_rank = float(features.get("biomedical_semantic_rank_score", 0.0))
+            mesh_cluster = float(features.get("shared_mesh_term_cluster_size", 0.0))
+            specificity = float(features.get("passage_mesh_specificity", 0.0))
+            features["hypergraph_x_inverse_rank"] = hg_score * max(0.0, 1.0 - rank_pct)
+            features["mesh_cluster_x_inverse_semantic"] = mesh_cluster * max(0.0, 1.0 - sem_rank)
+            features["mesh_specificity_x_inverse_rank"] = specificity * max(0.0, 1.0 - rank_pct)
 
 
 def build_all_feature_rows(
@@ -338,7 +354,7 @@ def feature_names_for(setting: str) -> list[str]:
     elif setting == "remove_entity":
         selected = set(ALL_FEATURES) - set(ENTITY_FEATURES)
     elif setting == "remove_hypergraph":
-        selected = set(ALL_FEATURES) - set(HYPERGRAPH_FEATURES)
+        selected = set(ALL_FEATURES) - set(HYPERGRAPH_FEATURES) - set(INTERACTION_FEATURES)
     elif setting == "remove_primekg":
         selected = set(ALL_FEATURES) - set(PRIMEKG_FEATURES)
     else:

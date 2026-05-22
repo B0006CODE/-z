@@ -310,37 +310,44 @@ def diffuse(
     graph: LocalHypergraph,
     seed_nodes: list[str],
     *,
-    iterations: int = 3,
+    iterations: int = 5,
     damping: float = 0.85,
 ) -> dict[str, float]:
     node_index = {node_id: idx for idx, node_id in enumerate(graph.nodes)}
-    seed = np.zeros(len(graph.nodes), dtype=np.float64)
-    for node_id in seed_nodes:
-        idx = node_index.get(node_id)
-        if idx is not None:
-            seed[idx] += 1.0
+    n = len(graph.nodes)
+
+    seed = np.zeros(n, dtype=np.float64)
+    q_idx = node_index.get(graph.question_node)
+    if q_idx is not None:
+        seed[q_idx] = 1.0
     if seed.sum() == 0:
-        idx = node_index.get(graph.question_node)
-        if idx is not None:
-            seed[idx] = 1.0
+        for node_id in seed_nodes:
+            idx = node_index.get(node_id)
+            if idx is not None:
+                seed[idx] += 1.0
     seed = seed / seed.sum() if seed.sum() else seed
     scores = seed.copy()
 
-    indexed_edges = [
-        ([node_index[node] for node in edge.nodes if node in node_index], max(float(edge.weight), 0.0))
-        for edge in graph.hyperedges
-    ]
-    indexed_edges = [(indices, weight) for indices, weight in indexed_edges if len(indices) >= 2 and weight > 0]
+    adj: dict[int, list[tuple[int, float]]] = {i: [] for i in range(n)}
+    for edge in graph.hyperedges:
+        indices = [node_index[node] for node in edge.nodes if node in node_index]
+        if len(indices) < 2:
+            continue
+        specificity = 1.0 / np.log1p(len(indices))
+        edge_w = max(float(edge.weight), 0.0) * specificity
+        deg = max(len(indices) - 1, 1)
+        for i in indices:
+            for j in indices:
+                if i != j:
+                    adj[i].append((j, edge_w / deg))
 
     for _ in range(iterations):
         next_scores = (1.0 - damping) * seed
-        for indices, weight in indexed_edges:
-            edge_mass = float(scores[indices].mean()) * weight
-            if edge_mass <= 0:
+        for i in range(n):
+            if scores[i] <= 0:
                 continue
-            share = damping * edge_mass / len(indices)
-            for idx in indices:
-                next_scores[idx] += share
+            for j, w in adj[i]:
+                next_scores[j] += damping * scores[i] * w
         total = float(next_scores.sum())
         scores = next_scores / total if total > 0 else next_scores
 
@@ -367,7 +374,7 @@ def hypergraph_features(
     entity_relations: dict[str, list[dict[str, Any]]] | None = None,
     *,
     structure: str = "knowledge_hypergraph",
-    iterations: int = 3,
+    iterations: int = 5,
     damping: float = 0.85,
     max_passage_entities: int = 48,
     max_passage_mesh: int = 32,

@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-05-18T10:26:42.831192+00:00",
-  "bm25_predictions": "outputs\\retrieval\\bm25_full_top100.jsonl",
-  "dense_predictions": "outputs\\retrieval\\dense_full_top100.jsonl",
-  "output": "outputs\\retrieval\\hybrid_full_top100.jsonl",
-  "num_bm25_rows": 471900,
-  "num_dense_rows": 471900,
-  "num_questions": 4719,
+  "timestamp": "2026-05-22T07:09:00.959938+00:00",
+  "bm25_predictions": "outputs/retrieval/nfcorpus_bm25_full_top100.jsonl",
+  "dense_predictions": "outputs/retrieval/nfcorpus_dense_full_top100.jsonl",
+  "output": "outputs/retrieval/nfcorpus_hybrid_full_top100.jsonl",
+  "num_bm25_rows": 215262,
+  "num_dense_rows": 323700,
+  "num_questions": 3237,
   "top_k": 100,
   "rrf_k": 60,
   "bm25_weight": 1.0,
   "dense_weight": 1.0,
-  "num_predictions": 471900
+  "num_predictions": 323700
 }

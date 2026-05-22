@@ -20,6 +20,13 @@
 
 局部设计避免在数百万生物医学段落上构建全局图。同时，该设计保持方法可解释：特征分析和案例研究可以报告哪些概念重叠、层级链接、共享候选簇或超图中心性信号影响了重排序。
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_02.png}
+\caption{围绕单个问题及其候选段落构建的局部知识约束超图。节点表示问题、段落、文档、生物医学实体、MeSH 概念和辅助关系端点；半透明区域和成束连线表示用于可解释排序特征的多节点超边。}
+\label{fig:gpt-local-hypergraph}
+\end{figure}
+
 \subsection{超图扩散与结构特征}
 
 KCH-MedRank 将超图扩散作为可解释特征，而不是作为独立的重排序公式。种子分布在问题节点、问题实体节点和问题 MeSH 节点上赋予初始质量。每次迭代通过加权超边传播分数：
@@ -36,6 +43,13 @@ PrimeKG 派生特征仅作为辅助关系信号，包括关系数量、问题关
 
 \begin{figure}[t]
 \centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_03.png}
+\caption{特征抽取与查询分组学习排序模块。检索分数、预计算的生物医学语义检索特征和知识约束超图特征共同输入 LambdaMART 风格排序器，以产生最终证据排序。}
+\label{fig:gpt-feature-reranker}
+\end{figure}
+
+\begin{figure}[t]
+\centering
 \fbox{
 \begin{minipage}{0.94\textwidth}
 \textbf{算法 1：KCH-MedRank 局部证据控制与重排序}
@@ -44,7 +58,7 @@ PrimeKG 派生特征仅作为辅助关系信号，包括关系数量、问题关
   \item \textbf{局部超图构建。} 为 $q$、候选段落、文档、抽取的生物医学实体、MeSH 描述符、MeSH 层级概念和可选关系端点创建节点。加入 query-concept、passage-concept、document-MeSH、共享概念候选簇、层级链接、候选成员关系和辅助 PrimeKG 关系超边。
   \item \textbf{超边加权与归一化。} 根据来源可靠性和局部证据强度设置边权：候选成员边使用归一化 RRF 分数，实体和 MeSH 边使用归一化重叠/覆盖，层级边使用树距离倒数，关系边因精确名称覆盖稀疏而降低权重。每个局部图内部在传播前对关联边权进行归一化。
   \item \textbf{扩散传播。} 在问题节点、问题实体节点和问题 MeSH 节点初始化质量。以 $\alpha=0.85$ 运行三轮带重启扩散，并在候选集合内归一化段落扩散分数。
-  \item \textbf{段落特征抽取。} 对每个段落拼接检索分数与排名、生物医学语义分数、实体重叠、MeSH 精确与层级特征、辅助关系特征、扩散分数、中心性和局部图计数特征。
+  \item \textbf{段落特征抽取。} 对每个段落拼接检索分数与排名、预计算的生物医学语义检索特征、实体重叠、MeSH 精确与层级特征、辅助关系特征、扩散分数、中心性和局部图计数特征。
   \item \textbf{查询分组 LambdaMART 打分。} 在验证集模型选择后，使用每个问题作为一个 group 训练 LightGBM LambdaMART 排序器，并在测试候选上打分排序得到最终证据列表。
 \end{enumerate}
 \end{minipage}}
@@ -54,7 +68,7 @@ PrimeKG 派生特征仅作为辅助关系信号，包括关系数量、问题关
 
 \subsection{学习排序}
 
-主监督重排序器采用查询分组学习排序模型，即使用 LambdaMART 风格目标训练的 LightGBM 梯度提升树排序器 \citep{ke2017lightgbm}。每个问题构成一个排序组，候选段落构成样本行，二值相关性标签来自金标准证据标注。特征向量结合检索分数、生物医学语义分数、实体特征、精确与层级感知 MeSH 特征、辅助关系特征和局部超图结构特征。
+主监督重排序器采用查询分组学习排序模型，即使用 LambdaMART 风格目标训练的 LightGBM 梯度提升树排序器 \citep{ke2017lightgbm}。每个问题构成一个排序组，候选段落构成样本行，二值相关性标签来自金标准证据标注。特征向量结合检索分数、预计算的生物医学语义检索特征、实体特征、精确与层级感知 MeSH 特征、辅助关系特征和局部超图结构特征。
 
 超参数在验证集上选择。报告实验的搜索空间为叶子数 $\{15,31\}$、学习率 $\{0.03,0.05\}$、估计器数量 $\{80,160\}$，以及 blend weight $\{0,0.1,0.2,0.35\}$；blend weight 用于在模型分数和原始候选排名分数之间插值。选择准则优先考虑验证集 MRR@10，其次是 Recall@10 和 nDCG@10。完成验证选择后，最终模型在训练集加验证集上重新训练，并只在留出测试集上评估一次。
 

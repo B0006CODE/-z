@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{接近强消融比较的解释。该表说明每项比较支持什么结论，以及不支持什么结论。}
+\label{tab:strong-ablation-interpretation}
+\begin{tabularx}{\linewidth}{p{0.27\linewidth}p{0.23\linewidth}X}
+\toprule
+比较 & 观察结果 & 可支持的解释 \\
+\midrule
+完整模型 vs. LambdaMART + 语义且无超图 & MRR@10、Recall@10、nDCG@10 均无显著差异 & 监督式检索特征和生物医学语义特征是最强性能驱动因素；不应声称完整模型显著压倒该消融。 \\
+完整模型 vs. 成对图 LTR & Recall@10 和 nDCG@10 显著提升，但 MRR@10 不显著 & 相对于成对图表示，超图结构可以改善 top-10 证据覆盖，但一位精度仍然接近。 \\
+完整模型 vs. 移除 MeSH 层级 & 无显著差异；该消融的 Recall@10 略高 & MeSH 层级特征更适合表述为可解释医学约束，而不是已被总体指标单独证明的增益来源。 \\
+完整模型 vs. 移除超图扩散/中心性 & 无显著差异；该消融的 Recall@10 和 nDCG@10 略高 & 扩散和中心性特征有助于透明性和案例级解释，但当前测试不能证明它们独立提高总体排序指标。 \\
+\bottomrule
+\end{tabularx}
+\end{table}
