@@ -5,7 +5,7 @@ A reranker that improves numbers is useful. One that can explain its decisions i
 
 \subsubsection{Three Mechanisms Behind Evidence Rescue}
 
-We classified all 648 gold passages that KCH-MedRank rescues from outside the Hybrid RRF top-10 into the top-10. Each rescue was assigned to the dominant hypergraph mechanism that drove it.
+KCH-MedRank rescues 661 gold passages from outside the Hybrid RRF top-10 into the top-10 on the held-out test set (Table~\ref{tab:failure-analysis-summary}). We classified 648 of them by dominant hypergraph mechanism; 13 were rescued but did not cleanly fall into one of the three categories and are excluded from this breakdown.
 
 The MeSH hierarchy path accounts for 75.9\% of rescues with an average rank gain of +22.1 positions. Here the question and the gold passage share MeSH concepts through hierarchical tree ancestor paths. A question about DITPA and a passage about thyroid hormones connect through the shared MeSH term ``thyroid hormones'' and its tree ancestors.
 
@@ -25,12 +25,14 @@ Understanding where a method fails is at least as informative as celebrating its
 
 \input{figures/case_study_en}
 
+{\setcounter{figure}{4}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_05.png}
 \caption{Case-study schematic: KCH-MedRank promotes evidence through biomedical entities, MeSH hierarchy, shared candidate clusters, and local hypergraph links.}
 \label{fig:gpt-case-study}
 \end{figure}
+}
 
 The strongest rescue involved p-crAssphage with a rank gain of +56. A gold passage about bacteriophage biology moved from rank 54 to rank 1. The main alignment signal was the shared bacteriophage concept supported by a local cluster of phage-related candidates. MeSH and hypergraph features promoted evidence that was medically aligned even though the enhanced hybrid ordering had buried it outside the top 10.
 
