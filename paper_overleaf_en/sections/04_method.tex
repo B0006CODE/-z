@@ -46,6 +46,24 @@ PrimeKG relation features supply auxiliary relational signals. Let $R_q$ and $R_
 
 These are down-weighted in the final model. Exact-name coverage in PrimeKG is sparse; only a fraction of biomedical entities have exact-name matches in the knowledge graph.
 
+\paragraph{Synonym-Aware Feature Augmentation.}
+Exact entity and MeSH matching is brittle against biomedical synonyms and abbreviations. A question asking about ``DITPA'' and a gold passage describing ``3,5-diiodothyropropionic acid'' share the same clinical concept but register zero overlap under exact-name matching. We introduce a lightweight normalization module that bridges this gap through text-level variant expansion without requiring full UMLS concept linking.
+
+For each biomedical entity encountered in a question or passage, we build a variant set $\mathcal{V}(e)$ containing (i) the canonical entity name, (ii) all surface forms observed during entity dictionary construction, and (iii) MeSH descriptor entry terms from the NLM 2026 MeSH release mapped through shared normalized forms. The MeSH synonym resource provides 213,754 entry terms across 31,110 descriptors~\citep{nlm2026mesh}. For a MeSH descriptor with identifier $m$, its variant set includes all entry terms and the normalized descriptor name.
+
+Normalization applies four text-level operations: Greek character ASCII conversion (e.g., $\alpha \rightarrow$ alpha), whitespace normalization, hyphen-space flattening, and lightweight deterministic stemming for plural forms (e.g., ``ubiquitinated proteins'' $\rightarrow$ ``ubiquitinated protein''). These operations are purely rule-based and add no inference cost at reranking time.
+
+We compute four classes of synonym-aware features for each query-passage pair:
+
+\begin{enumerate}[leftmargin=*,nosep]
+    \item \textbf{Normalized entity variant overlap:} $\phi_{\text{norm-ent-overlap}} = |\mathcal{V}(E_q) \cap \mathcal{V}(E_d)|$, $\phi_{\text{norm-ent-jacc}} = \frac{|\mathcal{V}(E_q) \cap \mathcal{V}(E_d)|}{|\mathcal{V}(E_q) \cup \mathcal{V}(E_d)|}$, and $\phi_{\text{norm-ent-cov}} = \frac{|\mathcal{V}(E_q) \cap \mathcal{V}(E_d)|}{|\mathcal{V}(E_q)|}$.
+    \item \textbf{Cross-text MeSH alias overlap:} the count of passage MeSH entry terms that appear verbatim in the question text, $\phi_{\text{q2pm-alias}} = |\{t \in \mathcal{V}(M_d) : t \text{ contained in } q\}|$, and the reverse direction $\phi_{\text{p2qm-alias}}$.
+    \item \textbf{Abbreviation bridging:} short-form/long-form abbreviation pairs are extracted from the question text via a regular-expression pattern (e.g., ``cGAS (cyclic GMP-AMP synthase)''). The matched abbreviation set $\mathcal{A}(q)$ is compared against the passage text: $\phi_{\text{abbr-match}} = |\{a \in \mathcal{A}(q) : a \text{ contained in } d\}|$.
+    \item \textbf{MeSH major-topic overlap:} the count of shared MeSH descriptors flagged as major topics in both question and passage, $\phi_{\text{mesh-major}} = |M_q^{\text{major}} \cap M_d^{\text{major}}|$, with a weighted composite $\phi_{\text{mesh-weighted}}$ that linearly combines normalized MeSH overlap, major-topic overlap, and cross-text alias counts.
+\end{enumerate}
+
+These features add 16 dimensions to the feature vector $\boldsymbol{\phi}(q,d)$. The important design choice is that the module does not perform entity linking or UMLS concept normalization. It expands the matching surface through known synonym sets without altering the entity resolution pipeline. This keeps the module lightweight while addressing the most frequent failure patterns identified in our error analysis.
+
 \subsubsection{Knowledge-Constrained Local Hypergraph}
 
 For each question and its top-$M$ candidates we optionally build a local hypergraph $H_q=(V_q,\mathcal{E}_q)$. The node set carries a question node, candidate passage nodes, document nodes, biomedical entity nodes, MeSH concept nodes, optional MeSH tree nodes, and optional relation nodes. Hyperedge connections span multiple nodes at once and capture higher-order relations that pairwise graphs fragment.
@@ -128,10 +146,10 @@ Retrain on train+validation; score and sort $D_q$ once on held-out test split\;
 The supervised reranker is a query-group LambdaMART model trained with LightGBM~\citep{ke2017lightgbm}. Each question defines one ranking group. The feature vector $\boldsymbol{\phi}(q,d)$ concatenates all feature groups:
 
 \[
-  \boldsymbol{\phi}(q,d) = [\mathrm{score}_{\text{BM25}}, \mathrm{score}_{\text{dense}}, \mathrm{score}_{\text{fielded}}, \mathrm{score}_{\text{CPT}}, \phi_{\text{cpt}}, \phi_{\text{ent}},\phi_{\text{mesh}},\phi_{\text{rel}},\phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}],
+  \boldsymbol{\phi}(q,d) = [\mathrm{score}_{\text{BM25}}, \mathrm{score}_{\text{dense}}, \mathrm{score}_{\text{fielded}}, \mathrm{score}_{\text{CPT}}, \phi_{\text{cpt}}, \phi_{\text{ent}}, \phi_{\text{norm}}, \phi_{\text{mesh}}, \phi_{\text{rel}}, \phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}],
 \]
 
-where $\phi_{\text{cpt}}$ is the precomputed biomedical semantic score, $\phi_{\text{ent}},\phi_{\text{mesh}},\phi_{\text{rel}}$ are the biomedical knowledge features, and $\phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}$ are the optional structural features.
+where $\phi_{\text{cpt}}$ is the precomputed biomedical semantic score, $\phi_{\text{ent}},\phi_{\text{norm}},\phi_{\text{mesh}},\phi_{\text{rel}}$ are the biomedical knowledge features (including synonym-aware normalized variants $\phi_{\text{norm}}$), and $\phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}$ are the optional structural features.
 
 LambdaMART minimizes a pairwise ranking loss with boosted regression trees. For a pair of passages $(d_i,d_j)$ with relevance labels $y_i > y_j$, the gradient contribution is:
 

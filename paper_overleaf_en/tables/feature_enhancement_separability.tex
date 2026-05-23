@@ -1,0 +1,20 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Feature separability of synonym-aware normalization features on the validation split (944 questions). Gold and non-gold refer to whether a passage is labeled as gold evidence for its question. The ratio column is gold-mean divided by non-gold-mean.}
+\label{tab:feature-separability}
+\begin{tabular}{lrrrr}
+\toprule
+Feature & Gold mean & Non-gold mean & Gold pos.\ rate & Ratio \\
+\midrule
+norm\_entity\_overlap\_count & 0.3014 & 0.1059 & 0.2597 & 2.85$\times$ \\
+norm\_entity\_jaccard & 0.0207 & 0.0068 & 0.2597 & 3.04$\times$ \\
+question\_norm\_entity\_coverage & 0.2062 & 0.0675 & 0.2597 & 3.05$\times$ \\
+mesh\_normalized\_overlap\_count & 0.5065 & 0.1758 & 0.3808 & 2.88$\times$ \\
+mesh\_major\_overlap\_count & 0.0464 & 0.0202 & 0.0462 & 2.30$\times$ \\
+mesh\_weighted\_overlap & 1.1753 & 0.4821 & 0.9093 & 2.44$\times$ \\
+q2p\_mesh\_alias\_count & 0.5873 & 0.2289 & 0.2682 & 2.57$\times$ \\
+abbreviation\_match\_count & 0.0497 & 0.0088 & 0.0474 & 5.64$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}

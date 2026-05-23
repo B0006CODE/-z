@@ -20,6 +20,9 @@ Metrics are Recall@$k$, Hit@$k$, MRR@$k$, and nDCG@$k$ for $k \in \{1,3,5,10,20,
 
 A hard reranking subset isolates 65 test questions where the enhanced Hybrid RRF candidate pool contains gold evidence in the top 100 but misses every gold passage in the top 10. On this subset the baseline has Recall@10 of 0 by construction. Passing it means knowledge features rescued evidence that retrieval signals alone could not.
 
+\paragraph{Concept Normalization Diagnostic.}
+To assess the synonym normalization module, we compare three controlled configurations under the same validation-set constraints: (i) the retrieval-feature LTR baseline, (ii) KCH-MedRank with base flat knowledge features (without synonym-aware augmentation), and (iii) KCH-MedRank with full synonym-aware features. The comparison uses the validation split only (bucket 3, 944 questions) to maintain test-set integrity. Additionally, we measure a synonym-coverage metric: among all question--gold-passage pairs in the test set, the fraction for which exact entity matching yields zero overlap while normalized variant matching recovers a non-zero overlap. This metric directly quantifies the gap that the normalization module is designed to bridge.
+
 \input{tables/enhanced_candidate_selection}
 
 \begin{figure}[htbp]
