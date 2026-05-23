@@ -1,9 +1,9 @@
-\section{Interpretability and Case Analysis}
+\subsection{Interpretability and Case Analysis}
 \label{sec:interpretability}
 
-A central methodological claim of KCH-MedRank is that its hypergraph-based reranking is \textit{interpretable}: each gold passage rescue can be traced to specific knowledge-grounded mechanisms in the hypergraph. This section provides the quantitative evidence to support this claim.
+KCH-MedRank's hypergraph-based reranking is \textit{interpretable}: each gold passage rescue can be traced to specific knowledge-grounded mechanisms in the hypergraph. This section provides quantitative evidence.
 
-\subsection{Three-Mechanism Classification of Rescued Passages}
+\subsubsection{Three-Mechanism Classification of Rescued Passages}
 
 We classify all 648 gold passages that KCH-MedRank rescues from outside the Hybrid RRF top-10 into the top-10 according to the dominant hypergraph mechanism:
 
@@ -21,7 +21,7 @@ Table~\ref{tab:mech-cooccurrence} shows that 89.2\% of rescues involve at least 
 
 \input{tables/failure_analysis_summary}
 
-\subsection{Path Tracing: Illustrative Cases}
+\subsubsection{Path Tracing: Illustrative Cases}
 
 \input{figures/case_study_en}
 
@@ -38,7 +38,7 @@ The strongest MeSH-hierarchy-driven rescue (+83 rank gain) involves the question
 
 The lost ubiquitination case shows the opposite behavior. A gold passage drops from rank 2 to rank 18 even though it discusses mono-ubiquitinated LDH-A and poly-ubiquitinated LDH. The question and passage contain related biochemical terminology, but the synonym and hierarchy features do not fully align the surface forms and broader post-translational-processing concepts. Similar losses occur for thyroid hormone analogs, cilengitide receptors, dasatinib treatment, GIST treatment, and Fanconi anemia. These examples motivate future improvements in biomedical concept normalization rather than stronger claims about the relation features.
 
-\subsection{Quantitative Interpretability Summary}
+\subsubsection{Quantitative Interpretability Summary}
 
 The three-mechanism analysis provides quantitative evidence that the hypergraph features activated by KCH-MedRank's ranking decisions follow interpretable knowledge-grounded pathways:
 

@@ -1,8 +1,8 @@
-\section{方法}
+\subsection{整体框架}
 
 \input{figures/method_overview_zh}
 
-\subsection{第一阶段检索}
+\subsubsection{第一阶段检索}
 
 第一阶段在任何知识感知重排序之前先构建高召回候选池。我们使用 BM25 作为词法基线，稠密检索作为语义基线，倒数排名融合（RRF）作为默认混合检索器。对于检索来源 $s$，记段落 $d$ 对问题 $q$ 的排名为 $r_s(q,d)$，融合分数为：
 \[
@@ -12,11 +12,31 @@
 
 增强候选生成路径的目标是提高重排序所需的 top-100 召回上限。该路径加入基于标题、正文和 MeSH 扩展字段的 fielded BM25，并加入 MedCPT dual-encoder 稠密检索作为额外生物医学语义来源。融合权重仅在验证集上选择。选中的 w122 设置赋予 BM25 和稠密检索权重 1.0、fielded BM25 权重 1.2、MedCPT dual-encoder 权重 0.2。该设置根据验证集 Recall@100 选择，而非测试集表现，因为重排序只能改善已经进入候选池的证据段落。
 
-\subsection{知识约束局部结构}
+\subsubsection{知识约束局部结构}
 
 对于每个问题及其 top-$M$ 候选，KCH-MedRank 构建具有不同结构假设的特征变体。扁平医学知识变体使用检索、生物医学语义、MeSH、实体和关系特征，不构建任何图结构。成对图变体在相同局部对象之间加入以锚点为中心的成对边。超图变体构建局部超图 $H_q=(V_q,\mathcal{E}_q)$，其节点集合包括问题节点、候选段落节点、文档节点、生物医学实体节点、MeSH 概念节点、可选 MeSH 树节点和可选关系节点。超边可同时连接多个节点，因此能表示普通成对相似度不易捕捉的高阶关系。
 
 主要超边类型包括 question-entity、question-MeSH、question-passage candidate、passage-entity、passage-document、document-MeSH、shared-entity passages、entity-type concept、MeSH hierarchy，以及辅助 PrimeKG 关系边。用于消融的成对图变体和无医学知识超图变体来自同一候选池：成对图变体将多节点超边拆解为以锚点为中心的成对边，无医学知识变体只保留候选结构和排名分组结构。
+
+每条超边带权，反映其概念连接的证据强度。对于通过共享实体集 $E_q \cap E_d$ 连接问题 $q$ 与段落 $d$ 的实体集重叠超边：
+
+\[
+  w_{\text{ent}}(q,d) = \frac{|E_q \cap E_d|}{|E_q|},
+\]
+
+其中 $E_q$ 与 $E_d$ 表示 $q$ 与 $d$ 的生物医学实体集合。对于 MeSH 概念重叠超边：
+
+\[
+  w_{\text{mesh}}(q,d) = \frac{|M_q \cap M_d|}{|M_q|},
+\]
+
+其中 $M_q$ 与 $M_d$ 表示 MeSH 描述符集合。对于连接概念 $m$ 至其父节点 $p$ 的 MeSH 层级超边：
+
+\[
+  w_{\text{hier}}(m,p) = \frac{1}{d_T(m,p)},
+\]
+
+其中 $d_T(m,p) \ge 1$ 为 MeSH 树中最短路径距离。候选成员超边使用归一化 RRF 分数：$w_{\text{cand}}(q,d) = \mathrm{RRF}(q,d) / \max_{d'}\mathrm{RRF}(q,d')$。在每个局部超图 $H_q$ 内部，入射超边权重在传播前归一化，使每个节点的总入射权重为一。
 
 局部设计避免了在数百万生物医学段落上构建全局图。同时，该设计保持了方法的可解释性：特征分析和案例研究可以报告哪些概念重叠、层级链接、共享候选簇或图/超图中心性信号影响了重排序。
 
@@ -27,17 +47,43 @@
 \label{fig:gpt-local-hypergraph}
 \end{figure}
 
-\subsection{超图扩散与结构特征}
+\subsubsection{超图扩散与结构特征}
 
-KCH-MedRank 将超图扩散作为可解释特征而非独立重排序公式使用。种子分布在问题节点、问题实体节点和问题 MeSH 节点上赋予初始质量。每次迭代通过加权超边传播分数：
+KCH-MedRank 将超图扩散作为可解释特征而非独立重排序公式使用。记 $\mathbf{H} \in \{0,1\}^{|V_q| \times |\mathcal{E}_q|}$ 为 $H_q$ 的节点-超边关联矩阵，其中 $H_{v,e}=1$ 若节点 $v$ 属于超边 $e$。记 $\mathbf{W} \in \mathbb{R}^{|\mathcal{E}_q| \times |\mathcal{E}_q|}$ 为对角超边权重矩阵，$W_{e,e} = w_e$；$\mathbf{D}_v$ 与 $\mathbf{D}_e$ 为对角节点度与超边度矩阵，其中 $(\mathbf{D}_v)_{ii} = \sum_e H_{i,e} W_{e,e}$，$(\mathbf{D}_e)_{jj} = \sum_v H_{v,j}$。种子分布 $\mathbf{x}^{(0)}$ 将质量均匀分布在问题节点、问题实体节点和问题 MeSH 节点上。分数通过加权超边传播：
+
 \[
-  x^{(t+1)}=(1-\alpha)x^{(0)}+\alpha \cdot \mathrm{Propagate}(x^{(t)},\mathcal{E}_q),
+  \mathbf{x}^{(t+1)} = (1-\alpha)\mathbf{x}^{(0)} + \alpha \cdot \mathbf{D}_v^{-1/2} \mathbf{H} \mathbf{W} \mathbf{D}_e^{-1} \mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t)},
 \]
-其中 $\alpha=0.85$，实现使用三轮扩散。段落级扩散分数随后在每个问题的候选集合内进行 min-max 归一化。我们还计算了加权度中心性、局部节点数、局部超边数、共享实体边数、文档-MeSH 边数以及可选层级边数。
 
-\subsection{生物医学知识特征}
+其中 $\alpha=0.85$，实现使用三轮迭代（$T=3$）。传播算子分解为三个阶段：超边聚合（$\mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t)}$）、权重缩放（$\mathbf{W} \mathbf{D}_e^{-1}$）以及节点再分配（$\mathbf{D}_v^{-1/2} \mathbf{H}$）。段落级扩散分数随后在每个问题候选集合内进行 min-max 归一化。我们还计算了加权度中心性、局部节点数、局部超边数、共享实体边数、文档-MeSH 边数以及层级边数。
+
+\subsubsection{生物医学知识特征}
 
 重排序器从三个互补的医学知识维度提取特征。\textbf{实体特征}度量问题与段落之间的概念级对齐：实体重叠数量、Jaccard 相似度、问题实体覆盖率和段落实体数量。\textbf{MeSH 特征}跨越两个粒度。精确 MeSH 特征捕获直接描述符重叠：MeSH 重叠数量、Jaccard 相似度、问题 MeSH 覆盖率和段落 MeSH 数量。层级感知 MeSH 特征利用树结构：精确描述符重叠、父级匹配、祖先匹配、兄弟节点匹配、树距离相似度、查询概念覆盖、段落层级覆盖、段落概念特异性，以及基于 MeSH 术语或父级概念的共享候选簇。\textbf{PrimeKG 关系特征}提供辅助关系信号（关系数量、问题关系覆盖率、局部关系边数量），但因精确名称覆盖稀疏而降权。
+
+下面给出特征组的精确定义。对于问题 $q$ 与候选段落 $d$，记 $E_q$ 与 $E_d$ 为生物医学实体集合：
+\[
+  \phi_{\text{ent--jacc}} = \frac{|E_q \cap E_d|}{|E_q \cup E_d|}, \quad
+  \phi_{\text{ent--cov}} = \frac{|E_q \cap E_d|}{|E_q|}.
+\]
+
+记 $M_q$ 与 $M_d$ 为 MeSH 描述符集合，精确 MeSH 特征为：
+\[
+  \phi_{\text{mesh--jacc}} = \frac{|M_q \cap M_d|}{|M_q \cup M_d|}, \quad
+  \phi_{\text{mesh--cov}} = \frac{|M_q \cap M_d|}{|M_q|}.
+\]
+
+对于层级感知 MeSH 特征，记 $T(m)$ 为概念 $m$ 在 MeSH 树中的祖先集合（不含自身），$d_T(m_1, m_2)$ 为树距离：
+\[
+  \phi_{\text{tree--sim}} = \frac{1}{|M_q|}\sum_{m \in M_q} \max_{m' \in M_d} \frac{1}{1 + d_T(m, m')}, \quad
+  \phi_{\text{anc--match}} = |T(M_q) \cap M_d|.
+\]
+
+对于 PrimeKG 关系特征，记 $R_q$ 与 $R_d$ 为关系标识符集合：
+\[
+  \phi_{\text{rel--cnt}} = |R_q \cap R_d|, \quad
+  \phi_{\text{rel--cov}} = \frac{|R_q \cap R_d|}{|R_q|}.
+\]
 
 \begin{figure}[t]
 \centering
@@ -48,28 +94,74 @@ KCH-MedRank 将超图扩散作为可解释特征而非独立重排序公式使�
 
 \begin{figure}[t]
 \centering
-\fbox{
-\begin{minipage}{0.94\textwidth}
-\textbf{算法 1：KCH-MedRank 局部证据控制与重排序}
-\begin{enumerate}
-  \item \textbf{候选检索。} 对问题 $q$，从 BM25、稠密检索、fielded BM25 和 MedCPT dual-encoder 来源检索 top-$M$ 段落，使用验证集选择的加权 RRF 融合。
-  \item \textbf{局部结构构建。} 对图和超图变体，为 $q$、候选段落、文档、抽取的生物医学实体、MeSH 描述符、MeSH 层级概念和可选关系端点创建节点。加入 query-concept、passage-concept、document-MeSH、共享概念候选簇、层级链接、候选成员关系和辅助 PrimeKG 关系边或超边。扁平医学知识基线跳过该步骤，仅使用非结构化生物医学特征。
-  \item \textbf{超边加权与归一化。} 根据来源可靠性和局部证据强度设置边权：候选成员边使用归一化 RRF 分数，实体和 MeSH 边使用归一化重叠/覆盖，层级边使用树距离倒数，关系边因精确名称覆盖稀疏而降权。每个局部图内部在传播前对关联边权进行归一化。
-  \item \textbf{扩散传播。} 在问题节点、问题实体节点和问题 MeSH 节点初始化质量。以 $\alpha=0.85$ 运行三轮带重启扩散，并在候选集合内归一化段落扩散分数。
-  \item \textbf{段落特征抽取。} 对每个段落拼接检索分数与排名、预计算的生物医学语义检索特征、实体重叠、MeSH 精确与层级特征、辅助关系特征、扩散分数、中心性和局部图计数特征。
-  \item \textbf{查询分组 LambdaMART 打分。} 在验证集模型选择后，以每个问题为 group 训练 LightGBM LambdaMART 排序器，并在测试候选上打分排序得到最终证据列表。
-\end{enumerate}
-\end{minipage}}
-\caption{局部超图构建、归一化、扩散、特征抽取和查询分组学习排序的紧凑伪代码。}
+\begin{minipage}{0.98\textwidth}
+\begin{algorithm}[H]
+\SetAlgoLined
+\caption{KCH-MedRank 知识约束证据重排序}
+\label{alg:kch-medrank}
+\KwIn{问题 $q$，检索语料 $C$，生物医学知识 $K$，来源权重 $\{w_s\}$}
+\KwOut{排序后的证据列表 $E$}
+从 BM25、稠密检索、fielded BM25 和 MedCPT dual-encoder 来源检索 top-$M$ 段落\;
+用加权 RRF 融合候选池 $D_q$：$\mathrm{RRF}(q,d) = \sum_s w_s/(k+r_s(q,d))$\;
+\BlankLine
+\If{图或超图变体}{
+  从 $q$、$D_q$、文档、实体、MeSH 概念和关系端点构建局部超图 $H_q = (V_q, \mathcal{E}_q)$\;
+  加入 query-concept、passage-concept、document-MeSH、共享概念簇、层级链接和 PrimeKG 关系超边\;
+  \ForEach{超边 $e \in \mathcal{E}_q$}{
+    按证据强度赋权 $w_e$（实体/MeSH：归一化重叠；层级：$1/d_T$；候选：归一化 RRF）\;
+  }
+  按节点归一化入射边权\;
+  \BlankLine
+  在问题节点、问题实体节点和问题 MeSH 节点初始化种子 $\mathbf{x}^{(0)}$\;
+  \For{$t = 1$ \KwTo $T$}{
+    $\mathbf{x}^{(t)} = (1-\alpha)\mathbf{x}^{(0)} + \alpha \cdot \mathbf{D}_v^{-1/2} \mathbf{H} \mathbf{W} \mathbf{D}_e^{-1} \mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t-1)}$\;
+  }
+  在 $D_q$ 内对段落扩散分数做 min-max 归一化\;
+  计算中心性、局部计数和结构特征 $\phi_{\text{diff}}, \phi_{\text{cent}}, \phi_{\text{graph}}$\;
+}
+\BlankLine
+\ForEach{候选段落 $d \in D_q$}{
+  抽取实体特征 $\phi_{\text{ent}}$（Jaccard、覆盖率）\;
+  抽取 MeSH 精确特征 $\phi_{\text{mesh}}$（Jaccard、覆盖率）\;
+  抽取 MeSH 层级特征 $\phi_{\text{tree-sim}}, \phi_{\text{anc-match}}$\;
+  抽取 PrimeKG 关系特征 $\phi_{\text{rel}}$（计数、覆盖率）\;
+  拼接检索、生物医学和结构特征组为 $\boldsymbol{\phi}(q,d)$\;
+}
+\BlankLine
+在训练集上以查询分组方式训练 LambdaMART 排序器\;
+基于验证集 MRR@10 选择 $\beta$：$s(q,d) = (1-\beta)f(q,d) + \beta \cdot s_{\text{RRF}}(q,d)$\;
+在训练集+验证集上重新训练；在留出测试集上一次性打分并排序 $D_q$\;
+\Return $E$ = $D_q$ 中按 $s(q,d)$ 降序排列的段落\;
+\end{algorithm}
+\end{minipage}
+\caption{KCH-MedRank 完整流程：候选检索、局部超图构建、特征抽取、LambdaMART 训练与 blend 打分。}
 \label{fig:kch-algorithm}
 \end{figure}
 
-\subsection{学习排序}
+\subsubsection{学习排序}
 
-主监督重排序器采用查询分组学习排序模型，即使用 LambdaMART 风格目标训练的 LightGBM 梯度提升树排序器~\citep{ke2017lightgbm}。每个问题构成一个排序组，候选段落构成样本行，二值相关性标签来自金标准证据标注。特征向量结合检索分数、预计算的生物医学语义检索特征、实体特征、精确与层级感知 MeSH 特征、辅助关系特征，以及可选局部图或超图结构特征。
+主监督重排序器采用查询分组 LambdaMART 模型，使用 LightGBM 梯度提升树~\citep{ke2017lightgbm} 训练。每个问题构成一个排序组，候选段落为样本行，二值相关性标签 $y_{q,d} \in \{0,1\}$ 来自金标准证据标注。特征向量 $\boldsymbol{\phi}(q,d)$ 拼接所有特征组：
 
-超参数在验证集上选择。报告实验的搜索空间为叶子数 $\{15,31\}$、学习率 $\{0.03,0.05\}$、估计器数量 $\{80,160\}$，以及 blend weight $\{0,0.1,0.2,0.35\}$；blend weight 用于在模型分数和原始候选排名分数之间插值。选择准则优先考虑验证集 MRR@10，其次为 Recall@10 和 nDCG@10。完成验证选择后，最终模型在训练集加验证集上重新训练，并仅在留出测试集上评估一次。
+\[
+  \boldsymbol{\phi}(q,d) = [\mathrm{score}_{\text{BM25}}, \mathrm{score}_{\text{dense}}, \mathrm{score}_{\text{fielded}}, \mathrm{score}_{\text{CPT}}, \phi_{\text{cpt}}, \phi_{\text{ent}},\phi_{\text{mesh}},\phi_{\text{rel}},\phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}],
+\]
+
+其中 $\phi_{\text{cpt}}$ 为预计算生物医学语义分数，$\phi_{\text{ent}},\phi_{\text{mesh}},\phi_{\text{rel}}$ 为上述生物医学知识特征，$\phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}$ 为结构特征（图/超图变体）。
+
+LambdaMART 通过提升回归树最小化成对排序损失。对于每对段落 $(d_i, d_j)$，若相关性标签 $y_i > y_j$，其梯度贡献（即 Lambda）为：
+
+\[
+  \lambda_{ij} = \frac{-\sigma\big(f(q,d_j)-f(q,d_i)\big)}{1 + \exp\big(\sigma(f(q,d_i)-f(q,d_j))\big)} \cdot |\Delta\mathrm{NDCG}_{ij}|,
+\]
+
+其中 $\sigma(\cdot)$ 为 logistic 函数，$f(q,\cdot)$ 为当前集成预测，$\Delta\mathrm{NDCG}_{ij}$ 为交换 $d_i$ 与 $d_j$ 引起的 NDCG@$k$ 变化量。每棵树拟合于这些 $\lambda$ 加权伪残差的负值，使得减少大 NDCG 差距的分裂获得更强的梯度信号。
+
+训练完成后，最终分数通过 blend 权重 $\beta$ 融合 LambdaMART 输出与原始 RRF 排名：
+
+\[
+  s(q,d) = (1-\beta) \cdot f(q,d) + \beta \cdot s_{\text{RRF}}(q,d),
+\]
+
+其中 $\beta \in \{0, 0.1, 0.2, 0.35\}$ 基于验证集 MRR@10 选择。超参数在验证集上调优，搜索空间为叶子数 $\{15,31\}$、学习率 $\{0.03,0.05\}$、估计器数量 $\{80,160\}$ 以及 blend 权重 $\beta$。选择准则以验证集 MRR@10 为主，Recall@10 与 nDCG@10 为辅助。最终模型在训练集加验证集上重新训练，并仅在留出测试集上评估一次。
 
 \input{tables/feature_importance_summary_zh}
-
-表~\ref{tab:feature-importance-summary} 的特征重要性显示，语义信号和第一阶段检索信号仍处于核心位置，同时 MeSH 共享簇、段落概念特异性和超图中心性特征提供了可解释的生物医学与结构信息。这支持一个审慎的结论：KCH-MedRank 的重排序提升来自检索强度、生物医学语义、扁平医学知识特征和局部结构信号的结合，而非依赖单一知识源。

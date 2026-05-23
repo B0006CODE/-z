@@ -1,8 +1,8 @@
-\section{Method}
+\subsection{Overall Framework}
 
 \input{figures/method_overview_en}
 
-\subsection{First-Stage Retrieval}
+\subsubsection{First-Stage Retrieval}
 
 The first stage retrieves a high-recall candidate pool before any knowledge-aware reranking is applied. We employ BM25 as the lexical baseline, dense retrieval as the semantic baseline, and Reciprocal Rank Fusion (RRF) as the default hybrid retriever. For a retrieval source $s$, let $r_s(q,d)$ be the rank of passage $d$ for question $q$. The fused score is:
 \[
@@ -12,11 +12,31 @@ where $S$ is the set of retrieval sources, $w_s$ is a source weight, and $k=60$ 
 
 The enhanced candidate-generation path is designed to raise the top-100 ceiling for reranking. It adds fielded BM25 with title, text, and MeSH expansion fields, plus MedCPT dual-encoder dense retrieval as an additional biomedical semantic source. Fusion weights are selected on the validation split only. The selected w122 configuration gives BM25 and dense retrieval weight 1.0, fielded BM25 weight 1.2, and MedCPT dual-encoder retrieval weight 0.2. This setting is selected for validation Recall@100 rather than test performance, because reranking can improve only passages already present in the candidate pool.
 
-\subsection{Knowledge-Constrained Local Structure}
+\subsubsection{Knowledge-Constrained Local Structure}
 
 For each question and its top-$M$ candidates, KCH-MedRank builds feature variants with increasing structural assumptions. The flat knowledge variant uses retrieval, biomedical semantic, MeSH, entity, and relation features without any graph construction. The pairwise graph variant adds anchor-based edges among the same local objects. The hypergraph variant builds a local hypergraph $H_q=(V_q,\mathcal{E}_q)$ whose node set includes a question node, candidate passage nodes, document nodes, biomedical entity nodes, MeSH concept nodes, optional MeSH tree nodes, and optional relation nodes. The hyperedge set connects multiple nodes at once and therefore represents higher-order relations not naturally captured by pairwise similarity alone.
 
 The main hyperedge types are question-entity, question-MeSH, question-passage candidate, passage-entity, passage-document, document-MeSH, shared-entity passages, entity-type concept, MeSH hierarchy, and auxiliary PrimeKG relation edges. Pairwise graph and no-medical-knowledge variants are constructed from the same candidate pool for ablation: the pairwise variant decomposes multi-node hyperedges into anchor-based pairwise edges, while the no-knowledge variant keeps only rank-band and candidate structure.
+
+Each hyperedge carries a weight reflecting its evidence strength. For an entity-set overlap hyperedge connecting question $q$ and passage $d$ through shared entity set $E_q \cap E_d$:
+
+\[
+  w_{\text{ent}}(q,d) = \frac{|E_q \cap E_d|}{|E_q|},
+\]
+
+where $E_q$ and $E_d$ denote the biomedical entity sets of $q$ and $d$. For a MeSH-concept overlap hyperedge, analogously:
+
+\[
+  w_{\text{mesh}}(q,d) = \frac{|M_q \cap M_d|}{|M_q|},
+\]
+
+where $M_q$ and $M_d$ denote the MeSH descriptor sets. For a MeSH hierarchy hyperedge connecting concept $m$ to its parent $p$:
+
+\[
+  w_{\text{hier}}(m,p) = \frac{1}{d_T(m,p)},
+\]
+
+where $d_T(m,p) \ge 1$ is the shortest-path distance in the MeSH tree. Candidate membership hyperedges use normalized RRF scores: $w_{\text{cand}}(q,d) = \mathrm{RRF}(q,d) / \max_{d'}\mathrm{RRF}(q,d')$. Within each local hypergraph $H_q$, incident hyperedge weights are normalized before propagation so that the total incident weight at each node sums to one.
 
 The local design avoids constructing a global graph over millions of biomedical passages. It also keeps the method interpretable: feature inspection and case studies can report which concept overlaps, hierarchy links, shared candidate clusters, or graph and hypergraph centrality signals influenced reranking.
 
@@ -27,17 +47,43 @@ The local design avoids constructing a global graph over millions of biomedical 
 \label{fig:gpt-local-hypergraph}
 \end{figure}
 
-\subsection{Hypergraph Diffusion and Structural Features}
+\subsubsection{Hypergraph Diffusion and Structural Features}
 
-KCH-MedRank employs hypergraph diffusion as an interpretable feature rather than as a standalone ranking formula. The seed distribution places mass on the question node, question entity nodes, and question MeSH nodes. At each iteration, scores are propagated through weighted hyperedges:
+KCH-MedRank employs hypergraph diffusion as an interpretable feature rather than as a standalone ranking formula. Let $\mathbf{H} \in \{0,1\}^{|V_q| \times |\mathcal{E}_q|}$ be the vertex-hyperedge incidence matrix of $H_q$, where $H_{v,e}=1$ if node $v$ belongs to hyperedge $e$. Let $\mathbf{W} \in \mathbb{R}^{|\mathcal{E}_q| \times |\mathcal{E}_q|}$ be the diagonal hyperedge weight matrix with $W_{e,e} = w_e$, and let $\mathbf{D}_v$ and $\mathbf{D}_e$ be diagonal node-degree and hyperedge-degree matrices with $(\mathbf{D}_v)_{ii} = \sum_e H_{i,e} W_{e,e}$ and $(\mathbf{D}_e)_{jj} = \sum_v H_{v,j}$. The seed distribution $\mathbf{x}^{(0)}$ places mass uniformly on the question node, question entity nodes, and question MeSH nodes. Scores propagate through weighted hyperedges via:
+
 \[
-  x^{(t+1)}=(1-\alpha)x^{(0)}+\alpha \cdot \mathrm{Propagate}(x^{(t)},\mathcal{E}_q),
+  \mathbf{x}^{(t+1)} = (1-\alpha)\mathbf{x}^{(0)} + \alpha \cdot \mathbf{D}_v^{-1/2} \mathbf{H} \mathbf{W} \mathbf{D}_e^{-1} \mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t)},
 \]
-where $\alpha=0.85$ and the implementation uses three diffusion iterations. Passage-level diffusion scores are then min-max normalized within each question candidate set. We also compute weighted degree centrality, local node and hyperedge counts, shared-entity edge counts, document-MeSH edge counts, and optional hierarchy-edge counts.
 
-\subsection{Biomedical Knowledge Features}
+where $\alpha=0.85$ and the implementation uses three iterations ($T=3$). The operator decomposes into three phases: hyperedge aggregation ($\mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t)}$), weight scaling ($\mathbf{W} \mathbf{D}_e^{-1}$), and node redistribution ($\mathbf{D}_v^{-1/2} \mathbf{H}$). Passage-level diffusion scores are min-max normalized within each question candidate set. We also compute weighted degree centrality, local node and hyperedge counts, shared-entity edge counts, document-MeSH edge counts, and hierarchy-edge counts.
+
+\subsubsection{Biomedical Knowledge Features}
 
 The reranker draws on three complementary medical knowledge dimensions. \textbf{Entity features} measure concept-level alignment between questions and passages: entity overlap count, Jaccard similarity, question entity coverage, and passage entity count. \textbf{MeSH features} span two granularities. Exact MeSH features capture direct descriptor overlap: MeSH overlap count, Jaccard similarity, question MeSH coverage, and passage MeSH count. Hierarchy-aware MeSH features exploit the tree structure: exact descriptor overlap, parent match, ancestor match, sibling match, tree-distance similarity, query concept coverage, passage hierarchy coverage, passage concept specificity, and shared candidate clusters over MeSH terms or parent concepts. \textbf{PrimeKG relation features} provide auxiliary relational signals (relation count, question relation coverage, local relation-edge count) but are down-weighted due to sparse exact-name coverage.
+
+Formally, for a question $q$ and candidate passage $d$, the feature groups are defined as follows. Let $E_q$ and $E_d$ be the sets of biomedical entities.
+\[
+  \phi_{\text{ent--jacc}} = \frac{|E_q \cap E_d|}{|E_q \cup E_d|}, \quad
+  \phi_{\text{ent--cov}} = \frac{|E_q \cap E_d|}{|E_q|}.
+\]
+
+Let $M_q$ and $M_d$ be the sets of MeSH descriptor identifiers. Exact MeSH features are:
+\[
+  \phi_{\text{mesh--jacc}} = \frac{|M_q \cap M_d|}{|M_q \cup M_d|}, \quad
+  \phi_{\text{mesh--cov}} = \frac{|M_q \cap M_d|}{|M_q|}.
+\]
+
+For hierarchy-aware MeSH features, let $T(m)$ denote the ancestor set of concept $m$ in the MeSH tree (excluding $m$) and let $d_T(m_1, m_2)$ be the tree distance:
+\[
+  \phi_{\text{tree--sim}} = \frac{1}{|M_q|}\sum_{m \in M_q} \max_{m' \in M_d} \frac{1}{1 + d_T(m, m')}, \quad
+  \phi_{\text{anc--match}} = |T(M_q) \cap M_d|.
+\]
+
+For PrimeKG relation features, let $R_q$ and $R_d$ denote the sets of relation identifiers:
+\[
+  \phi_{\text{rel--cnt}} = |R_q \cap R_d|, \quad
+  \phi_{\text{rel--cov}} = \frac{|R_q \cap R_d|}{|R_q|}.
+\]
 
 \begin{figure}[t]
 \centering
@@ -48,26 +94,74 @@ The reranker draws on three complementary medical knowledge dimensions. \textbf{
 
 \begin{figure}[t]
 \centering
-\fbox{
-\begin{minipage}{0.94\textwidth}
-\textbf{Algorithm 1: KCH-MedRank local evidence control and reranking}
-\begin{enumerate}
-  \item \textbf{Candidate retrieval.} For question $q$, retrieve top-$M$ passages from BM25, dense retrieval, fielded BM25, and MedCPT dual-encoder sources; fuse them with validation-selected weighted RRF.
-  \item \textbf{Local structure construction.} For the graph and hypergraph variants, create nodes for $q$, candidate passages, documents, extracted biomedical entities, MeSH descriptors, MeSH hierarchy concepts, and optional relation endpoints. Add edges or hyperedges for query-concept, passage-concept, document-MeSH, shared-concept candidate clusters, hierarchy links, candidate membership, and auxiliary PrimeKG relations. The flat knowledge baseline skips this step and uses only non-structural biomedical features.
-  \item \textbf{Hyperedge weighting and normalization.} Assign edge weights by source reliability and local evidence strength: candidate membership edges use normalized RRF scores; entity and MeSH edges use normalized overlap/coverage; hierarchy edges use inverse tree distance; relation edges are down-weighted because of sparse exact-name coverage. Within each local graph, incident edge weights are normalized before propagation.
-  \item \textbf{Diffusion propagation.} Initialize mass on the question, query-entity, and query-MeSH nodes. Run three restart diffusion iterations with $\alpha=0.85$, then normalize passage diffusion scores within the candidate set.
-  \item \textbf{Passage feature extraction.} For each passage, concatenate retrieval scores and ranks, precomputed biomedical semantic retrieval features, entity overlap, MeSH exact and hierarchy features, auxiliary relation features, diffusion scores, centrality, and local graph-count features.
-  \item \textbf{Query-group LambdaMART scoring.} Train a LightGBM LambdaMART ranker with one group per question on train plus validation after validation-only model selection. Score test candidates once and sort passages by the learned score to produce the final evidence ranking.
-\end{enumerate}
-\end{minipage}}
-\caption{Compact pseudocode for local hypergraph construction, normalization, diffusion, feature extraction, and query-group learning-to-rank.}
+\begin{minipage}{0.98\textwidth}
+\begin{algorithm}[H]
+\SetAlgoLined
+\caption{KCH-MedRank Knowledge-Constrained Evidence Reranking}
+\label{alg:kch-medrank}
+\KwIn{Question $q$, retrieval corpus $C$, biomedical knowledge $K$, source weights $\{w_s\}$}
+\KwOut{Ranked evidence list $E$}
+Retrieve top-$M$ passages from BM25, dense, fielded BM25, and MedCPT dual-encoder sources\;
+Fuse candidate pool $D_q$ with weighted RRF: $\mathrm{RRF}(q,d) = \sum_s w_s/(k+r_s(q,d))$\;
+\BlankLine
+\If{graph or hypergraph variant}{
+  Build local hypergraph $H_q = (V_q, \mathcal{E}_q)$ from $q$, $D_q$, their documents, entities, MeSH concepts, and relation endpoints\;
+  Add hyperedges for query-concept, passage-concept, document-MeSH, shared-concept clusters, hierarchy links, and PrimeKG relations\;
+  \ForEach{hyperedge $e \in \mathcal{E}_q$}{
+    Assign weight $w_e$ by evidence strength (entity/MeSH: normalized overlap; hierarchy: $1/d_T$; candidate: normalized RRF)\;
+  }
+  Normalize incident edge weights per node\;
+  \BlankLine
+  Initialize seed $\mathbf{x}^{(0)}$ on question, query-entity, and query-MeSH nodes\;
+  \For{$t = 1$ \KwTo $T$}{
+    $\mathbf{x}^{(t)} = (1-\alpha)\mathbf{x}^{(0)} + \alpha \cdot \mathbf{D}_v^{-1/2} \mathbf{H} \mathbf{W} \mathbf{D}_e^{-1} \mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t-1)}$\;
+  }
+  Normalize passage diffusion scores within $D_q$ (\textit{min-max})\;
+  Compute centrality, local counts, and structural features $\phi_{\text{diff}}, \phi_{\text{cent}}, \phi_{\text{graph}}$\;
+}
+\BlankLine
+\ForEach{passage $d \in D_q$}{
+  Extract entity features $\phi_{\text{ent}}$ (Jaccard, coverage)\;
+  Extract MeSH exact features $\phi_{\text{mesh}}$ (Jaccard, coverage)\;
+  Extract MeSH hierarchy features $\phi_{\text{tree-sim}}, \phi_{\text{anc-match}}$\;
+  Extract PrimeKG relation features $\phi_{\text{rel}}$ (count, coverage)\;
+  Concatenate $\boldsymbol{\phi}(q,d)$ from retrieval, biomedical, and structural feature groups\;
+}
+\BlankLine
+Train LambdaMART ranker on training set with query-group partitioning\;
+Select $\beta$ on validation MRR@10 via $s(q,d) = (1-\beta)f(q,d) + \beta \cdot s_{\text{RRF}}(q,d)$\;
+Retrain on train+validation; score and sort $D_q$ once on held-out test split\;
+\Return $E$ = passages of $D_q$ sorted by descending $s(q,d)$\;
+\end{algorithm}
+\end{minipage}
+\caption{Complete KCH-MedRank pipeline: candidate retrieval, local hypergraph construction, feature extraction, LambdaMART training, and blended scoring.}
 \label{fig:kch-algorithm}
 \end{figure}
 
-\subsection{Learning-to-Rank}
+\subsubsection{Learning-to-Rank}
 
-The supervised reranker is a query-group LambdaMART model trained with LightGBM~\citep{ke2017lightgbm}. Each question defines one ranking group; candidate passages within that group form the rows; and binary relevance labels are derived from gold evidence annotations. The feature vector concatenates retrieval scores and ranks, the precomputed biomedical semantic score, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and---for structural variants---diffusion scores, centrality measures, and local graph-count features.
+The supervised reranker is a query-group LambdaMART model trained with LightGBM~\citep{ke2017lightgbm}. Each question defines one ranking group; candidate passages within that group form the rows; and binary relevance labels $y_{q,d} \in \{0,1\}$ are derived from gold evidence annotations. The feature vector $\boldsymbol{\phi}(q,d)$ concatenates all feature groups:
 
-Hyperparameters are tuned on the validation split over number of leaves $\{15,31\}$, learning rate $\{0.03,0.05\}$, number of estimators $\{80,160\}$, and a blend weight $\{0,0.1,0.2,0.35\}$ that interpolates between the model score and the original candidate rank. Selection uses validation MRR@10 as the primary metric, with Recall@10 and nDCG@10 as secondary criteria. The final model is trained on the combined train-plus-validation set and evaluated exactly once on the held-out test split.
+\[
+  \boldsymbol{\phi}(q,d) = [\mathrm{score}_{\text{BM25}}, \mathrm{score}_{\text{dense}}, \mathrm{score}_{\text{fielded}}, \mathrm{score}_{\text{CPT}}, \phi_{\text{cpt}}, \phi_{\text{ent}},\phi_{\text{mesh}},\phi_{\text{rel}},\phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}],
+\]
+
+where $\phi_{\text{cpt}}$ is the precomputed biomedical semantic score, $\phi_{\text{ent}},\phi_{\text{mesh}},\phi_{\text{rel}}$ are the biomedical knowledge features defined above, and $\phi_{\text{diff}},\phi_{\text{cent}},\phi_{\text{graph}}$ are the structural features (for graph/hypergraph variants).
+
+The LambdaMART objective minimizes a pairwise ranking loss via boosted regression trees. For each pair of passages $(d_i,d_j)$ with relevance labels $y_i > y_j$, the gradient contribution (Lambda) is:
+
+\[
+  \lambda_{ij} = \frac{-\sigma\big(f(q,d_j)-f(q,d_i)\big)}{1 + \exp\big(\sigma(f(q,d_i)-f(q,d_j))\big)} \cdot |\Delta\mathrm{NDCG}_{ij}|,
+\]
+
+where $\sigma(\cdot)$ is the logistic function, $f(q,\cdot)$ is the current ensemble prediction, and $\Delta\mathrm{NDCG}_{ij}$ is the change in NDCG@$k$ from swapping $d_i$ and $d_j$. Each tree is fit to the negative of these $\lambda$-weighted pseudo-residuals, so that splits reducing large NDCG gaps receive stronger gradient signals.
+
+After training, the final score blends the LambdaMART output with the original RRF rank:
+
+\[
+  s(q,d) = (1-\beta) \cdot f(q,d) + \beta \cdot s_{\text{RRF}}(q,d),
+\]
+
+where $\beta \in \{0, 0.1, 0.2, 0.35\}$ is selected on validation MRR@10. Hyperparameters are tuned on the validation split over number of leaves $\{15,31\}$, learning rate $\{0.03,0.05\}$, number of estimators $\{80,160\}$, and the blend weight $\beta$. Selection uses validation MRR@10 as the primary metric, with Recall@10 and nDCG@10 as secondary criteria. The final model is trained on the combined train-plus-validation set and evaluated exactly once on the held-out test split.
 
 \input{tables/feature_importance_summary}

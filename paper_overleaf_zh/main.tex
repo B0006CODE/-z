@@ -9,6 +9,7 @@
 \usepackage{tikz}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage{xurl}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage[hidelinks]{hyperref}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
 \emergencystretch=3em
@@ -16,30 +17,49 @@
 
 \title{KCH-MedRank：面向循证医学检索增强生成的知识约束学习排序方法}
 \author{匿名作者}
-\date{\today}
+\date{}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-生物医学证据检索在仅依赖成对相似度排序时存在系统性失效：通过 MeSH 层级路径或共享实体连接的金标准段落被打散在 top-10 窗口之外。本文提出 KCH-MedRank，一种知识约束学习排序框架，为每个查询的候选邻域融入可解释特征——检索分数、MeSH 层级感知信号、生物医学实体及可选局部超图结构。在 BioASQ 基准上，KCH-MedRank 相对于真实 MedCPT Cross-Encoder 基线显著提升 Recall@10（$+0.0157$，$p=0.0076$），且重排序阶段速度快 $18.6$ 倍。结构消融揭示两项关键发现：扁平生物医学知识特征已捕获大部分收益；医学知识约束是超图结构提供有用信号的必要条件——无约束时原始拓扑引入噪声并降低排序质量。三机制可解释性分析将救回段落追溯到 MeSH 层级路径（75.9\%）、共享实体簇和 PrimeKG 关系，确认重排序决策遵循医学知识约束路径。
+生物医学证据检索在仅依赖成对相似度排序时存在系统性失效：通过 MeSH 层级路径或共享实体连接的金标准段落被打散在 top-10 窗口之外。本文提出 KCH-MedRank，一种知识约束学习排序框架，为每个查询的候选邻域融入可解释特征——检索分数、MeSH 层级感知信号、生物医学实体及可选局部超图结构。在 BioASQ 基准上，KCH-MedRank 相对于真实 MedCPT Cross-Encoder 基线显著提升 Recall@10（$+0.0157$，$p=0.0076$），且重排序阶段速度快 $18.6$ 倍。系统消融表明扁平生物医学知识特征解释了大部分总体改进，而领域约束是超图结构提供信号而非噪声的必要条件。可解释性分析将 648 个救回段落追溯到 MeSH 层级路径（75.9\%）、共享实体簇和 PrimeKG 关系。
 \end{abstract}
 
+\vspace{5pt}
+\noindent\textbf{关键词：} 生物医学证据检索；学习排序；医学知识图谱；MeSH 层级结构；超图扩散；可解释重排序
+
+\section{引言}
 \input{sections/01_introduction}
+\section{相关工作}
 \input{sections/02_related_work}
+\section{方法}
 \input{sections/03_task_definition}
 \input{sections/04_method}
+\section{实验}
 \input{sections/05_experimental_setup}
 \input{sections/06_results}
 \input{sections/07_ablation}
 \input{sections/08_case_study}
+\section{讨论}
 \input{sections/09_discussion}
+\section{结论}
 \input{sections/10_conclusion}
+
+\section*{致谢}
+本研究受 [...] 资助。作者感谢匿名审稿人的建设性意见。
+
+\section*{数据可用性声明}
+BioASQ 数据集公开于 \url{https://bioasq.org}。BioASQ-QA、PubMedQA 和 BEIR NFCorpus 数据集均根据其各自的许可协议公开。本研究中使用的已处理实验数据和预计算特征文件可根据合理请求向通讯作者获取。
+
+\section*{利益冲突声明}
+作者声明无利益冲突。
+
 \appendix
 \input{sections/11_appendix}
 
-\bibliographystyle{plainnat}
+\bibliographystyle{abbrvnat}
 \bibliography{references}
 
 \end{document}

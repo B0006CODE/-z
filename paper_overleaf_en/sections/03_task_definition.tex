@@ -1,8 +1,14 @@
-\section{Task Definition}
+\subsection{Task Definition}
 
 Given a medical question $q$, a biomedical corpus $C$, and optional knowledge sources $K$, the system returns a ranked evidence list $E$ and, optionally, an answer $a$. The primary task is evidence retrieval and reranking; answer generation is secondary.
 
-For each question, a first-stage retriever returns a candidate pool $D_q = \{d_1,\ldots,d_M\}$ from $C$. A reranker then estimates an improved ordering over $D_q$ using retrieval scores, biomedical semantic scores, concept and entity features, and local hypergraph features. Evaluation emphasizes Recall@$k$, MRR@$k$, nDCG@$k$, and evidence coverage.
+For each question, a first-stage retriever returns a candidate pool $D_q = \{d_1,\ldots,d_M\}$ from $C$. A reranker then learns a scoring function $f(q,d)$ over $D_q$ using retrieval scores, biomedical semantic scores, concept and entity features, and local hypergraph features. The objective is to minimize a listwise ranking loss $\mathcal{L}$ over the training questions $\mathcal{Q}$:
+
+\[
+  \min_f \frac{1}{|\mathcal{Q}|}\sum_{q \in \mathcal{Q}} \mathcal{L}\big(f(q,\cdot),\, R_q\big),
+\]
+
+where $R_q$ denotes gold relevance judgments for the candidate passages of $q$. The loss enforces that for any candidate pair $(d_i, d_j)$ where $d_i$ is relevant and $d_j$ is not, the learned scores satisfy $f(q,d_i) > f(q,d_j)$. Evaluation emphasizes Recall@$k$, MRR@$k$, nDCG@$k$, and evidence coverage.
 
 The formal output is:
 \[

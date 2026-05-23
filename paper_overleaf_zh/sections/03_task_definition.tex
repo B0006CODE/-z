@@ -1,8 +1,14 @@
-\section{任务定义}
+\subsection{任务定义}
 
 给定医学问题 $q$、生物医学语料库 $C$ 以及可选知识源 $K$，系统返回排序后的证据列表 $E$，并可选择返回答案 $a$。主要任务是证据检索与重排序；答案生成是次要任务。
 
-对于每个问题，第一阶段检索器从 $C$ 中返回候选池 $D_q = \{d_1,\ldots,d_M\}$。重排序器随后利用检索分数、生物医学语义分数、概念与实体特征以及局部超图特征，对 $D_q$ 估计改进排序。评估重点包括 Recall@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage。
+对于每个问题，第一阶段检索器从 $C$ 中返回候选池 $D_q = \{d_1,\ldots,d_M\}$。重排序器学习一个评分函数 $f(q,d)$，目标是最小化训练问题集合 $\mathcal{Q}$ 上的列表式排序损失 $\mathcal{L}$：
+
+\[
+  \min_f \frac{1}{|\mathcal{Q}|}\sum_{q \in \mathcal{Q}} \mathcal{L}\big(f(q,\cdot),\, R_q\big),
+\]
+
+其中 $R_q$ 表示候选段落 $D_q$ 的金标准相关性标签。该损失确保对于任意候选对 $(d_i, d_j)$，若 $d_i$ 相关而 $d_j$ 不相关，则学得的分数满足 $f(q,d_i) > f(q,d_j)$。评估重点包括 Recall@$k$、MRR@$k$、nDCG@$k$ 和 evidence coverage。
 
 形式化输出为：
 \[

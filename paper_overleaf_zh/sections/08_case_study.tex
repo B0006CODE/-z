@@ -1,9 +1,9 @@
-\section{可解释性与案例分析}
+\subsection{可解释性与案例分析}
 \label{sec:interpretability}
 
-KCH-MedRank 的一个核心方法论声明是其基于超图的重排序是\textbf{可解释的}：每一例金标准段落的救回都可以追溯到超图中的具体知识约束机制。本节提供量化证据支持该声明。
+KCH-MedRank 基于超图的重排序是\textbf{可解释的}：每一例金标准段落的救回都可以追溯到超图中的具体知识约束机制。本节提供量化证据。
 
-\subsection{救回案例的三机制分类}
+\subsubsection{救回案例的三机制分类}
 
 我们将 KCH-MedRank 从 Hybrid RRF top-10 之外救回 top-10 以内的全部 648 个金标准段落按主导超图机制分类：
 
@@ -21,7 +21,7 @@ KCH-MedRank 的一个核心方法论声明是其基于超图的重排序是\text
 
 \input{tables/failure_analysis_summary_zh}
 
-\subsection{路径追踪：典型案例}
+\subsubsection{路径追踪：典型案例}
 
 \input{figures/case_study_zh}
 
@@ -38,7 +38,7 @@ KCH-MedRank 的一个核心方法论声明是其基于超图的重排序是\text
 
 ubiquitination 丢失案例则呈现相反情形。尽管金标准段落讨论了 mono-ubiquitinated LDH-A 和 poly-ubiquitinated LDH，其排名仍从第 2 位降至第 18 位。问题与段落包含相关生化术语，但同义词和层级特征未能充分对齐表面形式及更宽泛的翻译后加工概念。类似丢失还出现在甲状腺激素类似物、cilengitide 受体、dasatinib 治疗、GIST 治疗和 Fanconi anemia 等问题中。这些案例启示后续应改进生物医学概念归一化，而非对关系特征作过强结论。
 
-\subsection{可解释性量化总结}
+\subsubsection{可解释性量化总结}
 
 三机制分析表明 KCH-MedRank 排序决策中激活的超图特征遵循可解释的知识约束路径：
 

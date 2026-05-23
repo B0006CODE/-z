@@ -8,6 +8,6 @@ Table~\ref{tab:pubmedqa-qwen-pilot} reports the controlled pilot. KCH-style evid
 
 \subsection{Complementary Leave-One-Feature-Group Ablations}
 
-For completeness, Table~\ref{tab:kch-ablation-summary} reports leave-one-feature-group diagnostics in which individual feature groups are removed from the full KCH-MedRank feature set. As discussed in Section~7, these single-group removals do not produce statistically significant differences because of high multicollinearity among the knowledge features: the LambdaMART model automatically compensates for a removed feature group using signals from the remaining correlated features. These diagnostics are provided for transparency and feature-coverage analysis.
+For completeness, Table~\ref{tab:kch-ablation-summary} reports leave-one-feature-group diagnostics in which individual feature groups are removed from the full KCH-MedRank feature set. As discussed in Section~4, these single-group removals do not produce statistically significant differences because of high multicollinearity among the knowledge features: the LambdaMART model automatically compensates for a removed feature group using signals from the remaining correlated features. These diagnostics are provided for transparency and feature-coverage analysis.
 
 \input{tables/kch_ablation_summary}
