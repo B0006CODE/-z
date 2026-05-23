@@ -12,13 +12,13 @@ where $S$ is the set of retrieval sources, $w_s$ is a source weight, and $k=60$ 
 
 The enhanced candidate-generation path is designed to raise the top-100 ceiling for reranking. It adds fielded BM25 with title, text, and MeSH expansion fields, plus MedCPT dual-encoder dense retrieval as an additional biomedical semantic source. Fusion weights are selected on the validation split only. The selected w122 configuration gives BM25 and dense retrieval weight 1.0, fielded BM25 weight 1.2, and MedCPT dual-encoder retrieval weight 0.2. This setting is selected for validation Recall@100 rather than test performance, because reranking can improve only passages already present in the candidate pool.
 
-\subsection{Knowledge-Constrained Local Hypergraph}
+\subsection{Knowledge-Constrained Local Structure}
 
-For each question and its top-$M$ candidates, KCH-MedRank builds a local hypergraph $H_q=(V_q,\mathcal{E}_q)$. The node set includes a question node, candidate passage nodes, document nodes, biomedical entity nodes, MeSH concept nodes, optional MeSH tree nodes, and optional relation nodes. The hyperedge set connects multiple nodes at once and therefore represents higher-order relations that are not naturally captured by pairwise similarity alone.
+For each question and its top-$M$ candidates, KCH-MedRank builds feature variants with increasing structural assumptions. The flat knowledge variant uses retrieval, biomedical semantic, MeSH, entity, and relation features without any graph construction. The pairwise graph variant adds anchor-based edges among the same local objects. The hypergraph variant builds a local hypergraph $H_q=(V_q,\mathcal{E}_q)$ whose node set includes a question node, candidate passage nodes, document nodes, biomedical entity nodes, MeSH concept nodes, optional MeSH tree nodes, and optional relation nodes. The hyperedge set connects multiple nodes at once and therefore represents higher-order relations that are not naturally captured by pairwise similarity alone.
 
 The main hyperedge types are question-entity, question-MeSH, question-passage candidate, passage-entity, passage-document, document-MeSH, shared-entity passages, entity-type concept, MeSH hierarchy, and auxiliary PrimeKG relation edges. Pairwise graph and no-medical-knowledge variants are constructed from the same candidate pool for ablation: the pairwise variant decomposes multi-node hyperedges into anchor-based pairwise edges, while the no-knowledge variant keeps only rank-band and candidate structure.
 
-The local design avoids constructing a global graph over millions of biomedical passages. It also keeps the method interpretable: feature inspection and case studies can report which concept overlaps, hierarchy links, shared candidate clusters, or hypergraph centrality signals influenced reranking.
+The local design avoids constructing a global graph over millions of biomedical passages. It also keeps the method interpretable: feature inspection and case studies can report which concept overlaps, hierarchy links, shared candidate clusters, or graph and hypergraph centrality signals influenced reranking.
 
 \begin{figure}[t]
 \centering
@@ -44,7 +44,7 @@ PrimeKG-derived features are included only as auxiliary relation signals: relati
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_03.png}
-\caption{Feature extraction and query-group learning-to-rank module. Retrieval scores, precomputed biomedical semantic retrieval features, and knowledge-constrained hypergraph features are combined in a LambdaMART-style ranker to produce the final evidence ordering.}
+\caption{Feature extraction and query-group learning-to-rank module. Retrieval scores, precomputed biomedical semantic retrieval features, flat biomedical knowledge features, and optional knowledge-constrained graph or hypergraph features are combined in a LambdaMART-style ranker to produce the final evidence ordering.}
 \label{fig:gpt-feature-reranker}
 \end{figure}
 
@@ -55,7 +55,7 @@ PrimeKG-derived features are included only as auxiliary relation signals: relati
 \textbf{Algorithm 1: KCH-MedRank local evidence control and reranking}
 \begin{enumerate}
   \item \textbf{Candidate retrieval.} For question $q$, retrieve top-$M$ passages from BM25, dense retrieval, fielded BM25, and MedCPT dual-encoder sources; fuse them with validation-selected weighted RRF.
-  \item \textbf{Local hypergraph construction.} Create nodes for $q$, candidate passages, documents, extracted biomedical entities, MeSH descriptors, MeSH hierarchy concepts, and optional relation endpoints. Add hyperedges for query-concept, passage-concept, document-MeSH, shared-concept candidate clusters, hierarchy links, candidate membership, and auxiliary PrimeKG relations.
+  \item \textbf{Local structure construction.} For the graph and hypergraph variants, create nodes for $q$, candidate passages, documents, extracted biomedical entities, MeSH descriptors, MeSH hierarchy concepts, and optional relation endpoints. Add edges or hyperedges for query-concept, passage-concept, document-MeSH, shared-concept candidate clusters, hierarchy links, candidate membership, and auxiliary PrimeKG relations. The flat knowledge baseline skips this step and uses only non-structural biomedical features.
   \item \textbf{Hyperedge weighting and normalization.} Assign edge weights by source reliability and local evidence strength: candidate membership edges use normalized RRF scores; entity and MeSH edges use normalized overlap/coverage; hierarchy edges use inverse tree distance; relation edges are down-weighted because of sparse exact-name coverage. Within each local graph, incident edge weights are normalized before propagation.
   \item \textbf{Diffusion propagation.} Initialize mass on the question, query-entity, and query-MeSH nodes. Run three restart diffusion iterations with $\alpha=0.85$, then normalize passage diffusion scores within the candidate set.
   \item \textbf{Passage feature extraction.} For each passage, concatenate retrieval scores and ranks, precomputed biomedical semantic retrieval features, entity overlap, MeSH exact and hierarchy features, auxiliary relation features, diffusion scores, centrality, and local graph-count features.
@@ -68,10 +68,10 @@ PrimeKG-derived features are included only as auxiliary relation signals: relati
 
 \subsection{Learning-to-Rank}
 
-The main supervised reranker is a query-group learning-to-rank model: a LightGBM gradient boosted tree ranker trained with a LambdaMART-style objective \citep{ke2017lightgbm}. Each question forms one ranking group, candidate passages form rows, and binary relevance labels are derived from gold evidence annotations. The feature vector combines retrieval scores, precomputed biomedical semantic retrieval features, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and local hypergraph structural features.
+The main supervised reranker is a query-group learning-to-rank model: a LightGBM gradient boosted tree ranker trained with a LambdaMART-style objective \citep{ke2017lightgbm}. Each question forms one ranking group, candidate passages form rows, and binary relevance labels are derived from gold evidence annotations. The feature vector combines retrieval scores, precomputed biomedical semantic retrieval features, entity features, exact and hierarchy-aware MeSH features, auxiliary relation features, and optional local graph or hypergraph structural features.
 
 Hyperparameters are selected on the validation split. The reported search space is number of leaves $\{15,31\}$, learning rate $\{0.03,0.05\}$, estimators $\{80,160\}$, and blend weight $\{0,0.1,0.2,0.35\}$, where the blend weight interpolates model scores with the original candidate rank score. Selection prioritizes validation MRR@10, then Recall@10 and nDCG@10. After validation selection, the final model is trained on train plus validation questions and evaluated once on the held-out test split.
 
 \input{tables/feature_importance_summary}
 
-Feature importance in Table~\ref{tab:feature-importance-summary} shows that semantic and first-stage retrieval signals remain central, while MeSH cluster, passage specificity, and hypergraph centrality features contribute interpretable biomedical and structural evidence. This supports a cautious claim: KCH-MedRank improves reranking by combining retrieval strength, biomedical semantics, and local knowledge-constrained structure, not by relying on one isolated knowledge source.
+Feature importance in Table~\ref{tab:feature-importance-summary} shows that semantic and first-stage retrieval signals remain central, while MeSH cluster, passage specificity, and hypergraph centrality features contribute interpretable biomedical and structural evidence. This supports a cautious claim: KCH-MedRank improves reranking by combining retrieval strength, biomedical semantics, flat biomedical knowledge features, and local structure signals, not by relying on one isolated knowledge source.

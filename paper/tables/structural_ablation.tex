@@ -1,23 +1,28 @@
 \begin{table}[t]
 \centering
 \small
-\caption{Structural ablation: component contributions via controlled architecture comparisons on held-out BioASQ. Pairwise bootstrap significance against the second method in each pair.}
+\caption{Structural ablation: component contributions via controlled architecture comparisons on held-out BioASQ. Deltas compare the second method in each pair against the first method.}
 \label{tab:structural-ablation}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrrrr}
 \toprule
 Comparison & Rec@10 & MRR@10 & nDCG@10 & $\Delta$Rec@10 & $\Delta$MRR@10 & $\Delta$nDCG@10 \\
 \midrule
 (1) Retrieval LTR & 0.5208 & 0.7791 & 0.6282 & -- & -- & -- \\
-(1) Semantic (no graph) & 0.5309 & 0.7872 & 0.6436 & +0.0101** & +0.0080* & +0.0153** \\
+(1) Flat knowledge LTR (no graph) & 0.5309 & 0.7872 & 0.6436 & +0.0101** & +0.0080* & +0.0153** \\
 \midrule
-(2) Semantic (no graph) & 0.5309 & 0.7872 & 0.6436 & -- & -- & -- \\
+(2) Flat knowledge LTR (no graph) & 0.5309 & 0.7872 & 0.6436 & -- & -- & -- \\
 (2) Hypergraph (no med) & 0.5266 & 0.7782 & 0.6362 & $-$0.0044 & $-$0.0089** & $-$0.0074** \\
 \midrule
 (3) Hypergraph (no med) & 0.5266 & 0.7782 & 0.6362 & -- & -- & -- \\
 (3) KCH-MedRank & 0.5329 & 0.7867 & 0.6433 & +0.0063** & +0.0085** & +0.0071** \\
 \midrule
-(4) Pairwise graph & 0.5306 & 0.7866 & 0.6409 & -- & -- & -- \\
-(4) KCH-MedRank & 0.5329 & 0.7867 & 0.6433 & +0.0023 & +0.0001 & +0.0024 \\
+(4) Flat knowledge LTR (no graph) & 0.5309 & 0.7872 & 0.6436 & -- & -- & -- \\
+(4) KCH-MedRank & 0.5329 & 0.7867 & 0.6433 & +0.0020 & $-$0.0004 & $-$0.0003 \\
+\midrule
+(5) Pairwise graph & 0.5306 & 0.7866 & 0.6409 & -- & -- & -- \\
+(5) KCH-MedRank & 0.5329 & 0.7867 & 0.6433 & +0.0023 & +0.0001 & +0.0024 \\
 \bottomrule
 \end{tabular}
+}
 \end{table}

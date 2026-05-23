@@ -1,16 +1,19 @@
 \begin{table}[t]
 \centering
 \small
-\caption{Interpretation of structural ablation results. Knowledge$\times$Structure interaction is the difference between the hypergraph with and without medical knowledge constraints.}
+\caption{Interpretation of structural ablation results. The flat knowledge comparison separates medical-knowledge feature effects from graph-structure effects.}
 \label{tab:structural-ablation-interpretation}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrc}
 \toprule
 Component & $\Delta$Rec@10 & $\Delta$MRR@10 & $\Delta$nDCG@10 & Role \\
 \midrule
-Biomedical semantics & +0.0101** & +0.0080* & +0.0153** & independent gain \\
+Flat knowledge features & +0.0101** & +0.0080* & +0.0153** & large non-structural gain \\
 Hypergraph alone (no med) & $-$0.0044 & $-$0.0089** & $-$0.0074** & introduces noise \\
-Medical knowledge constraint & +0.0063** & +0.0085** & +0.0071** & transforms noise to signal \\
-Knowledge $\times$ Structure & +0.0107 & +0.0174 & +0.0145 & net interaction effect \\
+Medical knowledge in hypergraph & +0.0063** & +0.0085** & +0.0071** & reverses structural noise \\
+Full vs. flat knowledge & +0.0020 & $-$0.0004 & $-$0.0003 & no significant top-10 advantage \\
+Full vs. pairwise graph & +0.0023 & +0.0001 & +0.0024 & modest structural difference \\
 \bottomrule
 \end{tabular}
+}
 \end{table}

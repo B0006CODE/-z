@@ -226,8 +226,9 @@ Enhanced first-stage retrieval status:
 - Fielded BM25 with MeSH expansion improves full-set Recall@100 from original Hybrid `0.6336` to `0.6966`, but has weaker MRR@10 and should be used as a recall source rather than a direct replacement.
 - Enhanced four-way RRF raises full-set Recall@100 to `0.7292` with balanced weights and `0.7534` with recall-optimized weights.
 - Fusion weights are selected on the validation split (`qid % 5 == 3`), where w122 maximizes Recall@100 (`0.7568`), then reported on held-out test (`0.7388` Recall@100).
-- Enhanced KCH-MedRank on the recall-optimized candidate pool improves held-out test MRR@10 to `0.7882`, Recall@10 to `0.5332`, and nDCG@10 to `0.6446`.
-- Against true MedCPT cross-encoder reranking on the same held-out test candidate pool, enhanced KCH-MedRank improves Recall@10 from `0.5172` to `0.5332` with paired bootstrap p=`0.0074`; MRR@10 is higher but not significant.
+- Enhanced KCH-MedRank on the recall-optimized candidate pool improves held-out test MRR@10 to `0.7867`, Recall@10 to `0.5329`, and nDCG@10 to `0.6433`.
+- Against true MedCPT cross-encoder reranking on the same held-out test candidate pool, enhanced KCH-MedRank improves Recall@10 from `0.5172` to `0.5329` with paired bootstrap p=`0.0076`; MRR@10 is higher but not significant.
+- Flat biomedical knowledge LambdaMART without graph structure is nearly tied with the full model at top-10, so graph and hypergraph features must be framed as interpretable complementary signals.
 - Failure analysis on the held-out test split shows `661` rescued gold passages versus `307` lost gold passages at top-10.
 
 ## 9. Generation And Faithfulness
@@ -324,7 +325,7 @@ Major Revision before external submission.
 
 Core review finding:
 
-- The manuscript is promising and appropriately cautious about clinical claims, but the current ablation table does not yet prove that the knowledge-constrained hypergraph is the dominant source of improvement.
+- The manuscript is promising and appropriately cautious about clinical claims, but the ablation evidence should frame graph and hypergraph features as complementary rather than dominant.
 - The safest current contribution framing is: an interpretable medical evidence control layer for retrieval-augmented generation, implemented as a reproducible biomedical semantic learning-to-rank reranking framework with knowledge-constrained local hypergraph features.
 - Do not claim that hyperedges or medical constraints alone drive the performance gains unless additional significance tests support that claim.
 - Remove self-undermining language such as `modest claim`, `intended contribution is modest`, and unnecessary `secondary component` wording. The manuscript should remain scientifically cautious without telling reviewers that the contribution is small.
@@ -333,7 +334,7 @@ Core review finding:
 Required manuscript and analysis tasks:
 
 - [x] Add paired significance tests comparing Full KCH-MedRank against the strongest ablation variants:
-  - [x] `LambdaMART + semantic, no hypergraph`.
+  - [x] `Flat biomedical knowledge LambdaMART without graph structure`.
   - [x] `Pairwise graph LTR`.
   - [x] `Remove MeSH hierarchy`.
   - [x] `Remove hypergraph diffusion/centrality`.
@@ -395,7 +396,7 @@ Immediate priority:
 
 - The next work should address reviewer-blocking risks before adding more generation experiments.
 - The main risk is an unfair or unclear efficiency claim if KCH-MedRank uses an expensive semantic feature but the feature-generation cost is excluded.
-- The second risk is overclaiming hypergraph / medical-knowledge contribution when strong ablations show that `LambdaMART + semantic, no hypergraph` is nearly tied with the full model.
+- The second risk is overclaiming hypergraph / medical-knowledge contribution when strong ablations show that `Flat biomedical knowledge LambdaMART without graph structure` is nearly tied with the full model.
 
 Required next experiments and edits:
 
@@ -440,7 +441,7 @@ Current 12C status:
 - Full fair efficiency outputs are saved to `results/metrics/efficiency_comparison_bioasq.json`, `results/tables/efficiency_comparison_bioasq.md`, and `paper/tables/reranking_efficiency.tex`.
 - The enhanced KCH-MedRank semantic feature source is `outputs/retrieval/medcpt_dense_full_top100.jsonl`; the script classifies it as `dense_or_dual_encoder_predictions`, with `uses_ce_score=false` and `online_ce=false`.
 - The previous unconditional `19.3x` speedup wording has been replaced with a fair `18.6x` reranking-stage comparison that states KCH-MedRank does not use Cross-Encoder scores.
-- On the held-out BioASQ test split, Full KCH-MedRank reports Recall@10 `0.5332`, MRR@10 `0.7882`, nDCG@10 `0.6446`, and reranking time `37.59s`.
+- On the held-out BioASQ test split, Full KCH-MedRank reports Recall@10 `0.5329`, MRR@10 `0.7867`, nDCG@10 `0.6433`, and reranking time `37.59s`.
 - The no-semantic KCH diagnostic reports Recall@10 `0.5244`, MRR@10 `0.7790`, nDCG@10 `0.6330`, and reranking time `37.50s`.
 - Retrieval-feature-only LambdaMART reports Recall@10 `0.5208`, MRR@10 `0.7791`, nDCG@10 `0.6282`, and reranking time `0.84s`.
 - MedCPT Cross-Encoder timing is reused from the previous completed CUDA run: Recall@10 `0.5172`, MRR@10 `0.7775`, nDCG@10 `0.6390`, and reranking time `699.46s`.

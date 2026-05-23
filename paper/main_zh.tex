@@ -4,6 +4,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage[numbers,sort&compress]{natbib}
@@ -13,7 +14,7 @@
 \emergencystretch=3em
 \Urlmuskip=0mu plus 1mu
 
-\title{KCH-MedRank：面向循证检索增强生成的可解释医学证据控制层}
+\title{KCH-MedRank：面向循证医学检索增强生成的知识约束学习排序方法}
 \author{匿名作者}
 \date{\today}
 
@@ -22,7 +23,7 @@
 \maketitle
 
 \begin{abstract}
-医学检索增强生成系统在答案生成之前需要准确、具有医学依据且可检查的证据选择能力。本文提出 KCH-MedRank：一种可解释医学证据控制层，其实现形式是可复现、知识约束的局部超图学习排序框架，用于生物医学证据检索与重排序。增强候选生成提高 top-100 证据召回上限，KCH-MedRank 在 BioASQ 留出测试集上相对于强 Hybrid RRF 提升 top-10 证据检索效果。相对于同一候选池上的真实 MedCPT Cross-Encoder 基线，KCH-MedRank 的 Recall@10 提升达到统计显著，而排序敏感的 MRR@10 与 nDCG@10 为正向但未显著的趋势。受控重排序阶段计时区分了 Cross-Encoder 打分与表格重排序：KCH-MedRank 使用预计算的稠密生物医学语义特征，而不是 Cross-Encoder 特征，并且在留出测试候选池上比 MedCPT Cross-Encoder 快 18.6 倍。外部 BEIR NFCorpus retrieval-only 诊断为监督重排序层提供了额外稳健性检查，但不声称医学知识特征已完整迁移。结果将 KCH-MedRank 定位为 medical RAG 的白盒证据选择模块，而不是临床决策系统。
+医学检索增强生成系统在答案生成之前需要准确、具有医学依据且可检查的证据选择能力。本文提出 KCH-MedRank：一种知识约束学习排序框架，用于生物医学证据检索与重排序，并将局部图与超图特征作为可解释结构信号。增强候选生成提高 top-100 证据召回上限，KCH-MedRank 在 BioASQ 留出测试集上相对于强 Hybrid RRF 提升 top-10 证据检索效果。相对于同一候选池上的真实 MedCPT Cross-Encoder 基线，KCH-MedRank 的 Recall@10 提升达到统计显著，而 MRR@10 与 nDCG@10 为正向但未显著的趋势。关键扁平特征消融显示，检索、生物医学语义、MeSH、实体和关系特征在不使用任何图结构时已经捕捉到大部分收益。将医学知识约束加入局部超图后，可以逆转无医学知识超图结构引入的噪声，并相对于无医学知识超图变体取得统计显著提升（$p < 0.01$）。但是，完整模型在 $k{=}10$ 上并未显著优于扁平医学知识 LTR 基线；超图架构相对于成对图分解也主要只在早期排序位置（$k{=}5$）提供适度收益。受控重排序阶段计时区分了 Cross-Encoder 打分与表格重排序：KCH-MedRank 使用预计算的稠密生物医学语义特征，而不是 Cross-Encoder 特征，并且在留出测试候选池上比 MedCPT Cross-Encoder 快 18.6 倍。外部 BEIR NFCorpus retrieval-only 诊断为监督重排序层提供了额外稳健性检查，但不声称医学知识特征已完整迁移。结果将 KCH-MedRank 定位为 medical RAG 的白盒证据选择模块，而不是临床决策系统。
 \end{abstract}
 
 \input{sections_zh/01_introduction}

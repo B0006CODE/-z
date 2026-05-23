@@ -2,8 +2,8 @@
 
 This directory contains the bilingual LaTeX manuscript for:
 
-- English: **Knowledge-Constrained Hypergraph Retrieval-Augmented Generation for Evidence-Grounded Medical Question Answering**
-- Chinese: **面向循证医学问答的知识约束超图增强检索生成方法**
+- English: **KCH-MedRank: Knowledge-Constrained Learning-to-Rank for Evidence-Grounded Medical Retrieval-Augmented Generation**
+- Chinese: **KCH-MedRank：面向循证医学检索增强生成的知识约束学习排序方法**
 
 The template is intentionally generic. Do not switch to Elsevier, Springer, IEEE, MDPI, or another journal-specific template until the target venue is selected.
 

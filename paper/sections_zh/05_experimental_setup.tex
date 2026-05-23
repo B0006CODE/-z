@@ -4,7 +4,7 @@
 
 主数据集为 \texttt{rag-datasets/rag-mini-bioasq}，作为紧凑的 BioASQ 风格生物医学证据检索设置。完整处理后数据包含 4,719 个问题。我们使用基于问题标识符桶的确定性问题级划分：除验证和测试桶外的问题用于训练，模 5 后余数为 3 的问题用于验证，余数为 4 的问题用于测试。在增强 BioASQ 实验中，训练集包含 2,832 个问题，验证集包含 944 个问题，留出测试集包含 943 个问题。该划分在模型选择之前固定。
 
-每个问题对应一组金标准证据段落标识符。评估在段落级别进行。重排序器只能接收第一阶段检索池返回的候选，因此候选生成器的 Recall@100 被报告为召回上限分析。划分在问题级完成，测试问题中的段落不会作为重排序器的正例训练标签使用。PubMedQA 用作次要诊断数据集，而不是主结果来源。BEIR NFCorpus 作为外部 retrieval-only 稳健性诊断，使用其官方 train、validation 和 test qrels；由于本文项目特定的 MeSH、实体、PrimeKG 与局部超图特征未直接为 NFCorpus 构建，该诊断仅比较 BM25、稠密检索、Hybrid RRF 和仅检索特征的 LambdaMART。
+每个问题对应一组金标准证据段落标识符。评估在段落级别进行。重排序器只能接收第一阶段检索池返回的候选，因此候选生成器的 Recall@100 被报告为召回上限分析。划分在问题级完成，测试问题中的段落不会作为重排序器的正例训练标签使用。PubMedQA 用作次要诊断数据集，而不是主结果来源。BEIR NFCorpus 作为外部 retrieval-only 稳健性诊断，使用其官方 train、validation 和 test qrels；由于本文项目特定的 MeSH、实体、PrimeKG 与局部图/超图特征未直接为 NFCorpus 构建，该诊断仅比较 BM25、稠密检索、Hybrid RRF 和仅检索特征的 LambdaMART。
 
 \begin{figure}[t]
 \centering
@@ -17,7 +17,7 @@
 
 我们同时比较第一阶段检索基线和重排序基线。第一阶段基线包括 BM25、稠密生物医学检索、原始 Hybrid BM25 + dense RRF、带 MeSH 扩展的 fielded BM25、MedCPT dual-encoder 检索和增强 Hybrid RRF。增强 Hybrid RRF 不在测试集上调参；其 w122 权重由验证集 Recall@100 选择。
 
-重排序基线包括同一增强候选池上的 MedCPT Cross-Encoder、仅检索特征的 LambdaMART、带生物医学语义特征但不含超图特征的 LambdaMART、成对图学习排序、不含医学知识的超图学习排序，以及完整 KCH-MedRank。我们还报告移除单个特征组的消融实验，包括移除生物医学语义分数、MeSH 层级特征、生物医学实体特征、超图扩散与中心性，以及 PrimeKG 关系特征。
+重排序基线包括同一增强候选池上的 MedCPT Cross-Encoder、仅检索特征的 LambdaMART、不含图结构的扁平生物医学知识 LambdaMART、成对图学习排序、不含医学知识的超图学习排序，以及完整 KCH-MedRank。扁平医学知识基线使用与完整模型相同的检索、生物医学语义、实体、精确 MeSH、层级感知 MeSH 和 PrimeKG 关系特征，但移除图/超图扩散、中心性、局部边计数和图交互特征。该基线直接检验医学知识特征本身是否已经解释主要收益。我们还报告移除单个特征组的消融实验，包括移除生物医学语义分数、MeSH 层级特征、生物医学实体特征、超图扩散与中心性，以及 PrimeKG 关系特征。
 
 \subsection{评估}
 

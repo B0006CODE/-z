@@ -7,10 +7,10 @@
 \toprule
 Comparison & Observed outcome & Supported interpretation \\
 \midrule
-Full vs. LambdaMART + semantic, no hypergraph & No significant difference in MRR@10, Recall@10, or nDCG@10 & The supervised retrieval and biomedical semantic features are the strongest performance drivers; the full model should not be claimed to dominate this ablation. \\
-Full vs. Pairwise graph LTR & Significant gains in Recall@10 and nDCG@10, but not MRR@10 & Hypergraph structure can improve top-10 evidence coverage over a pairwise graph representation, while first-rank precision remains close. \\
-Full vs. Remove MeSH hierarchy & No significant difference; the ablation has slightly higher Recall@10 & MeSH hierarchy features are best presented as interpretable medical constraints, not as an isolated source of statistically proven aggregate gain. \\
-Full vs. Remove hypergraph diffusion/centrality & No significant difference; the ablation has slightly higher Recall@10 and nDCG@10 & Diffusion and centrality features aid transparency and case-level explanation, but the current test does not prove that they independently increase overall ranking metrics. \\
+Full vs. flat knowledge LTR, no graph & No significant difference in MRR@10, Recall@10, or nDCG@10 & Flat retrieval, semantic, and biomedical knowledge features explain most of the aggregate gain; the full model should not be claimed to dominate this ablation. \\
+Full vs. Pairwise graph LTR & No significant difference at $k=10$; nDCG@10 is a near-significant positive trend & The hypergraph is a useful structural variant, but current top-10 evidence does not prove a clear aggregate advantage over pairwise graph decomposition. \\
+Full vs. Remove MeSH hierarchy & No significant difference; the ablation has slightly higher Recall@10 and nDCG@10 & MeSH hierarchy features are best presented as interpretable medical constraints, not as an isolated source of statistically proven aggregate gain. \\
+Full vs. Remove hypergraph diffusion/centrality & No significant difference; the ablation has slightly higher MRR@10 and nDCG@10 & Diffusion and centrality features aid transparency and case-level explanation, but the current test does not prove that they independently increase overall ranking metrics. \\
 \bottomrule
 \end{tabularx}
 \end{table}

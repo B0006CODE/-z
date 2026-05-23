@@ -61,7 +61,7 @@ def main():
     methods = {
         "Hybrid RRF": read_jsonl("outputs/retrieval/enhanced_hybrid_w122_full_top100.jsonl"),
         "Retrieval LTR": read_jsonl(f"{prefix}_retrieval_ltr_test_top100.jsonl"),
-        "Semantic (no graph)": read_jsonl(f"{prefix}_semantic_no_hypergraph_ltr_test_top100.jsonl"),
+        "Flat knowledge LTR (no graph)": read_jsonl(f"{prefix}_semantic_no_hypergraph_ltr_test_top100.jsonl"),
         "Hypergraph (no med)": read_jsonl(f"{prefix}_hypergraph_no_medical_knowledge_ltr_test_top100.jsonl"),
         "Pairwise graph": read_jsonl(f"{prefix}_pairwise_graph_ltr_test_top100.jsonl"),
         "KCH-MedRank": read_jsonl(f"{prefix}_full_kch_medrank_test_top100.jsonl"),
@@ -71,11 +71,11 @@ def main():
     test_qids = sorted({qid for qid in hybrid_by_qid if int(qid) % 5 == 4})
 
     comparisons = [
-        ("KCH-MedRank", "Semantic (no graph)", "超图+知识 vs 纯语义"),
+        ("KCH-MedRank", "Flat knowledge LTR (no graph)", "完整模型 vs 扁平医学知识"),
         ("KCH-MedRank", "Hypergraph (no med)", "知识约束的价值"),
         ("KCH-MedRank", "Pairwise graph", "超图 vs 对偶图"),
-        ("Semantic (no graph)", "Retrieval LTR", "语义的独立贡献"),
-        ("Hypergraph (no med)", "Semantic (no graph)", "无知识超图的噪音"),
+        ("Flat knowledge LTR (no graph)", "Retrieval LTR", "扁平医学知识特征贡献"),
+        ("Hypergraph (no med)", "Flat knowledge LTR (no graph)", "无知识超图的噪音"),
         ("KCH-MedRank", "Hybrid RRF", "vs Hybrid 基线"),
     ]
 

@@ -5,7 +5,7 @@
 | Hybrid RRF | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8375 | 0.0375 | 0.1932 |  |  |
 | Biomedical semantic reranker only | 0.0031 | 0.0142 | 0.0113 | 0.0090 | 0.0142 | 0.8375 | 0.0375 | 0.1846 |  |  |
 | Retrieval-feature-only LambdaMART | 0.2550 | 0.4411 | 0.2180 | 0.2424 | 0.4411 | 0.8375 | 0.2335 | 0.3423 |  |  |
-| LambdaMART + biomedical semantic without hypergraph | 0.3662 | 0.4550 | 0.2821 | 0.2907 | 0.4550 | 0.8375 | 0.2977 | 0.3876 |  |  |
+| Flat biomedical knowledge LambdaMART without graph structure | 0.3662 | 0.4550 | 0.2821 | 0.2907 | 0.4550 | 0.8375 | 0.2977 | 0.3876 |  |  |
 | Pairwise graph LTR | 0.3508 | 0.4415 | 0.2755 | 0.2768 | 0.4415 | 0.8375 | 0.2913 | 0.3751 |  |  |
 | Hypergraph LTR without medical knowledge | 0.2836 | 0.4306 | 0.2621 | 0.2699 | 0.4306 | 0.8375 | 0.2787 | 0.3730 |  |  |
 | Full KCH-MedRank | 0.3778 | 0.4751 | 0.2742 | 0.2896 | 0.4751 | 0.8375 | 0.2892 | 0.3815 |  |  |

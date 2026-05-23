@@ -8,7 +8,7 @@
 
 \subsection{留出测试集主结果}
 
-Enhanced KCH-MedRank 达到 Recall@10 = 0.5332、MRR@10 = 0.7882、nDCG@10 = 0.6446、Recall@100 = 0.7388。相对于原始 Hybrid RRF，这对应 Recall@10 +0.0696、MRR@10 +0.0332、nDCG@10 +0.0598 的提升。相对于增强 Hybrid RRF 的候选排序，KCH-MedRank 的 Recall@10 提升 +0.0673，MRR@10 提升 +0.0352，nDCG@10 提升 +0.0602，evidence coverage@10 提升 +0.0673。
+Enhanced KCH-MedRank 达到 Recall@10 = 0.5329、MRR@10 = 0.7867、nDCG@10 = 0.6433、Recall@100 = 0.7388。相对于原始 Hybrid RRF，这对应 Recall@10 +0.0693、MRR@10 +0.0317、nDCG@10 +0.0585 的提升。相对于增强 Hybrid RRF 的候选排序，KCH-MedRank 的 Recall@10 提升 +0.0669，MRR@10 提升 +0.0337，nDCG@10 提升 +0.0589，evidence coverage@10 提升 +0.0669。
 
 表~\ref{tab:enhanced-bioasq-bootstrap-hybrid} 报告了相对于增强 Hybrid RRF 的成对 bootstrap 检验。四个 top-10 指标均达到显著，$p=0.0002$。这说明提升并不只是来自更强候选池，重排序步骤本身也显著改变了 top-10 证据排序。
 
@@ -24,7 +24,7 @@ Enhanced KCH-MedRank 达到 Recall@10 = 0.5332、MRR@10 = 0.7882、nDCG@10 = 0.6
 
 \subsection{Hard Reranking 与 PubMedQA 诊断}
 
-表~\ref{tab:hard-subset-diagnostic} 报告了 hard subset 诊断结果。该子集包含增强 Hybrid top-100 中存在金标准证据、但增强 Hybrid top-10 未命中的 BioASQ 留出测试问题，共 65 个问题。该子集只用于诊断分析，不能替代完整测试集评估。在该子集上，增强 Hybrid RRF 的 Recall@10 按定义为 0，而完整 KCH-MedRank 达到 Recall@10 = 0.4751。这说明当候选池中存在可恢复金标准证据时，重排序器能够将相当一部分遗漏证据提升到 top-10。该子集也再次显示了消融中的整体趋势：检索和语义特征解释了很大一部分恢复效果，超图和医学知识特征更应解释为互补信号，而不是单独解释全部提升。
+表~\ref{tab:hard-subset-diagnostic} 报告了 hard subset 诊断结果。该子集包含增强 Hybrid top-100 中存在金标准证据、但增强 Hybrid top-10 未命中的 BioASQ 留出测试问题，共 65 个问题。该子集只用于诊断分析，不能替代完整测试集评估。在该子集上，增强 Hybrid RRF 的 Recall@10 按定义为 0，而完整 KCH-MedRank 达到 Recall@10 = 0.4704。这说明当候选池中存在可恢复金标准证据时，重排序器能够将相当一部分遗漏证据提升到 top-10。该子集也再次显示了消融中的整体趋势：检索和语义特征解释了很大一部分恢复效果，超图和医学知识特征更应解释为互补信号，而不是单独解释全部提升。
 
 \input{tables/hard_subset_diagnostic_zh}
 

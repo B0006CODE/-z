@@ -1,4 +1,4 @@
-# Knowledge-Constrained Hypergraph RAG for Medical QA
+# Knowledge-Constrained Medical Evidence Reranking for RAG
 
 This repository implements a reproducible research pipeline for evidence-grounded biomedical question answering.
 
@@ -9,14 +9,14 @@ The project starts with a conservative baseline:
 3. evaluate retrieval quality on a 10-question sanity sample;
 4. expand only after the first-stage retrieval baseline is measured.
 
-The later method adds dense retrieval, hybrid retrieval, biomedical entity processing, knowledge-constrained local hypergraph reranking, ablations, and optional evidence-grounded generation.
+The later method adds dense retrieval, hybrid retrieval, biomedical entity processing, knowledge-constrained local graph/hypergraph features, learning-to-rank ablations, and optional evidence-grounded generation.
 
 ## Current Experimental Direction
 
-The current project direction is to upgrade the existing hypergraph reranker into:
+The current project direction is to revise the existing method into:
 
 ```text
-KCH-MedRank: Knowledge-Constrained Hypergraph Learning-to-Rank with Biomedical Semantic Reranking
+KCH-MedRank: Knowledge-Constrained Learning-to-Rank for Medical Evidence Retrieval
 ```
 
 This is an upgrade inside the same project, not a new research topic. The main task remains evidence retrieval and reranking for medical QA.
@@ -26,7 +26,7 @@ The next method version should combine:
 1. Hybrid BM25 + dense RRF first-stage retrieval.
 2. A biomedical semantic reranking feature, preferably MedCPT or another PubMed-trained reranker.
 3. MeSH hierarchy-aware concept features, not only exact MeSH overlap.
-4. Local cross-granularity hypergraph diffusion over question, passage, document, entity, and MeSH concept nodes.
+4. Local cross-granularity graph/hypergraph diffusion over question, passage, document, entity, and MeSH concept nodes.
 5. LambdaMART / LightGBM query-group learning-to-rank.
 6. Full held-out evaluation plus a hard reranking subset where Hybrid top-100 contains gold evidence but Hybrid top-10 misses it.
 
@@ -143,8 +143,9 @@ Key BioASQ results:
 - Fielded BM25 raises full-set Recall@100 from original Hybrid `0.6336` to `0.6966`, but lowers MRR@10, so it is used as a recall source.
 - Enhanced four-way RRF reaches full-set Recall@100 `0.7534` in the recall-optimized setting.
 - Fusion weights are selected on the validation split, where w122 reaches Recall@100 `0.7568`; its held-out test Recall@100 is `0.7388`.
-- Enhanced KCH-MedRank on that candidate pool reaches held-out test MRR@10 `0.7882`, Recall@10 `0.5332`, and nDCG@10 `0.6446`.
-- True MedCPT cross-encoder reranking on the same held-out test pool reaches MRR@10 `0.7775`, Recall@10 `0.5172`, and nDCG@10 `0.6390`; enhanced KCH-MedRank has significantly higher Recall@10 (`p=0.0074`) but non-significant MRR/nDCG gains.
+- Enhanced KCH-MedRank on that candidate pool reaches held-out test MRR@10 `0.7867`, Recall@10 `0.5329`, and nDCG@10 `0.6433`.
+- True MedCPT cross-encoder reranking on the same held-out test pool reaches MRR@10 `0.7775`, Recall@10 `0.5172`, and nDCG@10 `0.6390`; enhanced KCH-MedRank has significantly higher Recall@10 (`p=0.0076`) but non-significant MRR/nDCG gains.
+- A flat biomedical knowledge LambdaMART baseline without graph structure is nearly tied with the full model at top-10, so the manuscript frames graph and hypergraph features as interpretable complementary signals rather than the dominant performance driver.
 - Held-out failure analysis shows `661` rescued gold passages and `307` lost gold passages at top-10.
 
 Run the enhanced candidate-generation path:
