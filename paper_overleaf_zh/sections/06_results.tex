@@ -1,41 +1,36 @@
 \subsection{主要结果}
+\label{sec:main-results}
 
-\subsubsection{候选池质量}
+\subsubsection{候选上限与重排序收益}
 
-重排序器只能重新排列候选池中已有的段落，因此初始证据上限至关重要。原始 Hybrid RRF 基线的测试 Recall@100 仅为 0.6077——约 40\% 的金标准段落从未进入候选集。增强 w122 配置仅根据验证集 Recall@100 选择，将这一上限提升至 0.7388（表~\ref{tab:enhanced-bioasq-main-results}），在任何重排序发生前将可恢复证据池扩展了 13 个百分点以上。
+重排序之前，先要知道有多少证据是可达的。原始 Hybrid RRF 的测试 Recall@100 为 0.6077，约 40\% 的金标准段落从未进入候选池。增强 w122 配置将此上限提升至 0.7388（表~\ref{tab:enhanced-bioasq-main-results}），在任何重排序发生前增加了超过 13 个百分点的可恢复证据。
 
 \input{tables/enhanced_bioasq_main_results_zh}
 
-\subsubsection{留出测试集主结果}
-
-KCH-MedRank 在 BioASQ 留出测试集上达到 Recall@10 = 0.5329，而增强 Hybrid RRF 候选排序为 0.4660（表~\ref{tab:enhanced-bioasq-bootstrap-hybrid}）。Recall@10 的 $\Delta$ 为 $+0.0669$，意味着平均每 15 个问题 KCH-MedRank 就能将大约一个额外金标准段落恢复到 top 10。MRR@10 从 0.7530 提升至 0.7867，nDCG@10 从 0.5843 提升至 0.6433。四个 top-10 指标均达到统计显著（$p=0.0002$，成对 bootstrap），确认重排序步骤显著重塑了 top-10 证据集，超越了更强候选池本身带来的改进。
+KCH-MedRank 在此更大池内重排序，达到 Recall@10 = 0.5329，对比增强 Hybrid RRF 候选排序的 0.4660（表~\ref{tab:enhanced-bioasq-bootstrap-hybrid}）。$\Delta$ 为 $+0.0669$，意味着大约每 15 个问题就有一条额外的金标准段落进入前 10。MRR@10 从 0.7530 升至 0.7867，nDCG@10 从 0.5843 升至 0.6433。四项 top-10 指标全部在成对 bootstrap 下达到显著（$p=0.0002$）。
 
 \input{tables/enhanced_bioasq_bootstrap_vs_hybrid_zh}
 
-\subsubsection{与生物医学语义重排序的比较}
+\subsubsection{击败交叉编码器}
 
-更严格的检验是 KCH-MedRank 是否优于生物医学 cross-encoder——一种用 transformer 对每个查询-段落对打分的强语义重排序器。在同一增强候选池上，真实 MedCPT Cross-Encoder 基线达到 Recall@10 = 0.5172（表~\ref{tab:enhanced-bioasq-significance}）。KCH-MedRank 的 Recall@10 提升 $+0.0157$，达到统计显著（$p=0.0076$，成对 bootstrap）。MRR@10 和 nDCG@10 为正向（分别为 $+0.0092$ 和 $+0.0043$），但未达显著。
+更严苛的检验是 MedCPT Cross-Encoder，它用完整 transformer 对每个查询-段落对打分。在同一增强候选池上，交叉编码器达到 Recall@10 = 0.5172。KCH-MedRank 在此基础上提升 $+0.0157$（$p=0.0076$，成对 bootstrap；表~\ref{tab:enhanced-bioasq-significance}）。MRR@10 和 nDCG@10 分别为正向的 $+0.0092$ 和 $+0.0043$，不显著。
 
 \input{tables/enhanced_bioasq_significance_zh}
 
-这一模式——Recall 显著提升而 MRR 未相应改善——在证据检索中属于预期现象。Recall 衡量相关段落是否出现在 top 10 中的任何位置；MRR 衡量第一个段落是否相关。KCH-MedRank 将相关但排名较低的证据提升到 top-10 窗口内，但不一定重新排列已经排名良好的段落。当候选池中存在仅靠语义评分被排在 top 10 之外的金标准证据时，重排序器最为有效。
+Recall 显著提升而 MRR 没有对应改善，在证据检索中是可以理解的。Recall 检查相关段落是否出现在前 10 的任何位置，MRR 检查第一条是否相关。KCH-MedRank 把被语义评分推到前 10 门外的证据拉进窗口，不需要打乱已经排得很好的段落。
 
-\subsubsection{Hard Reranking 与辅助诊断}
+\subsubsection{救回困难案例}
 
-困难子集精确隔离了这一场景：65 个测试问题中增强 Hybrid RRF 候选池在 top 100 中存在金标准证据但 top 10 完全未命中（表~\ref{tab:hard-subset-diagnostic}）。在这些问题上，增强 Hybrid RRF 按定义 Recall@10 = 0。KCH-MedRank 恢复了近半数问题的 top-10 金标准证据（Recall@10 = 0.4704），而仅检索特征的 LambdaMART 达到 0.4411。两者之间的差距（$+0.0293$）反映了生物医学知识特征在检索信号不足的问题上的增量价值。
+困难子集隔离了候选池中有金标准证据但前 10 一条也没有的 65 个问题（表~\ref{tab:hard-subset-diagnostic}）。按构造，增强 Hybrid RRF 在此子集上 Recall@10 = 0。KCH-MedRank 将其中近一半的问题的金标准证据拉进了前 10（Recall@10 = 0.4704）。仅检索特征的 LambdaMART 达到 0.4411。二者之差 $+0.0293$ 是生物医学知识特征在检索信号不足的问题上的增量价值。
 
 \input{tables/hard_subset_diagnostic_zh}
 
-PubMedQA 在一位命中已极强的不同问答格式下提供了稳健性检查（表~\ref{tab:pubmedqa-retrieval-diagnostic}）。轻量 HGB 知识重排序器将 Recall@10 从 0.8200 提升至 0.8953（$p=0.0002$）。MRR@10 几乎不变（0.9850 到 0.9861），与 BioASQ 的模式一致：该方法扩展证据覆盖而非改善已经很强的一位精度。
+\subsubsection{泛化能力}
+
+PubMedQA 检验方法能否迁移到不同问答格式（表~\ref{tab:pubmedqa-retrieval-diagnostic}）。轻量 HGB 知识重排序器将 Recall@10 从 0.8200 提升至 0.8953，相对其 Hybrid RRF 来源（$p=0.0002$）。MRR@10 几乎不变（0.9850 到 0.9861）。这与 BioASQ 模式一致：方法扩大了证据覆盖，没有触及已经很强的一位精度。
 
 \input{tables/pubmedqa_retrieval_diagnostic_zh}
 
-BEIR NFCorpus 为监督重排序层提供了外部稳健性检查。由于 NFCorpus 缺少为 BioASQ 构建的 MeSH、实体和超图特征文件，该比较有意限制为仅检索特征的 LambdaMART（表~\ref{tab:nfcorpus-retrieval-diagnostic}）。仅检索特征的 LambdaMART 将 Recall@10 从 0.1676 提升至 0.1770（$p=0.0034$），将 nDCG@10 从 0.3436 提升至 0.3627（$p=0.0002$），确认 listwise 监督重排序在 BioASQ 之外具有泛化能力，即使不使用生物医学知识特征。
+BEIR NFCorpus 单独检验监督重排序层，因为未构建生物医学知识特征（表~\ref{tab:nfcorpus-retrieval-diagnostic}）。仅检索特征的 LambdaMART 将 Recall@10 从 0.1676 提升至 0.1770（$p=0.0034$），nDCG@10 从 0.3436 提升至 0.3627（$p=0.0002$），相对 Hybrid RRF。列表式监督重排序即使没有领域特定特征也能泛化到 BioASQ 之外。
 
 \input{tables/nfcorpus_retrieval_diagnostic_zh}
-
-\subsubsection{诊断性答案支持分析}
-
-PubMedQA 答案选择分析分离了证据检索与答案正确性。在基于规则的引用支持指标下，Hybrid 和 HGB 的 top 10 证据均达到 1.0000 的支持率——每个评估问题至少检索到一个金标准证据段落。然而，答案级指标揭示了证据存在与证据使用之间的差距：轻量 yes/no/maybe 选择器仅达到 0.4800--0.5550 的支持答案比例，98 个抽取到实体的问题中答案-证据实体一致性为 0.5510。这些使用确定性实体重叠而非 LLM 评审计算的基线，为未来的答案忠实性研究建立了透明的参考点。
-
-Qwen3-8B 下游生成 pilot 见附录，用于检验证据排序在受控条件下是否影响固定下游答案闭环。

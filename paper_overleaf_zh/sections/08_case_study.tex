@@ -1,51 +1,47 @@
-\subsection{可解释性与案例分析}
+\subsection{可解释性与错误分析}
 \label{sec:interpretability}
 
-KCH-MedRank 基于超图的重排序是\textbf{可解释的}：每一例金标准段落的救回都可以追溯到超图中的具体知识约束机制。本节提供量化证据。
+能提高数字的重排序器是有用的。能解释其决策的重排序器在医学场景中是必要的，因为临床医生可能需要核实某段证据为何被提升。KCH-MedRank 的设计让 LambdaMART 特征重要性分数和超图通路使每一次排序决策都可追溯。本节给出量化证据，然后以同等篇幅分析失败案例。
 
-\subsubsection{救回案例的三机制分类}
+\subsubsection{证据救回的三类机制}
 
-我们将 KCH-MedRank 从 Hybrid RRF top-10 之外救回 top-10 以内的全部 648 个金标准段落按主导超图机制分类：
+我们将 KCH-MedRank 从 Hybrid RRF top-10 之外救回 top-10 内的全部 648 个金标准段落做了分类，每例按主导超图机制归类。
 
-\begin{enumerate}[label=(\arabic*)]
-    \item \textbf{MeSH 层级路径}：问题与金标准段落通过 MeSH 树形祖先路径共享概念。例如关于``DITPA''的问题与关于``thyroid hormones''的段落通过共享 MeSH 词``thyroid hormones''及其树形祖先相连接。
-    \item \textbf{共享实体簇路径}：金标准段落与其他候选段落共享生物医学实体，形成共享实体超边簇，通过扩散传播排序信号。
-    \item \textbf{PrimeKG 关系路径}：问题实体通过 PrimeKG 生物医学关系与段落实体相连（如``Dasatinib --治疗-- 白血病''）。
-\end{enumerate}
+MeSH 层级路径占救回的 75.9\%，平均排名提升 +22.1 位。问题与金标准段落通过 MeSH 树形祖先路径共享概念。询问 DITPA 的问题与关于甲状腺激素的段落，通过共享 MeSH 术语"甲状腺激素"及其树形祖先连接。
+
+共享实体簇路径占救回的 23.9\%，平均提升 +14.0 位。金标准段落与其他高排名候选段落共享生物医学实体，共享实体超边簇通过扩散传播排序信号。
+
+PrimeKG 关系路径占救回的 0.2\%。问题实体通过 PrimeKG 生物医学关系与段落实体相连（如"Dasatinib --治疗-- 白血病"）。低占比反映了 PrimeKG 中精确名称映射的稀疏性。
 
 \input{tables/interpretability_mechanisms}
 
-表~\ref{tab:interpretability-mechanisms} 展示了分类结果。MeSH 层级路径是最主要的可解释机制，占救回案例的 75.9\%，平均排名提升 +22.1 位。共享实体簇路径占 23.9\%，平均提升 +14.0 位。PrimeKG 关系路径频率最低（0.2\%），这与结构化生物医学知识图谱关系的稀疏性一致——相比所有 PubMed 文献均有 MeSH 标注的覆盖密度。
-
-表~\ref{tab:mech-cooccurrence} 显示 89.2\% 的救回案例涉及至少两种知识路径的协同激活，39.5\% 同时激活全部三种机制。这确认了 KCH-MedRank 中的医学知识约束作为一个整体模块发挥作用，与结构消融中移除整个知识模块导致超图退化为噪声的发现一致。
+表~\ref{tab:interpretability-mechanisms} 给出了分类结果。值得关注的是，89.2\% 的救回涉及至少两条并发知识路径，39.5\% 同时激活了全部三条。没有单一机制独立主导。这与结构消融一致：移除整个医学知识模块会导致超图退化回噪声，恰恰因为约束是协同工作的。
 
 \input{tables/failure_analysis_summary_zh}
 
-\subsubsection{路径追踪：典型案例}
+\subsubsection{成功与失败案例}
+
+理解方法在哪里失败，至少和庆祝它的成功同等重要。表~\ref{tab:failure-analysis-summary} 分类了 KCH-MedRank 未能救回的情况。
 
 \input{figures/case_study_zh}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_05.png}
-\caption{案例分析示意图：KCH-MedRank 通过生物医学实体、MeSH 层级、共享候选簇和局部超图链接，将强 Hybrid RRF 基线排序过低的支持证据提升到更靠前位置。}
+\caption{案例分析示意图：KCH-MedRank 通过生物医学实体、MeSH 层级、共享候选簇和局部超图链接提升证据。}
 \label{fig:gpt-case-study}
 \end{figure}
 
-表~\ref{tab:case-study} 展示了一个救回案例和一个丢失案例。在 p-crAssphage 救回案例中（最强的实体簇驱动救回，排名提升 +56），金标准段落从第 54 位提升到第 1 位。主要对齐信号是共享的 bacteriophage 概念，并由局部 phage 相关候选簇支持。这一模式与方法设计一致：当初始增强混合排序将医学对齐证据排在 top 10 之外时，MeSH 与局部超图特征可以提升该证据。
+最强的救回案例涉及 p-crAssphage，排名提升 +56 位。一篇关于噬菌体生物学的金标准段落从第 54 位升至第 1 位。主要对齐信号是共享的噬菌体概念，由局部噬菌体相关候选簇支撑。MeSH 和超图特征提升了医学上对齐的证据，即便增强混合排序已将其埋在前 10 之外。
 
-最强的 MeSH 层级驱动救回（排名提升 +83）涉及问题``What is the function of the cGAS pathway?''，其中金标准段落与竞争候选共享多个免疫学 MeSH 词，形成密集的层级簇，超图扩散有效传播了该信号。
+最强的 MeSH 层级救回将关于 cGAS 通路的段落提升了 +83 位。问题"cGAS 通路的功能是什么"与竞争候选共享多个免疫学 MeSH 术语。一个密集的层级簇形成，超图扩散有效地传播了它。
 
-ubiquitination 丢失案例则呈现相反情形。尽管金标准段落讨论了 mono-ubiquitinated LDH-A 和 poly-ubiquitinated LDH，其排名仍从第 2 位降至第 18 位。问题与段落包含相关生化术语，但同义词和层级特征未能充分对齐表面形式及更宽泛的翻译后加工概念。类似丢失还出现在甲状腺激素类似物、cilengitide 受体、dasatinib 治疗、GIST 治疗和 Fanconi anemia 等问题中。这些案例启示后续应改进生物医学概念归一化，而非对关系特征作过强结论。
+失败案例围绕一个共同模式聚集。在丢失的泛素化案例中，一篇关于单泛素化和多泛素化 LDH 的金标准段落从第 2 位跌至第 18 位。问题和段落使用了相关的生化术语，但同义词和层级特征无法跨越表面形式连接到更广泛的翻译后加工概念。类似的丢失还出现在甲状腺激素类似物（DITPA 变体未被 MeSH 同义词覆盖）、cilengitide 受体（整合素术语不一致）、dasatinib 治疗（药物-适应症映射缺口）、GIST 治疗（罕见病概念覆盖稀疏）和 Fanconi 贫血（DNA 修复通路同义词失败）等案例上。每一个丢失案例都指向同一个未来方向：处理同义词和缩写的生物医学概念归一化将填补最大的剩余缺口。
 
-\subsubsection{可解释性量化总结}
+\subsubsection{可解释性证据的说明}
 
-三机制分析表明 KCH-MedRank 排序决策中激活的超图特征遵循可解释的知识约束路径：
+三机制分析为 KCH-MedRank 的决策遵循医学通路这一说法提供了量化支撑。
 
-\begin{itemize}
-    \item 100\% 的救回段落显示至少一种知识特征组的激活（零例纯扩散驱动），基于我们的启发式主导机制分类。
-    \item MeSH 层级路径是 75.9\% 救回案例中最频繁激活的主导通路，说明分层 MeSH 树结构携带最强的知识信号。
-    \item 89.2\% 的救回涉及多种知识路径的协同激活，确认了知识约束的互补性。
-    \item MeSH 驱动救回的平均排名提升（+22.1）显著大于实体驱动（+14.0），表明层级概念对齐比扁平实体共现提供更强的排序信号。
-    \item \textbf{局限性}：机制分类使用了 LambdaMART 排序器消费的同一组特征分数；它识别的是哪些知识特征最强烈激活，而非哪些特征因果驱动排序。未来可结合模型无关归因方法（如 SHAP）增强因果可解释性声明。
-\end{itemize}
+每一条救回的段落至少激活了一个知识特征组。纯扩散驱动的救回为零。MeSH 层级路径是最频繁的主导通路，占 75.9\%。多条并发知识通路活跃于 89.2\% 的救回中。MeSH 驱动救回的平均排名提升远大于实体驱动（+22.1 vs.\ +14.0），表明层级概念对齐比扁平实体共现携带了更多的排序信号。
+
+一个方法学上的提醒：机制分类使用的是 LambdaMART 消费的同一组特征分数。它识别的是哪些特征最强烈激活，而非哪些因果驱动排序。像 SHAP 这样的因果归因方法可以在未来工作中强化这一声明。
