@@ -22,7 +22,15 @@ Table~\ref{tab:structural-ablation-interpretation} summarizes the interpretation
 
 \subsection{Hypergraph Structure Marginally Outperforms Pairwise Graph}
 
-Comparison (4) evaluates whether the n-ary hyperedge representation provides benefits over a pairwise graph decomposition that breaks each multi-node hyperedge into anchor-based pairwise edges. KCH-MedRank improves Recall@10 over pairwise graph LTR by 0.0023 and nDCG@10 by 0.0024, but these differences are not statistically significant at $k=10$. At $k=5$, Recall@5 improves by 0.0054 ($p = 0.0032$) and nDCG@5 by 0.0037 ($p = 0.028$), suggesting that the hypergraph provides a modest early-rank benefit that diminishes in the longer candidate list. This result is consistent with the observation that the hypergraph's structural advantage is concentrated in cases where multiple supporting evidence passages share biomedical concepts.
+Comparison (4) evaluates whether the n-ary hyperedge representation provides benefits over a pairwise graph decomposition that breaks each multi-node hyperedge into anchor-based pairwise edges. KCH-MedRank improves Recall@10 over pairwise graph LTR by 0.0023 and nDCG@10 by 0.0024, but these differences are not statistically significant at $k=10$ ($p=0.205$, paired bootstrap). At $k=5$, Recall@5 improves by 0.0054 ($p=0.005$, paired bootstrap) and nDCG@5 by 0.0042, confirming a modest but statistically significant early-rank benefit.
+
+\paragraph{Stratified Analysis.} To understand when the hypergraph structure matters most, we stratify the test set by the structural characteristics of each question. Table~\ref{tab:hypergraph-vs-pairwise-stratified} presents per-stratum paired bootstrap comparisons at $k=5$ and $k=10$.
+
+\input{tables/hypergraph_vs_pairwise_stratified}
+
+The stratification reveals two key patterns. First, the hypergraph advantage is largest when the gold passage has \textit{no direct MeSH overlap} with the question ($\Delta_{\text{Recall@5}} = +0.0098$, $p=0.006$). This makes structural sense: when direct MeSH overlap exists, the pairwise graph decomposition already captures most of the alignment signal through shared-concept edges; when absent, the hypergraph's n-ary structure enables indirect paths through shared-entity clusters and MeSH hierarchy ancestors that the pairwise decomposition fragments. Second, questions with $\geq 2$ gold passages also benefit significantly from the hypergraph ($\Delta_{\text{Recall@5}} = +0.0042$, $p=0.023$), consistent with multi-evidence scenarios where the hypergraph's shared-entity hyperedges propagate ranking signal across multiple gold passages.
+
+At $k=10$, no subset reaches significance, but the effect direction is consistent ($\Delta$ positive in all but one stratum). The single-gold-passage subset shows the largest nominal $\Delta$ (+0.0098), though the smaller sample ($n=204$) limits power. This confirms that the hypergraph advantage is concentrated in the early-rank region and in cases where indirect knowledge signals compensate for missing direct concept alignment.
 
 \subsection{Summary of Ablation Evidence}
 

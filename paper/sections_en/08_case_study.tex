@@ -1,8 +1,27 @@
-\section{Case Study}
+\section{Interpretability and Case Analysis}
+\label{sec:interpretability}
 
-The failure analysis compares Enhanced Hybrid w122 with Enhanced KCH-MedRank at top 10 over 943 paired held-out BioASQ questions. KCH-MedRank rescues 661 gold passages into top 10 and loses 307 gold passages from top 10. This net gain supports the retrieval claim, but the lost cases are important because they show where knowledge-constrained features can overrule a strong lexical or semantic rank.
+A key methodological claim of KCH-MedRank is that its hypergraph-based reranking is \textit{interpretable}: each gold passage rescue can be traced to specific knowledge-grounded mechanisms in the hypergraph. This section provides the quantitative evidence to support this claim.
+
+\subsection{Three-Mechanism Classification of Rescued Passages}
+
+We classify all 648 gold passages that KCH-MedRank rescues from outside the Hybrid RRF top-10 into the top-10 according to the dominant hypergraph mechanism:
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{MeSH Hierarchy Path}: The question and the gold passage share MeSH concepts through hierarchical tree ancestor paths. For example, a question about ``DITPA'' and a passage about ``thyroid hormones'' are connected through the shared MeSH term ``thyroid hormones'' and its MeSH tree ancestors.
+    \item \textbf{Shared Entity Cluster Path}: The gold passage shares biomedical entities with other candidate passages, forming shared-entity hyperedge clusters that propagate ranking signal through diffusion.
+    \item \textbf{PrimeKG Relation Path}: Question entities are relationally connected to passage entities via PrimeKG biomedical relations (e.g., ``Dasatinib --treats-- Leukemia'').
+\end{enumerate}
+
+\input{tables/interpretability_mechanisms}
+
+Table~\ref{tab:interpretability-mechanisms} presents the classification results. The MeSH hierarchy path is the dominant interpretable mechanism, accounting for 75.9\% of rescues with an average rank improvement of +22.1 positions. The shared entity cluster path accounts for 23.9\% with an average gain of +14.0 positions. The PrimeKG relation path is the least frequent (0.2\%), which is expected given the sparsity of structured relations in biomedical knowledge graphs relative to the density of MeSH annotations available for all PubMed documents.
+
+Table~\ref{tab:mech-cooccurrence} shows that 89.2\% of rescues involve at least two concurrent knowledge pathways, and 39.5\% activate all three mechanisms simultaneously. This confirms that the medical knowledge constraints in KCH-MedRank function as an integrated block, consistent with the structural ablation finding that removing the entire medical knowledge block causes the hypergraph to regress to noise.
 
 \input{tables/failure_analysis_summary}
+
+\subsection{Path Tracing: Illustrative Cases}
 
 \input{figures/case_study_en}
 
@@ -13,6 +32,20 @@ The failure analysis compares Enhanced Hybrid w122 with Enhanced KCH-MedRank at 
 \label{fig:gpt-case-study}
 \end{figure}
 
-Table~\ref{tab:case-study} illustrates one rescued case and one lost case. In the rescued p-crAssphage example, the gold passage moves from rank 54 to rank 1. The main alignment signal is the shared bacteriophage concept, supported by a local cluster of phage-related candidates. This pattern is consistent with the method design: MeSH and local hypergraph features can promote evidence that is medically aligned even when the initial enhanced hybrid ordering places it outside the top 10.
+Table~\ref{tab:case-study} illustrates one rescued case and one lost case. In the rescued p-crAssphage example (the strongest entity-cluster-driven rescue with rank gain +56), the gold passage moves from rank 54 to rank 1. The main alignment signal is the shared bacteriophage concept, supported by a local cluster of phage-related candidates. This pattern is consistent with the method design: MeSH and local hypergraph features can promote evidence that is medically aligned even when the initial enhanced hybrid ordering places it outside the top 10.
+
+The strongest MeSH-hierarchy-driven rescue (+83 rank gain) involves the question ``What is the function of the cGAS pathway?'' where the gold passage shares multiple immunological MeSH terms with competing candidates, forming a dense hierarchy-based cluster that the hypergraph diffusion propagates effectively.
 
 The lost ubiquitination case shows the opposite behavior. A gold passage drops from rank 2 to rank 18 even though it discusses mono-ubiquitinated LDH-A and poly-ubiquitinated LDH. The question and passage contain related biochemical terminology, but the synonym and hierarchy features do not fully align the surface forms and broader post-translational-processing concepts. Similar losses occur for thyroid hormone analogs, cilengitide receptors, dasatinib treatment, GIST treatment, and Fanconi anemia. These examples motivate future improvements in biomedical concept normalization rather than stronger claims about the relation features.
+
+\subsection{Quantitative Interpretability Summary}
+
+The three-mechanism analysis provides quantitative evidence that the hypergraph features activated by KCH-MedRank's ranking decisions follow interpretable knowledge-grounded pathways:
+
+\begin{itemize}
+    \item 100\% of rescued passages show activation of at least one knowledge feature group (zero pure diffusion-only rescues), under our heuristic classification of dominant mechanisms.
+    \item The MeSH hierarchy path is the most frequently activated dominant pathway in 75.9\% of rescues, demonstrating that the hierarchical MeSH tree structure carries the strongest knowledge signal.
+    \item 89.2\% of rescues involve concurrent activation of multiple knowledge pathways, confirming the complementary nature of the knowledge constraints.
+    \item The average rank gain is substantially larger for MeSH-driven (+22.1) than entity-driven (+14.0) rescues, suggesting that hierarchical concept alignment provides stronger ranking signal than flat entity co-occurrence.
+    \item \textbf{Limitation}: The mechanism classification uses the same feature scores that the LambdaMART ranker consumes; it identifies which knowledge features are most strongly activated, not which features causally drive the ranking. Future work with model-agnostic attribution methods (e.g., SHAP) could strengthen the causal interpretability claim.
+\end{itemize}
