@@ -72,6 +72,52 @@ We construct three architectural variants from the same candidate pool for contr
 
 \begin{figure}[t]
 \centering
+\begin{minipage}{0.98\textwidth}
+\begin{algorithm}[H]
+\SetAlgoLined
+\caption{KCH-MedRank Knowledge-Constrained Evidence Reranking}
+\label{alg:kch-medrank}
+\KwIn{Question $q$, corpus $C$, biomedical knowledge $K$, source weights $\{w_s\}$}
+\KwOut{Ranked evidence list $E$}
+Retrieve top-$M$ passages from BM25, dense, fielded BM25, and MedCPT dual-encoder\;
+Fuse candidate pool $D_q$ with weighted RRF: $\mathrm{RRF}(q,d) = \sum_s w_s/(k+r_s(q,d))$\;
+\BlankLine
+\If{graph or hypergraph variant}{
+  Build local hypergraph $H_q = (V_q, \mathcal{E}_q)$ from $q$, $D_q$, documents, entities, MeSH concepts, and relation endpoints\;
+  Add hyperedges for query-concept, passage-concept, document-MeSH, shared-concept clusters, hierarchy links, and PrimeKG relations\;
+  \ForEach{hyperedge $e \in \mathcal{E}_q$}{
+    Assign weight $w_e$ by evidence strength (entity/MeSH: normalized overlap; hierarchy: $1/d_T$; candidate: normalized RRF)\;
+  }
+  Normalize incident edge weights per node\;
+  \BlankLine
+  Initialize seed $\mathbf{x}^{(0)}$ on question, query-entity, and query-MeSH nodes\;
+  \For{$t = 1$ \KwTo $T$}{
+    $\mathbf{x}^{(t)} = (1-\alpha)\mathbf{x}^{(0)} + \alpha \cdot \mathbf{D}_v^{-1/2} \mathbf{H} \mathbf{W} \mathbf{D}_e^{-1} \mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t-1)}$\;
+  }
+  Normalize passage diffusion scores within $D_q$ (min-max)\;
+  Compute centrality, local counts, and structural features $\phi_{\text{diff}}, \phi_{\text{cent}}, \phi_{\text{graph}}$\;
+}
+\BlankLine
+\ForEach{passage $d \in D_q$}{
+  Extract entity features $\phi_{\text{ent}}$ (Jaccard, coverage)\;
+  Extract MeSH exact features $\phi_{\text{mesh}}$ (Jaccard, coverage)\;
+  Extract MeSH hierarchy features $\phi_{\text{tree-sim}}, \phi_{\text{anc-match}}$\;
+  Extract PrimeKG relation features $\phi_{\text{rel}}$ (count, coverage)\;
+  Concatenate $\boldsymbol{\phi}(q,d)$ from retrieval, biomedical, and structural feature groups\;
+}
+\BlankLine
+Train LambdaMART ranker on training set with query-group partitioning\;
+Select $\beta$ on validation MRR@10: $s(q,d) = (1-\beta)f(q,d) + \beta \cdot s_{\text{RRF}}(q,d)$\;
+Retrain on train+validation; score and sort $D_q$ once on held-out test split\;
+\Return $E$ = passages of $D_q$ sorted by descending $s(q,d)$\;
+\end{algorithm}
+\end{minipage}
+\caption{Complete KCH-MedRank pipeline: candidate retrieval, local hypergraph construction, feature extraction, LambdaMART training, and blended scoring.}
+\label{fig:kch-algorithm}
+\end{figure}
+
+\begin{figure}[t]
+\centering
 \includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_02.png}
 \caption{Local knowledge-constrained hypergraph structure around one question and its candidate passages. Nodes represent questions, passages, documents, biomedical entities, MeSH concepts, and auxiliary relation endpoints; translucent regions and bundled links indicate multi-node hyperedges used for interpretable ranking features.}
 \label{fig:gpt-local-hypergraph}

@@ -72,6 +72,52 @@ PrimeKG 关系特征提供辅助关系信号。设 $R_q$ 和 $R_d$ 为关系标�
 
 \begin{figure}[t]
 \centering
+\begin{minipage}{0.98\textwidth}
+\begin{algorithm}[H]
+\SetAlgoLined
+\caption{KCH-MedRank 知识约束证据重排序}
+\label{alg:kch-medrank}
+\KwIn{问题 $q$，语料 $C$，生物医学知识 $K$，来源权重 $\{w_s\}$}
+\KwOut{排序证据列表 $E$}
+从 BM25、稠密检索、fielded BM25 和 MedCPT 双编码器检索 top-$M$ 段落\;
+用加权 RRF 融合候选池 $D_q$：$\mathrm{RRF}(q,d) = \sum_s w_s/(k+r_s(q,d))$\;
+\BlankLine
+\If{图或超图变体}{
+  从 $q$、$D_q$、文档、实体、MeSH 概念和关系端点构建局部超图 $H_q = (V_q, \mathcal{E}_q)$\;
+  加入查询-概念、段落-概念、文档-MeSH、共享概念簇、层级链接和 PrimeKG 关系超边\;
+  \ForEach{超边 $e \in \mathcal{E}_q$}{
+    按证据强度赋权 $w_e$（实体/MeSH：归一化重叠；层级：$1/d_T$；候选：归一化 RRF）\;
+  }
+  按节点归一化入射边权\;
+  \BlankLine
+  在问题、问题实体和问题 MeSH 节点上初始化种子 $\mathbf{x}^{(0)}$\;
+  \For{$t = 1$ \KwTo $T$}{
+    $\mathbf{x}^{(t)} = (1-\alpha)\mathbf{x}^{(0)} + \alpha \cdot \mathbf{D}_v^{-1/2} \mathbf{H} \mathbf{W} \mathbf{D}_e^{-1} \mathbf{H}^\top \mathbf{D}_v^{-1/2} \mathbf{x}^{(t-1)}$\;
+  }
+  在 $D_q$ 内对段落扩散分数做 min-max 归一化\;
+  计算中心性、局部计数和结构特征 $\phi_{\text{diff}}, \phi_{\text{cent}}, \phi_{\text{graph}}$\;
+}
+\BlankLine
+\ForEach{段落 $d \in D_q$}{
+  抽取实体特征 $\phi_{\text{ent}}$（Jaccard、覆盖率）\;
+  抽取 MeSH 精确特征 $\phi_{\text{mesh}}$（Jaccard、覆盖率）\;
+  抽取 MeSH 层级特征 $\phi_{\text{tree-sim}}, \phi_{\text{anc-match}}$\;
+  抽取 PrimeKG 关系特征 $\phi_{\text{rel}}$（计数、覆盖率）\;
+  拼接检索、生物医学和结构特征组为 $\boldsymbol{\phi}(q,d)$\;
+}
+\BlankLine
+在训练集上以查询分组方式训练 LambdaMART 排序器\;
+基于验证集 MRR@10 选择 $\beta$：$s(q,d) = (1-\beta)f(q,d) + \beta \cdot s_{\text{RRF}}(q,d)$\;
+在训练集+验证集上重新训练；在留出测试集上一次性打分并排序 $D_q$\;
+\Return $E$ = $D_q$ 中按 $s(q,d)$ 降序排列的段落\;
+\end{algorithm}
+\end{minipage}
+\caption{KCH-MedRank 完整流程：候选检索、局部超图构建、特征抽取、LambdaMART 训练与融合打分。}
+\label{fig:kch-algorithm}
+\end{figure}
+
+\begin{figure}[t]
+\centering
 \includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_02.png}
 \caption{围绕单个问题及其候选段落构建的局部知识约束超图。节点代表问题、段落、文档、生物医学实体、MeSH 概念和辅助关系端点；半透明区域和成束连线标示了用于可解释排序特征的多节点超边。}
 \label{fig:gpt-local-hypergraph}
