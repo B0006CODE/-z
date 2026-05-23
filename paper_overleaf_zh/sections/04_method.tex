@@ -1,0 +1,75 @@
+\section{方法}
+
+\input{figures/method_overview_zh}
+
+\subsection{第一阶段检索}
+
+第一阶段在任何知识感知重排序之前先构建高召回候选池。我们使用 BM25 作为词法基线，稠密检索作为语义基线，倒数排名融合（RRF）作为默认混合检索器。对于检索来源 $s$，记段落 $d$ 对问题 $q$ 的排名为 $r_s(q,d)$，融合分数为：
+\[
+  \mathrm{RRF}(q,d)=\sum_{s \in S}\frac{w_s}{k+r_s(q,d)},
+\]
+其中 $S$ 是检索来源集合，$w_s$ 是来源权重，所报告实验中 $k=60$。原始 Hybrid RRF 使用等权 BM25 和稠密检索。
+
+增强候选生成路径的目标是提高重排序所需的 top-100 召回上限。该路径加入基于标题、正文和 MeSH 扩展字段的 fielded BM25，并加入 MedCPT dual-encoder 稠密检索作为额外生物医学语义来源。融合权重仅在验证集上选择。选中的 w122 设置赋予 BM25 和稠密检索权重 1.0、fielded BM25 权重 1.2、MedCPT dual-encoder 权重 0.2。该设置根据验证集 Recall@100 选择，而非测试集表现，因为重排序只能改善已经进入候选池的证据段落。
+
+\subsection{知识约束局部结构}
+
+对于每个问题及其 top-$M$ 候选，KCH-MedRank 构建具有不同结构假设的特征变体。扁平医学知识变体使用检索、生物医学语义、MeSH、实体和关系特征，不构建任何图结构。成对图变体在相同局部对象之间加入以锚点为中心的成对边。超图变体构建局部超图 $H_q=(V_q,\mathcal{E}_q)$，其节点集合包括问题节点、候选段落节点、文档节点、生物医学实体节点、MeSH 概念节点、可选 MeSH 树节点和可选关系节点。超边可同时连接多个节点，因此能表示普通成对相似度不易捕捉的高阶关系。
+
+主要超边类型包括 question-entity、question-MeSH、question-passage candidate、passage-entity、passage-document、document-MeSH、shared-entity passages、entity-type concept、MeSH hierarchy，以及辅助 PrimeKG 关系边。用于消融的成对图变体和无医学知识超图变体来自同一候选池：成对图变体将多节点超边拆解为以锚点为中心的成对边，无医学知识变体只保留候选结构和排名分组结构。
+
+局部设计避免了在数百万生物医学段落上构建全局图。同时，该设计保持了方法的可解释性：特征分析和案例研究可以报告哪些概念重叠、层级链接、共享候选簇或图/超图中心性信号影响了重排序。
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_02.png}
+\caption{围绕单个问题及其候选段落构建的局部知识约束超图。节点表示问题、段落、文档、生物医学实体、MeSH 概念和辅助关系端点；半透明区域和成束连线表示用于可解释排序特征的多节点超边。}
+\label{fig:gpt-local-hypergraph}
+\end{figure}
+
+\subsection{超图扩散与结构特征}
+
+KCH-MedRank 将超图扩散作为可解释特征而非独立重排序公式使用。种子分布在问题节点、问题实体节点和问题 MeSH 节点上赋予初始质量。每次迭代通过加权超边传播分数：
+\[
+  x^{(t+1)}=(1-\alpha)x^{(0)}+\alpha \cdot \mathrm{Propagate}(x^{(t)},\mathcal{E}_q),
+\]
+其中 $\alpha=0.85$，实现使用三轮扩散。段落级扩散分数随后在每个问题的候选集合内进行 min-max 归一化。我们还计算了加权度中心性、局部节点数、局部超边数、共享实体边数、文档-MeSH 边数以及可选层级边数。
+
+\subsection{生物医学知识特征}
+
+重排序器从三个互补的医学知识维度提取特征。\textbf{实体特征}度量问题与段落之间的概念级对齐：实体重叠数量、Jaccard 相似度、问题实体覆盖率和段落实体数量。\textbf{MeSH 特征}跨越两个粒度。精确 MeSH 特征捕获直接描述符重叠：MeSH 重叠数量、Jaccard 相似度、问题 MeSH 覆盖率和段落 MeSH 数量。层级感知 MeSH 特征利用树结构：精确描述符重叠、父级匹配、祖先匹配、兄弟节点匹配、树距离相似度、查询概念覆盖、段落层级覆盖、段落概念特异性，以及基于 MeSH 术语或父级概念的共享候选簇。\textbf{PrimeKG 关系特征}提供辅助关系信号（关系数量、问题关系覆盖率、局部关系边数量），但因精确名称覆盖稀疏而降权。
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_03.png}
+\caption{特征抽取与查询分组学习排序模块。检索分数、预计算的生物医学语义检索特征、扁平医学知识特征以及可选知识约束图/超图特征共同输入 LambdaMART 风格排序器，产生最终证据排序。}
+\label{fig:gpt-feature-reranker}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\fbox{
+\begin{minipage}{0.94\textwidth}
+\textbf{算法 1：KCH-MedRank 局部证据控制与重排序}
+\begin{enumerate}
+  \item \textbf{候选检索。} 对问题 $q$，从 BM25、稠密检索、fielded BM25 和 MedCPT dual-encoder 来源检索 top-$M$ 段落，使用验证集选择的加权 RRF 融合。
+  \item \textbf{局部结构构建。} 对图和超图变体，为 $q$、候选段落、文档、抽取的生物医学实体、MeSH 描述符、MeSH 层级概念和可选关系端点创建节点。加入 query-concept、passage-concept、document-MeSH、共享概念候选簇、层级链接、候选成员关系和辅助 PrimeKG 关系边或超边。扁平医学知识基线跳过该步骤，仅使用非结构化生物医学特征。
+  \item \textbf{超边加权与归一化。} 根据来源可靠性和局部证据强度设置边权：候选成员边使用归一化 RRF 分数，实体和 MeSH 边使用归一化重叠/覆盖，层级边使用树距离倒数，关系边因精确名称覆盖稀疏而降权。每个局部图内部在传播前对关联边权进行归一化。
+  \item \textbf{扩散传播。} 在问题节点、问题实体节点和问题 MeSH 节点初始化质量。以 $\alpha=0.85$ 运行三轮带重启扩散，并在候选集合内归一化段落扩散分数。
+  \item \textbf{段落特征抽取。} 对每个段落拼接检索分数与排名、预计算的生物医学语义检索特征、实体重叠、MeSH 精确与层级特征、辅助关系特征、扩散分数、中心性和局部图计数特征。
+  \item \textbf{查询分组 LambdaMART 打分。} 在验证集模型选择后，以每个问题为 group 训练 LightGBM LambdaMART 排序器，并在测试候选上打分排序得到最终证据列表。
+\end{enumerate}
+\end{minipage}}
+\caption{局部超图构建、归一化、扩散、特征抽取和查询分组学习排序的紧凑伪代码。}
+\label{fig:kch-algorithm}
+\end{figure}
+
+\subsection{学习排序}
+
+主监督重排序器采用查询分组学习排序模型，即使用 LambdaMART 风格目标训练的 LightGBM 梯度提升树排序器~\citep{ke2017lightgbm}。每个问题构成一个排序组，候选段落构成样本行，二值相关性标签来自金标准证据标注。特征向量结合检索分数、预计算的生物医学语义检索特征、实体特征、精确与层级感知 MeSH 特征、辅助关系特征，以及可选局部图或超图结构特征。
+
+超参数在验证集上选择。报告实验的搜索空间为叶子数 $\{15,31\}$、学习率 $\{0.03,0.05\}$、估计器数量 $\{80,160\}$，以及 blend weight $\{0,0.1,0.2,0.35\}$；blend weight 用于在模型分数和原始候选排名分数之间插值。选择准则优先考虑验证集 MRR@10，其次为 Recall@10 和 nDCG@10。完成验证选择后，最终模型在训练集加验证集上重新训练，并仅在留出测试集上评估一次。
+
+\input{tables/feature_importance_summary_zh}
+
+表~\ref{tab:feature-importance-summary} 的特征重要性显示，语义信号和第一阶段检索信号仍处于核心位置，同时 MeSH 共享簇、段落概念特异性和超图中心性特征提供了可解释的生物医学与结构信息。这支持一个审慎的结论：KCH-MedRank 的重排序提升来自检索强度、生物医学语义、扁平医学知识特征和局部结构信号的结合，而非依赖单一知识源。

@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{增强候选池上的 BioASQ 留出测试证据检索结果。}
+\label{tab:enhanced-bioasq-main-results}
+\begin{tabular}{lrrrr}
+\toprule
+方法 & Recall@10 & MRR@10 & nDCG@10 & Recall@100 \\
+\midrule
+原始 Hybrid RRF & 0.4636 & 0.7550 & 0.5848 & 0.6077 \\
+增强 Hybrid w122 & 0.4660 & 0.7530 & 0.5844 & 0.7388 \\
+MedCPT Cross-Encoder & 0.5172 & 0.7775 & 0.6390 & 0.7388 \\
+增强 KCH-MedRank & 0.5329 & 0.7867 & 0.6433 & 0.7388 \\
+\bottomrule
+\end{tabular}
+\end{table}

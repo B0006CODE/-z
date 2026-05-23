@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{PubMedQA 留出测试集上的次要检索诊断。HGB 知识重排序器是 Hybrid 候选池上的轻量稳健性重排序器，并非 BioASQ 主实验中的完整增强 KCH-MedRank 配置。}
+\label{tab:pubmedqa-retrieval-diagnostic}
+\begin{tabular}{lrrrr}
+\toprule
+方法 & Recall@10 & MRR@10 & nDCG@10 & Recall@100 \\
+\midrule
+BM25 & 0.7284 & 0.9510 & 0.7490 & 0.8526 \\
+Dense & 0.8644 & 0.9863 & 0.8760 & 0.9425 \\
+Hybrid RRF & 0.8200 & 0.9850 & 0.8369 & 0.9350 \\
+Cross-encoder 重排序 & 0.8268 & 0.9806 & 0.8381 & 0.9410 \\
+HGB 知识重排序器 & 0.8953 & 0.9861 & 0.9021 & 0.9350 \\
+\bottomrule
+\end{tabular}
+\end{table}

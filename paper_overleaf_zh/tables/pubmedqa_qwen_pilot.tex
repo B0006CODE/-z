@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{PubMedQA Qwen3-8B downstream generation pilot on 100 questions. All methods use the same prompt, top-5 evidence passages, temperature 0, and no fine-tuning. The PubMedQA cross-encoder condition uses the available semantic cross-encoder output, not a completed MedCPT PubMedQA run.}
+\label{tab:pubmedqa-qwen-pilot}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Evidence source + LLM & Accuracy & Macro-F1 & Citation support & Unsupported claim & Entity consistency \\
+\midrule
+Hybrid RRF + Qwen3-8B & 0.3400 & 0.3506 & 0.9900 & 0.0100 & 0.5594 \\
+Semantic cross-encoder + Qwen3-8B & 0.3400 & 0.3504 & 0.9900 & 0.0100 & 0.5782 \\
+KCH-style hypergraph reranker + Qwen3-8B & 0.3700 & 0.3760 & 0.9900 & 0.0100 & 0.5751 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

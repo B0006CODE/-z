@@ -1,0 +1,13 @@
+\section{Appendix: Downstream Generation Diagnostic}
+
+The PubMedQA Qwen3-8B experiment serves as an appendix diagnostic. It uses 100 PubMedQA questions, fixed top-5 evidence, one prompt template, temperature 0, and no model fine-tuning. This comparison examines whether evidence ordering changes a downstream answer loop under controlled conditions.
+
+Table~\ref{tab:pubmedqa-qwen-pilot} reports the controlled pilot. KCH-style evidence improves answer accuracy from 0.3400 to 0.3700 and Macro-F1 from 0.3506 to 0.3760 relative to Hybrid RRF evidence. Citation support is 0.9900 for all three evidence sources. The PubMedQA cross-encoder condition uses the available semantic cross-encoder output rather than a completed MedCPT PubMedQA rerun, and the pilot serves as a controlled RAG-loop diagnostic.
+
+\input{tables/pubmedqa_qwen_pilot}
+
+\subsection{Complementary Leave-One-Feature-Group Ablations}
+
+For completeness, Table~\ref{tab:kch-ablation-summary} reports leave-one-feature-group diagnostics in which individual feature groups are removed from the full KCH-MedRank feature set. As discussed in Section~7, these single-group removals do not produce statistically significant differences because of high multicollinearity among the knowledge features: the LambdaMART model automatically compensates for a removed feature group using signals from the remaining correlated features. These diagnostics are provided for transparency and feature-coverage analysis.
+
+\input{tables/kch_ablation_summary}

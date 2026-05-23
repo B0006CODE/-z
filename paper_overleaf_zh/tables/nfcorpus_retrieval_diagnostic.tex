@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{External BEIR NFCorpus retrieval-only diagnostic on the official test split. The LambdaMART row uses only BM25, dense, Hybrid RRF, score, and rank features; it does not use NFCorpus-specific MeSH, entity, PrimeKG, or hypergraph features.}
+\label{tab:nfcorpus-retrieval-diagnostic}
+\begin{tabular}{lrrrr}
+\toprule
+Method & Recall@10 & MRR@10 & nDCG@10 & Recall@100 \\
+\midrule
+BM25 & 0.1379 & 0.5063 & 0.2933 & 0.2228 \\
+Dense & 0.1674 & 0.5399 & 0.3496 & 0.3096 \\
+Hybrid RRF & 0.1676 & 0.5530 & 0.3436 & 0.3242 \\
+Retrieval-feature LambdaMART & 0.1770 & 0.5725 & 0.3627 & 0.3242 \\
+\bottomrule
+\end{tabular}
+\end{table}

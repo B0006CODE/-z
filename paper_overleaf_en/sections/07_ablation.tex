@@ -1,0 +1,28 @@
+\section{Ablation Study}
+
+This section decomposes the performance of KCH-MedRank into the effects of flat biomedical knowledge features, graph structure, hypergraph structure, and medical knowledge constraints. As noted in Section~5, leave-one-feature-group ablations appear in the appendix as complementary diagnostics; the primary evidence comes from controlled architecture comparisons because high multicollinearity among knowledge features leads to automatic compensation in tree-based models.
+
+\input{tables/structural_ablation}
+
+We begin with the simplest question: can flat biomedical knowledge features---without any graph or hypergraph structure---explain the gain over retrieval signals alone? Comparison~(1) in Table~\ref{tab:structural-ablation} answers affirmatively. Adding the precomputed biomedical semantic score, entity features, exact and hierarchy-aware MeSH features, and auxiliary PrimeKG relation features to a retrieval-only LTR model improves Recall@10~from~0.5208 to~0.5309 ($\Delta{=}+0.0101$, $p{=}0.0006$) and nDCG@10 from~0.6282 to~0.6436 ($\Delta{=}+0.0153$, $p{=}0.0002$). MRR@10 improves from~0.7791 to~0.7872 ($p{=}0.029$). Flat biomedical knowledge alone---retrieval scores, semantic features, MeSH, entities, and relations---already captures a substantial fraction of the aggregate improvement.
+
+Given that flat knowledge features are strong, what does the hypergraph add? Comparison~(2) provides a surprising answer: adding hypergraph structure \emph{without} medical knowledge degrades ranking. The no-medical-knowledge hypergraph variant builds the full hypergraph topology but strips out MeSH, entity, and PrimeKG annotations. The result underperforms the flat knowledge baseline: nDCG@10 drops by~0.0074 ($p{=}0.0002$) and MRR@10 drops by~0.0089 ($p{=}0.003$). Raw graph topology is not a substitute for domain-grounded concept information; on its own, it introduces structural noise.
+
+This sets up the central structural question: can medical knowledge constraints reverse the noise introduced by raw structure? Comparison~(3) shows that they can. Adding biomedical entity features, exact MeSH features, MeSH hierarchy features, and PrimeKG relation features to the no-medical-knowledge hypergraph improves Recall@10 by~0.0063 ($p{=}0.0028$), MRR@10 by~0.0085 ($p{=}0.0042$), and nDCG@10 by~0.0071 ($p{=}0.0002$). All three top-10 metrics become statistically significant. Medical knowledge constraints transform the hypergraph from a noise source into a useful structural signal.
+
+\input{tables/structural_ablation_interpretation}
+
+Table~\ref{tab:structural-ablation-interpretation} places these findings in context. Comparison~(4) shows that the full model is not significantly better than the flat knowledge LTR baseline at $k{=}10$ (Recall@10 $\Delta{=}+0.0020$, $p{=}0.254$). Graph and hypergraph features thus contribute as interpretable complementary signals alongside the primary flat knowledge features; they do not independently dominate aggregate ranking at the evaluation depth reported in this paper.
+
+Where the hypergraph does distinguish itself is at early ranks. Comparison~(5) evaluates n-ary hyperedges against a pairwise decomposition that breaks each multi-node hyperedge into anchor-based pairwise edges. At $k{=}10$, the differences are not significant (Recall@10 $\Delta{=}+0.0023$, $p{=}0.203$). At $k{=}5$, however, Recall@5 improves by~0.0054 ($p{=}0.003$) and nDCG@5 by~0.0037 ($p{=}0.028$). The hypergraph's higher-order connectivity provides an early-rank signal that the pairwise decomposition, which fragments multi-node hyperedges, cannot fully replicate.
+
+\paragraph{Stratified Analysis.}
+Table~\ref{tab:hypergraph-vs-pairwise-stratified} decomposes this early-rank advantage by question structure.
+
+\input{tables/hypergraph_vs_pairwise_stratified}
+
+The largest hypergraph gain occurs when the gold passage has \emph{no direct MeSH overlap} with the question ($\Delta_{\text{Recall@5}} = +0.0098$, $p=0.006$). When direct MeSH overlap exists, the pairwise graph decomposition already captures the alignment signal through shared-concept edges. When it is absent, the pairwise approach fragments the indirect path---through shared-entity clusters and MeSH hierarchy ancestors---that the hypergraph preserves natively. Questions with $\geq 2$ gold passages also benefit significantly from the hypergraph ($\Delta_{\text{Recall@5}} = +0.0042$, $p=0.023$), consistent with multi-evidence scenarios where shared-entity hyperedges propagate signal across multiple gold passages. At $k{=}10$, no subset reaches significance but the effect direction is consistent ($\Delta$ positive in all but one stratum).
+
+\subsection{Summary of Ablation Evidence}
+
+Taken together, the structural ablations support four conclusions. First, flat retrieval, biomedical semantic, and medical knowledge features account for most of the aggregate improvement over enhanced Hybrid RRF. Second, raw hypergraph topology is harmful without medical concept annotations; structure alone introduces noise. Third, medical knowledge constraints reverse this noise and provide interpretable biomedical signals. Fourth, the hypergraph provides targeted additional benefit at $k{=}5$, with its advantage concentrated in questions lacking direct MeSH overlap between query and evidence. The leave-one-feature-group diagnostics in the appendix show that individual knowledge feature groups are highly redundant with each other, confirming the design principle that medical constraints function as an integrated block.

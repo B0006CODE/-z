@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Reranking-stage efficiency on the held-out BioASQ test split using the same enhanced top-100 candidate pool. Timing excludes first-stage candidate generation, one-time model loading, and offline LambdaMART training. The table separates whether a method uses Cross-Encoder scores and whether Cross-Encoder scoring is run online.}
+\label{tab:reranking-efficiency}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccrrrrrrl}
+\toprule
+Method & CE score & Online CE & Seconds & ms/query & Cand./s & Recall@10 & MRR@10 & nDCG@10 & Notes \\
+\midrule
+MedCPT Cross-Encoder & yes & yes & 699.46 & 741.74 & 134.82 & 0.5172 & 0.7775 & 0.6390 & tokenization + forward \\
+KCH-MedRank & no & no & 37.59 & 39.86 & 2508.70 & 0.5329 & 0.7867 & 0.6433 & features + LightGBM; semantic=dense\_or\_dual\_encoder\_predictions \\
+KCH-MedRank without semantic feature & no & no & 37.50 & 39.77 & 2514.47 & 0.5244 & 0.7790 & 0.6330 & knowledge/hypergraph features + LightGBM; semantic columns removed \\
+Retrieval-feature-only LambdaMART & no & no & 0.84 & 0.89 & 112905.71 & 0.5208 & 0.7791 & 0.6282 & retrieval metadata features + LightGBM \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

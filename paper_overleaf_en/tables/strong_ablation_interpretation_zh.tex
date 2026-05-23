@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{接近强消融比较的解释。}
+\label{tab:strong-ablation-interpretation}
+\begin{tabularx}{\linewidth}{p{0.27\linewidth}p{0.23\linewidth}X}
+\toprule
+比较 & 观察结果 & 可支持的解释 \\
+\midrule
+完整模型 vs. 扁平医学知识 LTR，无图结构 & MRR@10、Recall@10、nDCG@10 均无显著差异 & 扁平检索、语义和生物医学知识特征解释了总体收益；图特征提供可解释的互补结构。 \\
+完整模型 vs. 成对图 LTR & $k=10$ 上无显著差异；nDCG@10 是接近显著的正向趋势 & 在 $k=10$ 上成对图已捕获大部分结构信号；超图在 $k=5$ 和特定条件下提供针对性收益。 \\
+完整模型 vs. 移除 MeSH 层级 & 无显著差异；该消融的 Recall@10 和 nDCG@10 略高 & MeSH 层级特征作为可解释医学约束发挥作用，其贡献通过集成知识模块实现。 \\
+完整模型 vs. 移除超图扩散/中心性 & 无显著差异；该消融的 MRR@10 和 nDCG@10 略高 & 扩散和中心性特征支持透明性和案例级解释；其总体排序贡献是互补性的。 \\
+\bottomrule
+\end{tabularx}
+\end{table}

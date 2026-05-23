@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Interpretation of close strong-ablation comparisons.}
+\label{tab:strong-ablation-interpretation}
+\begin{tabularx}{\linewidth}{p{0.27\linewidth}p{0.23\linewidth}X}
+\toprule
+Comparison & Observed outcome & Supported interpretation \\
+\midrule
+Full vs. flat knowledge LTR, no graph & No significant difference in MRR@10, Recall@10, or nDCG@10 & Flat retrieval, semantic, and biomedical knowledge features account for the aggregate gain; graph features provide interpretable complementary structure. \\
+Full vs. Pairwise graph LTR & No significant difference at $k=10$; nDCG@10 is a near-significant positive trend & At $k=10$, the pairwise graph captures most structural signal; the hypergraph provides targeted benefits at $k=5$ and in specific conditions. \\
+Full vs. Remove MeSH hierarchy & No significant difference; the ablation has slightly higher Recall@10 and nDCG@10 & MeSH hierarchy features function as interpretable medical constraints whose contribution is realized through the integrated knowledge block. \\
+Full vs. Remove hypergraph diffusion/centrality & No significant difference; the ablation has slightly higher MRR@10 and nDCG@10 & Diffusion and centrality features support transparency and case-level explanation; their aggregate ranking contribution is complementary rather than isolated. \\
+\bottomrule
+\end{tabularx}
+\end{table}

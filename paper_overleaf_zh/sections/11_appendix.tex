@@ -1,0 +1,7 @@
+\section{附录：下游生成诊断}
+
+PubMedQA Qwen3-8B 实验作为附录诊断。该实验使用 100 个 PubMedQA 问题、固定 top-5 证据、同一 prompt 模板、temperature 0，且不进行模型微调。该比较用于检验证据排序在受控条件下是否会改变下游答案闭环。
+
+表~\ref{tab:pubmedqa-qwen-pilot} 报告受控 pilot。相对于 Hybrid RRF 证据，KCH 风格证据将答案准确率从 0.3400 提高到 0.3700，将 Macro-F1 从 0.3506 提高到 0.3760。三个证据来源的引用支持率均为 0.9900。PubMedQA cross-encoder 条件使用的是当前可用的语义 cross-encoder 输出，该 pilot 作为受控 RAG 闭环诊断。
+
+\input{tables/pubmedqa_qwen_pilot_zh}
