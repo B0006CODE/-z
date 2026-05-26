@@ -1,0 +1,53 @@
+\subsection{Interpretability and Error Analysis}
+\label{sec:interpretability}
+
+A reranker that improves numbers is useful. One that can explain its decisions is necessary for a medical setting where a clinician may need to verify why a particular passage was promoted. KCH-MedRank is built so that LambdaMART feature importance scores and hypergraph pathways make each ranking decision traceable. This section gives the quantitative evidence, then looks at failure cases with equal care.
+
+\subsubsection{Three Mechanisms Behind Evidence Rescue}
+
+KCH-MedRank rescues 661 gold passages from outside the Hybrid RRF top-10 into the top-10 on the held-out test set (Table~\ref{tab:failure-analysis-summary}). We classified 648 of them by dominant hypergraph mechanism; 13 were rescued but did not cleanly fall into one of the three categories and are excluded from this breakdown.
+
+The MeSH hierarchy path accounts for 75.9\% of rescues with an average rank gain of +22.1 positions. Here the question and the gold passage share MeSH concepts through hierarchical tree ancestor paths. A question about DITPA and a passage about thyroid hormones connect through the shared MeSH term ``thyroid hormones'' and its tree ancestors.
+
+Shared entity cluster paths account for 23.9\% of rescues with an average gain of +14.0 positions. The gold passage shares biomedical entities with other highly-ranked candidate passages. Shared-entity hyperedge clusters propagate ranking signal through diffusion.
+
+PrimeKG relation paths account for 0.2\% of rescues. Question entities connect to passage entities through PrimeKG biomedical relations (e.g., ``Dasatinib --treats-- Leukemia''). The low share reflects sparse exact-name mapping in PrimeKG.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/data_figures/fig7_interpretability.pdf}
+\caption{Interpretability mechanisms behind rescued gold passages. Panel A summarizes the dominant mechanism assigned to each categorizable rescue. Panel B shows mechanism co-occurrence as an UpSet-style intersection matrix, making clear that most rescues activate multiple knowledge pathways.}
+\label{fig:interpretability}
+\end{figure*}
+
+Figure~\ref{fig:interpretability} gives the classification. A striking 89.2\% of rescues involve at least two concurrent knowledge pathways, and 39.5\% activate all three. No single mechanism dominates in isolation. This matches the structural ablation: removing the entire medical knowledge block causes the hypergraph to lose its productive signal, precisely because the constraints work together.
+
+\input{tables/failure_analysis_summary}
+
+\subsubsection{Success and Failure Cases}
+
+Understanding where a method fails is at least as informative as celebrating its successes. Table~\ref{tab:failure-analysis-summary} categorizes the cases that KCH-MedRank does not rescue.
+
+\input{figures/case_study_en}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_05.png}
+\caption{Case-study schematic: KCH-MedRank promotes evidence through biomedical entities, MeSH hierarchy, shared candidate clusters, and local hypergraph links.}
+\label{fig:gpt-case-study}
+\end{figure}
+\clearpage
+
+The illustrated rescue asks for the guideline-recommended first-line treatment for adults with non-small cell lung cancer harboring EGFR exon 19 deletions. Enhanced Hybrid RRF ranks a relevant NCCN guideline passage below the top 10, behind passages that are semantically related but less directly answer the guideline question. KCH-MedRank promotes the guideline passage to rank 1 because the passage aligns with the question through the disease entity, EGFR mutation, treatment entity osimertinib, MeSH hierarchy, and shared candidate-cluster links. The case demonstrates the intended use of the local hypergraph: it does not invent a new answer, but makes the evidence path from condition to molecular target to treatment recommendation easier to inspect.
+
+This figure is illustrative rather than a causal attribution result. It shows the activated biomedical pathway for one promoted passage; the broader mechanism statistics above quantify how often similar MeSH, entity-cluster, and PrimeKG paths appear among rescued passages.
+
+Failures still cluster around a common pattern. In the lost ubiquitination case, a gold passage about mono-ubiquitinated and poly-ubiquitinated LDH dropped from rank 2 to rank 18. The question and passage use related biochemical terminology, but synonym and hierarchy features cannot bridge the surface forms to broader post-translational-processing concepts. Similar losses occur for thyroid hormone analogs, where DITPA variants are not captured by MeSH synonymy; cilengitide receptors, where integrin terminology is inconsistent; dasatinib treatment, where drug-indication mapping has gaps; GIST treatment, where rare disease concept coverage is thin; and Fanconi anemia, where DNA repair pathway synonymy fails. Every one of these lost cases points toward the same future direction: biomedical concept normalization that handles synonyms and abbreviations would close the largest remaining gap.
+
+\subsubsection{What the Interpretability Evidence Shows}
+
+The three-mechanism analysis provides quantitative evidence that KCH-MedRank's rescued passages activate medically grounded pathways. Of 661 total rescued gold passages, 648 are categorizable by dominant activated knowledge mechanism; 13 could not be cleanly mapped to a single mechanism.
+
+Every rescued passage activates at least one knowledge feature group. There are zero pure diffusion-only rescues. The MeSH hierarchy path is the most frequently dominant pathway at 75.9\%. Multiple concurrent knowledge pathways are active in 89.2\% of rescues. MeSH-driven rescues produce substantially larger average rank gains than entity-driven rescues (+22.1 vs.\ +14.0), which suggests hierarchical concept alignment carries more ranking signal than flat entity co-occurrence.
+
+A methodological caveat: the mechanism classification uses the same feature scores that LambdaMART consumes. It identifies which features are most strongly activated, not which causally drive the ranking. Causal attribution with methods like SHAP~\citep{lundberg2017unified} would strengthen this claim in future work.

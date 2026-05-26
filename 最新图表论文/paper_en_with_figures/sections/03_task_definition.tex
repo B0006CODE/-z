@@ -1,0 +1,11 @@
+\subsection{Problem Formulation}
+
+We address evidence reranking for biomedical question answering. Given a medical question $q$, a biomedical corpus $C$, and structured knowledge sources $K$ that span the MeSH hierarchy, biomedical entity annotations, and PrimeKG relations, the task produces a ranked evidence list $E$ where gold passages appear as early as possible. A first-stage retriever returns a candidate pool $D_q = \{d_1,\ldots,d_M\} \subset C$. The reranker learns a scoring function $f(q,d)$ over $D_q$ that minimizes a listwise ranking loss $\mathcal{L}$:
+
+\[
+  \min_f \frac{1}{|\mathcal{Q}|}\sum_{q \in \mathcal{Q}} \mathcal{L}\big(f(q,\cdot),\, R_q\big),
+\]
+
+where $R_q$ encodes binary gold relevance judgments ($y_{q,d} \in \{0,1\}$) for the candidate passages of $q$. The loss enforces $f(q,d_i) > f(q,d_j)$ for all pairs where $d_i$ is relevant and $d_j$ is not. Evaluation uses Recall@$k$, MRR@$k$, and nDCG@$k$ at the passage level. Answer generation is treated as a downstream diagnostic.
+
+The challenge is that pairwise scoring functions miss the higher-order biomedical relations connecting questions and evidence. Our framework addresses this by constructing an interpretable feature representation $\boldsymbol{\phi}(q,d)$ that encodes retrieval signals, biomedical semantic scores, MeSH hierarchy features, entity overlap features, relation features, and optional hypergraph structural features.

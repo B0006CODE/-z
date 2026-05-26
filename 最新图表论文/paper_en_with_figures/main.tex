@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xurl}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage[hidelinks]{hyperref}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\emergencystretch=3em
+\Urlmuskip=0mu plus 1mu
+
+\title{KCH-MedRank: Knowledge-Constrained Learning-to-Rank for Biomedical Evidence Retrieval}
+\author{Bo Shan\\\href{mailto:24302230@muc.edu.cn}{24302230@muc.edu.cn}}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Biomedical retrievers routinely place gold evidence passages inside the candidate pool and then fail to pull them into the top 10. The passages are not irrelevant. Pairwise query-passage scoring simply has no way to see the higher-order medical relations that connect them---a passage about the thyroid hormone analog DITPA and a passage about levothyroxine share almost no surface lexical overlap, yet both reside in the same Medical Subject Headings (MeSH) subtree for thyroid hormones. We introduce KCH-MedRank, a knowledge-constrained learning-to-rank framework for biomedical evidence reranking that gives the ranker access to retrieval scores, MeSH hierarchy signals, biomedical entity overlap, PrimeKG knowledge-graph relations, and an optional local hypergraph. On BioASQ, KCH-MedRank beats a true MedCPT Cross-Encoder baseline on Recall@10 ($+0.0157$, $p=0.0076$) and runs $18.6\times$ faster at reranking time (reranking-stage latency under cached features, excluding candidate generation). The central finding is that flat biomedical knowledge features explain most aggregate gains. Hypergraph structure provides targeted early-rank improvements under indirect-evidence conditions, but the full model does not significantly exceed the flat knowledge baseline at the standard top-10 evaluation depth ($\Delta{\text{Recall@10}}{=}+0.0020$, n.s.). Controlled ablation indicates that domain-grounded annotations are critical for productive graph-based reranking, although a full factorial graph-by-knowledge design would further isolate topology effects. We categorize 648 of 661 rescued passages by dominant activated knowledge mechanism---MeSH hierarchy paths account for 75.9\% of them, shared entity clusters for 23.9\%, and PrimeKG relations for the remainder. Supplementary diagnostics on PubMedQA and BEIR NFCorpus indicate that supervised reranking with retrieval features generalizes, while full knowledge-augmented generalization remains to be tested.
+\end{abstract}
+
+\vspace{5pt}
+\noindent\textbf{Keywords:} Biomedical evidence retrieval; learning-to-rank; medical knowledge graph; MeSH hierarchy; hypergraph diffusion; interpretable reranking
+
+\section{Introduction}
+\input{sections/01_introduction}
+\section{Related Work}
+\input{sections/02_related_work}
+\section{Method}
+\label{sec:method}
+\input{sections/03_task_definition}
+\input{sections/04_method}
+\section{Experiments}
+\input{sections/05_experimental_setup}
+\input{sections/06_results}
+\input{sections/07_ablation}
+\input{sections/08_case_study}
+\section{Discussion}
+\label{sec:discussion}
+\input{sections/09_discussion}
+\section{Conclusion}
+\input{sections/10_conclusion}
+
+\section*{Acknowledgments}
+The authors thank the anonymous reviewers for their constructive feedback.
+
+\section*{Data Availability}
+The BioASQ dataset is publicly available at \url{https://bioasq.org}. The BioASQ-QA, PubMedQA, and BEIR NFCorpus datasets are publicly available under their respective licenses. The code and processed feature files will be released upon publication.
+
+\section*{Competing Interests}
+The authors declare that they have no competing interests.
+
+\appendix
+\input{sections/11_appendix}
+
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,30 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Paired bootstrap tests comparing Full KCH-MedRank with strong ablation variants on the enhanced BioASQ held-out test split. Deltas are Full minus ablation; brackets report 95\% confidence intervals.}
+\label{tab:strong-ablation-significance}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Baseline ablation & $\Delta$MRR@10 & $\Delta$Recall@10 & $\Delta$nDCG@10 \\
+\midrule
+Flat knowledge LTR, no graph &
+-0.0004 [-0.0056, 0.0047], $p=0.8635$ &
+0.0020 [-0.0011, 0.0058], $p=0.2540$ &
+-0.0003 [-0.0028, 0.0023], $p=0.8157$ \\
+Pairwise graph LTR &
+0.0001 [-0.0046, 0.0048], $p=0.9559$ &
+0.0023 [-0.0012, 0.0063], $p=0.2034$ &
+0.0024 [-0.0001, 0.0050], $p=0.0616$ \\
+Remove MeSH hierarchy &
+-0.0004 [-0.0052, 0.0044], $p=0.8683$ &
+-0.0003 [-0.0029, 0.0022], $p=0.8247$ &
+-0.0007 [-0.0032, 0.0017], $p=0.5731$ \\
+Remove hypergraph diffusion/centrality &
+-0.0012 [-0.0064, 0.0039], $p=0.6339$ &
+0.0001 [-0.0017, 0.0019], $p=0.9603$ &
+-0.0020 [-0.0045, 0.0004], $p=0.1092$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

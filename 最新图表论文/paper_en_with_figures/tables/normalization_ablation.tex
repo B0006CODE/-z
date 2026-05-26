@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Synonym-aware feature augmentation on validation split (bucket 3, 944 questions). Features are added to the base flat-knowledge KCH-MedRank configuration; no hypergraph structural features are used.}
+\label{tab:normalization-ablation}
+\begin{tabular}{lccc}
+\toprule
+Configuration & MRR@10 & Recall@10 & nDCG@10 \\
+\midrule
+Hybrid RRF source (no rerank) & 0.7564 & 0.4907 & 0.6001 \\
+Base KCH-MedRank (flat knowledge, no normalization) & 0.7757 & 0.5005 & 0.6166 \\
+\hspace{6pt} + Synonym-aware features (16 dimensions) & \textbf{0.7788} & \textbf{0.5061} & \textbf{0.6257} \\
+\midrule
+$\Delta$ (synonym over base) & +0.0031 & +0.0056 & +0.0090 \\
+\bottomrule
+\end{tabular}
+\end{table}

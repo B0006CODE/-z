@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\small
+\caption{增强 BioASQ 实验的计算 profile。日志记录了规模、特征维度、覆盖率和硬件信息；并未对所有组件提供可靠的端到端 wall-clock 时间。}
+\label{tab:efficiency-analysis}
+\begin{tabularx}{\linewidth}{p{0.22\linewidth}p{0.34\linewidth}X}
+\toprule
+组件 & 记录的规模或设置 & 含义 \\
+\midrule
+处理后数据 & 4,719 个问题；40,221 个段落；42,608 条 qrels & 适合可复现的离线重排序实验。 \\
+候选池 & 每个问题 top-100；471,900 条预测记录 & 重排序受局部候选池约束，而不是受全局语料图约束。 \\
+增强 KCH-MedRank 划分 & 2,832 个训练问题、944 个验证问题、943 个留出测试问题 & 超参数在留出测试之前完成选择。 \\
+特征矩阵 & 45 个特征；283,200 条训练样本；377,600 条最终训练加验证样本 & 学习排序保持为查询分组的表格排序问题。 \\
+局部超图范围 & 问题、top-100 段落、文档、实体、MeSH、层级和可选关系节点 & 传播成本随 top-$M$ 和局部特征覆盖率扩展。 \\
+MeSH 覆盖 & 31,110 个描述符；37,356/40,221 个段落和 4,264/4,719 个问题具有 MeSH 匹配 & 受控词表特征具有较好覆盖。 \\
+PrimeKG 过滤 & 扫描 8,100,498 行；保留 5,766 条项目局部关系 & 关系特征较稀疏，应保持辅助定位。 \\
+稠密生物医学检索 & MedCPT dual encoder 在 RTX 4060 Laptop GPU 上使用 CUDA & GPU 加速适合稠密检索。 \\
+Cross-Encoder 打分 & 早期通用 CPU 运行在 2,400 秒后超时；最终 MedCPT Cross-Encoder 测试基线完成 943 个问题和 94,300 个候选打分 & 完整 Cross-Encoder 重打分明显比表格重排序更昂贵。 \\
+\bottomrule
+\end{tabularx}
+\end{table}

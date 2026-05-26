@@ -1,0 +1,28 @@
+\section{Appendix: Downstream Generation Diagnostic}
+\label{sec:appendix-generation}
+
+The PubMedQA Qwen3-8B experiment serves as an appendix diagnostic, not as a full RAG evaluation. It uses 100 PubMedQA questions, fixed top-5 evidence, one prompt template, a single LLM (Qwen3-8B), temperature 0, and no model fine-tuning. Metrics are answer accuracy and Macro-F1. This comparison examines whether evidence ordering changes a downstream answer loop under controlled conditions; it does not measure citation faithfulness, unsupported claims, or answer-evidence consistency, which would be necessary for a complete RAG evaluation.
+
+Table~\ref{tab:pubmedqa-qwen-pilot} reports the controlled pilot. KCH-style evidence improves answer accuracy from 0.3400 to 0.3700 and Macro-F1 from 0.3506 to 0.3760 relative to Hybrid RRF evidence. Citation support is 0.9900 for all three evidence sources. The PubMedQA cross-encoder condition uses the available semantic cross-encoder output rather than a completed MedCPT PubMedQA rerun. The 0.9900 citation support alongside 0.3400--0.3700 answer accuracy indicates that near-perfect citation support does not translate to high answer accuracy in this setting, and that better evidence retrieval is necessary but not sufficient for better medical QA. A full RAG evaluation would require larger sample sizes, multiple LLMs, and metrics for citation faithfulness, unsupported claims, and answer-evidence consistency.
+
+\input{tables/pubmedqa_qwen_pilot}
+
+\subsection{Complementary Leave-One-Feature-Group Ablations}
+
+For completeness, Table~\ref{tab:kch-ablation-summary} reports leave-one-feature-group diagnostics in which individual feature groups are removed from the full KCH-MedRank feature set. As discussed in Section~4, these single-group removals do not produce statistically significant differences because of high multicollinearity among the knowledge features: the LambdaMART model automatically compensates for a removed feature group using signals from the remaining correlated features. These diagnostics are provided for transparency and feature-coverage analysis.
+
+\input{tables/kch_ablation_summary}
+
+\subsection{Numerical Source Tables Behind the Main Figures}
+
+The main text uses data figures to reduce table density. The exact numeric values behind those figures are preserved here and in the reproducible CSV files under \texttt{paper\_figures/data/processed/}.
+
+\input{tables/enhanced_bioasq_main_results}
+\input{tables/enhanced_bioasq_bootstrap_vs_hybrid}
+\input{tables/enhanced_bioasq_significance}
+\input{tables/structural_ablation}
+\input{tables/hypergraph_vs_pairwise_stratified}
+\input{tables/normalization_ablation}
+\input{tables/feature_enhancement_separability}
+\input{tables/interpretability_mechanisms}
+\input{tables/reranking_efficiency}

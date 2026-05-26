@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Interpretation of structural ablation results. The flat knowledge comparison separates medical-knowledge feature effects from graph-structure effects.}
+\label{tab:structural-ablation-interpretation}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrc}
+\toprule
+Component & $\Delta$Rec@10 & $\Delta$MRR@10 & $\Delta$nDCG@10 & Role \\
+\midrule
+Flat knowledge features & +0.0101** & +0.0080* & +0.0153** & large non-structural gain \\
+No-med hypergraph vs flat knowledge & $-$0.0044 & $-$0.0089** & $-$0.0074** & lower than flat knowledge; lacks domain signal \\
+Medical annotations added to hypergraph & +0.0063** & +0.0085** & +0.0071** & improves no-med hypergraph \\
+Full vs. flat knowledge & +0.0020 & $-$0.0004 & $-$0.0003 & no significant top-10 advantage \\
+Full vs. pairwise graph & +0.0023 & +0.0001 & +0.0024 & targeted early-rank benefit \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

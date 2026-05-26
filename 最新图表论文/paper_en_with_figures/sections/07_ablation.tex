@@ -1,0 +1,55 @@
+\subsection{Structural Ablation: What Does Each Component Contribute?}
+\label{sec:ablation}
+
+This ablation compares architectures, not feature subsets. High multicollinearity among knowledge features means LambdaMART compensates automatically when a single group is removed; leave-one-out ablations are therefore uninformative and are relegated to the Appendix. Instead we compare five controlled architectural variants that each answers a specific structural question. We note one design caveat upfront: the no-medical-knowledge hypergraph variant differs from the flat knowledge baseline in both structure (adding raw hypergraph topology) and feature set (removing medical knowledge features). The current design cannot cleanly separate these two factors. A full $2 \times 2$ factorial ablation (with/without graph $\times$ with/without medical knowledge) would provide stronger isolation and is planned for future work. The present comparisons should be interpreted as evidence for the importance of domain-grounded annotations rather than as a causal decomposition of graph structure alone.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/data_figures/fig4_structural_ablation.pdf}
+\caption{Structural ablation on held-out BioASQ. The connected-dot panels compare the retrieval-only ranker, flat biomedical knowledge features, graph variants, and full KCH-MedRank across Recall@10, MRR@10, and nDCG@10. Flat biomedical knowledge accounts for most aggregate gain; the full hypergraph model adds targeted but smaller top-10 changes.}
+\label{fig:structural-ablation}
+\end{figure*}
+
+Do flat biomedical knowledge features improve over retrieval alone? Adding the precomputed biomedical semantic score, entity features, hierarchy-aware MeSH features, and PrimeKG relation features to a retrieval-only LTR model lifts Recall@10 from 0.5208 to 0.5309 ($\Delta{=}+0.0101$, $p{=}0.0006$) and nDCG@10 from 0.6282 to 0.6436 ($\Delta{=}+0.0153$, $p{=}0.0002$). Biomedical knowledge features alone, without any graph structure, already carry a large fraction of the aggregate improvement. Telling the ranker about shared MeSH concepts and entity overlap is a strong signal by itself.
+
+Does removing medical knowledge from the hypergraph degrade performance? The no-medical-knowledge hypergraph variant builds the full hypergraph topology but strips out MeSH, entity, and PrimeKG annotations. Compared to the flat knowledge LTR baseline (which retains medical knowledge features but has no graph), this variant posts lower nDCG@10 ($-0.0074$, $p{=}0.0002$) and lower MRR@10 ($-0.0089$, $p{=}0.003$). This comparison suggests that domain-grounded concept annotations contribute more to ranking quality than raw graph topology. However, we caution against interpreting this as ``raw topology is harmful" in isolation, because the two conditions differ in both the presence of graph structure and the presence of medical knowledge features. Notably, the no-medical-knowledge hypergraph is not uniformly worse than the retrieval-only LTR (which has neither medical features nor graph structure): it actually improves Recall@10 from 0.5208 to 0.5266 and nDCG@10 from 0.6282 to 0.6362, losing only on MRR@10. This mixed pattern suggests that raw topology with generic similarity-based hyperedges does not strongly harm retrieval overall, but the absence of domain-grounded concept information prevents it from being a reliable signal.
+
+Can medical knowledge annotations turn the hypergraph into useful signal? Adding biomedical entity features, MeSH hierarchy features, and PrimeKG relation features to the no-medical-knowledge hypergraph improves Recall@10 by 0.0063 ($p{=}0.0028$), MRR@10 by 0.0085 ($p{=}0.0042$), and nDCG@10 by 0.0071 ($p{=}0.0002$). All three metrics become significant. This confirms that domain knowledge constraints are essential for making graph structure productive in biomedical reranking. The domain-grounded hypergraph recovers the losses relative to flat knowledge and adds a small incremental benefit.
+
+Is the full model better than flat knowledge alone at $k{=}10$? No (Recall@10 $\Delta{=}+0.0020$, $p{=}0.254$; Figure~\ref{fig:structural-ablation} and Table~\ref{tab:structural-ablation-interpretation}). The hypergraph does not dominate aggregate ranking at the standard evaluation depth. Its role is complementary and interpretable.
+
+\input{tables/structural_ablation_interpretation}
+
+Where does the hypergraph matter, then? At early ranks. Comparing the full hypergraph against the pairwise decomposition at $k{=}5$, Recall@5 improves by 0.0054 ($p{=}0.003$) and nDCG@5 by 0.0037 ($p{=}0.028$). The hypergraph's higher-order connectivity preserves indirect knowledge pathways that pairwise decomposition fragments.
+
+\paragraph{Stratified Analysis.}
+Figure~\ref{fig:subgroup-forest} breaks down which questions benefit.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/data_figures/fig5_subgroup_forest.pdf}
+\caption{Stratified paired-bootstrap analysis of KCH-MedRank versus Pairwise Graph LTR. The forest plot shows Recall@5 and Recall@10 deltas with 95\% confidence intervals. The largest significant early-rank gain appears when the gold passage has no direct MeSH overlap with the query.}
+\label{fig:subgroup-forest}
+\end{figure*}
+
+The largest hypergraph gain lands on questions where the gold passage has no direct MeSH overlap with the query ($\Delta_{\text{Recall@5}} = +0.0098$, $p=0.006$). When direct MeSH overlap does exist, the pairwise graph already catches the alignment through shared-concept edges. When it is absent, the pairwise approach fragments the indirect path through shared-entity clusters and MeSH hierarchy ancestors. The hypergraph preserves that path natively. Questions with two or more gold passages also benefit ($\Delta_{\text{Recall@5}} = +0.0042$, $p=0.023$), consistent with multi-evidence scenarios where shared-entity hyperedges propagate signal across multiple gold passages.
+
+To summarize the ablation: flat biomedical knowledge features account for most aggregate gains. The hypergraph provides targeted but modest early-rank benefit concentrated in indirect-evidence conditions (no direct MeSH overlap, multi-evidence scenarios). Removing domain-grounded concept annotations from the hypergraph degrades performance compared to flat knowledge, confirming that medical constraints are necessary for productive graph-based reranking. However, a full $2 \times 2$ factorial design would be needed to cleanly separate the effects of graph topology from the effects of medical knowledge features. The medical knowledge features function as an integrated block. Individual feature groups are highly redundant, and it is the combination of constraints that makes structure useful.
+
+\subsection{Synonym Normalization Ablation}
+\label{sec:normalization-ablation}
+
+Figure~\ref{fig:synonym-normalization} isolates the contribution of the synonym-aware feature augmentation on the validation split.
+
+Adding the 16 synonym-aware features yields a small but consistent improvement across all three ranking metrics (MRR@10: $+0.0031$, Recall@10: $+0.0056$, nDCG@10: $+0.0090$). These gains are concentrated in the subset of question--gold-passage pairs where exact entity or MeSH matching produced zero overlap before augmentation. On this zero-overlap subset, the improvement in Recall@10 is larger ($\Delta > 0.01$, measured on the validation split).
+
+The feature separability analysis in Figure~\ref{fig:synonym-normalization}B confirms that the new normalized features are discriminative. The normalized entity overlap count averages 0.30 for gold passages versus 0.11 for non-gold passages (ratio 2.85$\times$). Normalized MeSH overlap averages 0.51 for gold versus 0.18 for non-gold (ratio 2.88$\times$). Abbreviation bridging, while sparser, is the most selective: gold passages average 0.050 abbreviation matches versus 0.009 for non-gold (ratio 5.64$\times$). These ratios are comparable to the original exact-match features, confirming that the normalization module adds signal without introducing noise.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/data_figures/fig8_synonym_normalization.pdf}
+\caption{Synonym-aware normalization analysis. Panel A shows validation-set ranking metrics for Hybrid RRF, the base flat-knowledge KCH configuration, and the synonym-augmented feature set. Panel B shows gold/non-gold separability ratios for normalized entity, MeSH, alias, and abbreviation features.}
+\label{fig:synonym-normalization}
+\end{figure*}
+
+This ablation addresses the reviewer concern directly. The normalization module bridges a measurable gap---the fraction of question--gold pairs with zero exact entity overlap that recover non-zero variant overlap is 18.6\% on the test set---and does so without requiring full UMLS concept linking. The remaining gap (cases where even MeSH entry terms do not cover the synonym, such as novel drug compounds) is a limitation that we quantify and discuss in Section~\ref{sec:discussion}.

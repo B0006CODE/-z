@@ -1,0 +1,36 @@
+\subsection{Experimental Setup}
+
+The experiments are organized around four questions: how much better is KCH-MedRank than strong baselines including a biomedical cross-encoder, where does hypergraph structure provide benefit over flat knowledge features, do the gains generalize beyond BioASQ, and where does the reranker succeed and fail. The corresponding sections are the main results (Section~\ref{sec:main-results}), structural ablation (Section~\ref{sec:ablation}), robustness diagnostics on PubMedQA and BEIR NFCorpus within this section, and interpretability and error analysis (Section~\ref{sec:interpretability}).
+
+\subsubsection{Dataset and Split}
+
+The primary dataset is \texttt{rag-datasets/rag-mini-bioasq}, containing 4,719 BioASQ-style questions with gold passage-level annotations. We split deterministically by question identifier modulo-5 bucketing: training covers buckets 0--2 (2,832 questions), validation uses bucket 3 (944 questions), and test uses bucket 4 (943 questions). The split is fixed before any model selection. Each question carries multiple gold evidence passages, so Recall@$k$ (macro evidence coverage) is the primary metric.
+
+PubMedQA~\citep{jin2019pubmedqa} provides a secondary diagnostic in the yes/no/maybe QA format with strong first-hit retrieval. BEIR NFCorpus~\citep{thakur2021beir} is an external retrieval-only robustness test. MeSH, entity, and hypergraph features are not built for NFCorpus, so only retrieval-feature LambdaMART is compared there.
+
+\subsubsection{Baselines}
+
+First-stage retrievers include BM25, dense biomedical retrieval, original Hybrid RRF (BM25 and dense with equal weights), fielded BM25 with MeSH expansion, MedCPT dual-encoder retrieval, and enhanced Hybrid RRF in the w122 configuration selected on validation Recall@100.
+
+Reranking baselines span the strongest available semantic model down to the simplest retrieval-only ranker: MedCPT Cross-Encoder~\citep{jin2023medcpt} on the same enhanced candidate pool, retrieval-feature-only LambdaMART with no biomedical knowledge, flat biomedical knowledge LambdaMART with all knowledge features but no graph structure, pairwise graph LTR, hypergraph LTR without medical knowledge, and full KCH-MedRank.
+
+\subsubsection{Evaluation Protocol}
+
+Metrics are Recall@$k$, Hit@$k$, MRR@$k$, and nDCG@$k$ for $k \in \{1,3,5,10,20,50,100\}$. Recall@$k$ is macro evidence coverage: per question, the fraction of its gold passages in the top $k$, averaged across questions. Statistical significance comes from paired bootstrap with 10,000 resamples and a fixed random seed. All model selection uses validation metrics only; the test split is evaluated exactly once. We treat the Recall@10 comparison against the MedCPT Cross-Encoder as the primary confirmatory test. The structural ablation, stratified analyses, and leave-one-feature diagnostics are exploratory and are reported without multiple-comparison correction.
+
+A hard reranking subset isolates 65 test questions where the enhanced Hybrid RRF candidate pool contains gold evidence in the top 100 but misses every gold passage in the top 10. On this subset the baseline has Recall@10 of 0 by construction. Passing it means knowledge features rescued evidence that retrieval signals alone could not.
+
+\paragraph{Feature Annotation Sources.}
+All knowledge features are extracted without accessing gold evidence annotations, qrels, or test labels. \textbf{Question MeSH:} assigned by dictionary matching of question text against the NLM 2026 MeSH descriptor and entry-term vocabulary, using exact and normalized surface-form matching against the 213,754 entry terms without accessing any gold passage metadata or qrels. This is a text-only matching procedure identical to how a production system would assign MeSH terms to an incoming user query. \textbf{Passage MeSH:} obtained from the publicly available BioASQ corpus metadata, which provides PubMed-indexed MeSH descriptor annotations assigned by NLM indexers at the time of article publication. These annotations exist independently of any specific question or test label. \textbf{Query primary MeSH:} for questions, the top-ranked matched descriptor by term frequency serves as the query primary MeSH (an automatic heuristic, not a human-annotated NLM major topic). \textbf{Passage major topic:} passage-side MeSH major-topic designation uses the asterisk (starred) indicator in the NLM indexing record, reflecting the indexer-assigned major topic. \textbf{Entity linking:} performed with scispaCy~\citep{neumann2019scispacy} biomedical NER models applied independently to question text and passage text, without using gold evidence annotations. \textbf{PrimeKG relations:} queried from the publicly released PrimeKG knowledge graph~\citep{chandak2023primekg} using exact-name matching of extracted entities. \textbf{Synonym expansion:} uses only the MeSH entry-term vocabulary (publicly available from NLM); abbreviation bridging relies on regex-based abbreviation-pair extraction from question text (e.g., ``cGAS (cyclic GMP-AMP synthase)''), with no external abbreviation list. No feature extraction step accesses which passages are gold evidence for which question; all annotations are derived from text, public metadata, and public knowledge bases.
+
+\paragraph{Concept Normalization Diagnostic.}
+To assess the synonym normalization module, we compare three controlled configurations under the same validation-set constraints: (i) the retrieval-feature LTR baseline, (ii) KCH-MedRank with base flat knowledge features (without synonym-aware augmentation), and (iii) KCH-MedRank with full synonym-aware features. The comparison uses the validation split only (bucket 3, 944 questions) to maintain test-set integrity. Additionally, we measure a synonym-coverage metric: among all question--gold-passage pairs in the test set, the fraction for which exact entity matching yields zero overlap while normalized variant matching recovers a non-zero overlap. This metric directly quantifies the gap that the normalization module is designed to bridge.
+
+\input{tables/enhanced_candidate_selection}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_04.png}
+\caption{Controlled experimental design: candidate generation, reranking baselines, structural ablations, validation-only model selection, and paired statistical testing. The diagram is schematic; the reported BioASQ experiments use validation-selected top-100 candidate pools and evaluate $k \in \{1,3,5,10,20,50,100\}$ as specified in the protocol.}
+\label{fig:gpt-experimental-design}
+\end{figure}

@@ -1,0 +1,44 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Quantitative interpretability: three-mechanism classification of 648 rescued gold passages (out of 661 total rescued; 13 did not clearly map to a single dominant mechanism). Each case is assigned to the dominant hypergraph mechanism based on activated feature scores.}
+\label{tab:interpretability-mechanisms}
+\begin{tabular}{lrrr}
+\toprule
+Mechanism & Count & \% & Avg Rank Gain \\
+\midrule
+MeSH Hierarchy Path & 492 & 75.9 & +22.1 \\
+Shared Entity Cluster Path & 155 & 23.9 & +14.0 \\
+PrimeKG Relation Path & 1 & 0.2 & +25.0 \\
+\cmidrule{1-4}
+Total & 648 & 100.0 & +20.3 \\
+\midrule
+\multicolumn{4}{c}{\textit{Mechanism Activation Statistics (mean features per case)}} \\
+\midrule
+ & MeSH Hier. & Entity Clus. & Relation \\
+\midrule
+mesh\_overlap\_count & 1.18 & 0.03 & 0.00 \\
+entity\_overlap\_count & 0.09 & 0.48 & 0.00 \\
+question\_entity\_coverage & 0.06 & 0.36 & 0.00 \\
+shared\_mesh\_parent\_size & 48.85 & 15.05 & 0.00 \\
+shared\_entity\_edges & 126.59 & 127.84 & 128.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Mechanism co-occurrence in rescued cases. 89.2\% of rescues involve at least two concurrent knowledge pathways.}
+\label{tab:mech-cooccurrence}
+\begin{tabular}{lrr}
+\toprule
+Active Mechanisms & Count & \% \\
+\midrule
+MeSH Hierarchy + Entity Cluster + Relation & 256 & 39.5 \\
+MeSH Hierarchy + Entity Cluster & 322 & 49.7 \\
+Entity Cluster + Relation & 38 & 5.9 \\
+Entity Cluster only & 32 & 4.9 \\
+\bottomrule
+\end{tabular}
+\end{table}

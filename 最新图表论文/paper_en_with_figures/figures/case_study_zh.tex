@@ -1,0 +1,14 @@
+\begin{table}[t]
+\centering
+\small
+\caption{BioASQ 留出测试集中 Enhanced Hybrid w122 与 KCH-MedRank 对比的 EGFR exon 19 NSCLC 图示救回案例与剩余失败模式。}
+\label{tab:case-study}
+\begin{tabularx}{\linewidth}{p{0.12\linewidth}p{0.13\linewidth}X}
+\toprule
+案例 & 金标准排名 & 问题、信号与解释 \\
+\midrule
+图示救回 & 12 $\rightarrow$ 1 & 问题：In adults with non-small cell lung cancer harboring EGFR exon 19 deletions, what is the first-line treatment recommended by current guidelines? 主要信号包括 non-small cell lung cancer、EGFR、exon 19 deletion、first-line treatment、guidelines 和 osimertinib。KCH-MedRank 将指南段落提升到首位，因为该段落在疾病、突变、MeSH 层级、共享候选簇和治疗推荐上与问题形成一致证据链。 \\
+剩余失败模式 & 2 $\rightarrow$ 18 & 问题：Is there any protein that undergoes both mono-ubiquitination and poly-ubiquitination? 主要信号包括 ubiquitin、ubiquitination、ubiquitins 和 post-translational processing。该段落相关，但使用了相关生化形式和更宽泛的加工概念；同义词与层级特征未能充分对齐 mono-/poly-ubiquitination 与段落证据。 \\
+\bottomrule
+\end{tabularx}
+\end{table}

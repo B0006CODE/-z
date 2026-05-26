@@ -1,0 +1,44 @@
+\subsection{Main Results}
+\label{sec:main-results}
+
+\subsubsection{Candidate Ceiling and Reranking Gains}
+
+Before any reranking, we need to know how much evidence is even reachable. The original Hybrid RRF posts test Recall@100 of 0.6077, meaning roughly 40\% of gold passages never enter the candidate pool. The enhanced w122 configuration lifts this ceiling to 0.7388 (Figure~\ref{fig:recall-at-k}), adding over 13 percentage points of recoverable evidence.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/data_figures/fig3_recall_at_k.pdf}
+\caption{Recall@$k$ curves on the held-out BioASQ split. KCH-MedRank improves early-rank evidence coverage while sharing the enhanced top-100 candidate ceiling with the MedCPT Cross-Encoder and enhanced Hybrid RRF.}
+\label{fig:recall-at-k}
+\end{figure}
+
+KCH-MedRank then reorders within this larger pool to reach Recall@10 of 0.5329 against 0.4660 for the enhanced Hybrid RRF ordering (Figure~\ref{fig:main-results}). The $\Delta$ of $+0.0669$ translates to roughly one additional gold passage entering the top 10 for every 15 questions. MRR@10 moves from 0.7530 to 0.7867 and nDCG@10 from 0.5843 to 0.6433. All four top-10 metrics are significant under paired bootstrap ($p=0.0002$).
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/data_figures/fig2_main_results.pdf}
+\caption{Main BioASQ results and confirmatory comparisons. Panel A compares top-10 retrieval metrics across the main methods. Panel B shows paired-bootstrap deltas for KCH-MedRank over enhanced Hybrid RRF with 95\% confidence intervals. Panel C shows KCH-MedRank over the MedCPT Cross-Encoder; confidence intervals are not reported in the source table, so only point estimates and $p$-values are shown.}
+\label{fig:main-results}
+\end{figure*}
+
+\subsubsection{Beating the Cross-Encoder}
+
+The stricter test is the MedCPT Cross-Encoder, which scores each query-passage pair through a full transformer. On the same enhanced candidate pool it reaches Recall@10 of 0.5172. KCH-MedRank improves on this by $+0.0157$ ($p=0.0076$, paired bootstrap; Figure~\ref{fig:main-results}C). MRR@10 and nDCG@10 are positive at $+0.0092$ and $+0.0043$ but not significant.
+
+Significant recall gains without significant MRR movement make sense for evidence retrieval. Recall checks whether relevant passages appear anywhere in the top 10. MRR checks whether the first passage is relevant. KCH-MedRank lifts evidence that semantic scoring alone pushed just outside the top-10 window. It does not need to reshuffle passages that are already well-ranked to improve coverage.
+
+\subsubsection{Rescuing Hard Cases}
+
+The hard subset isolates 65 questions where the candidate pool holds gold evidence but the top 10 contains none (Table~\ref{tab:hard-subset-diagnostic}). By construction, enhanced Hybrid RRF has Recall@10 of 0 here. KCH-MedRank pulls gold evidence into the top 10 for nearly half of these questions (Recall@10 = 0.4704). Retrieval-feature-only LambdaMART reaches 0.4411. The gap of $+0.0293$ between them is the incremental value of biomedical knowledge features on questions that retrieval signals alone leave untouched.
+
+\input{tables/hard_subset_diagnostic}
+
+\subsubsection{Generalization}
+
+PubMedQA tests whether the approach transfers to a different QA format (Table~\ref{tab:pubmedqa-retrieval-diagnostic}). The lightweight HGB knowledge reranker lifts Recall@10 from 0.8200 to 0.8953 over its Hybrid RRF source ($p=0.0002$). MRR@10 barely moves (0.9850 to 0.9861). This mirrors BioASQ: the method expands evidence coverage without touching already-strong first-rank precision. We note that this transfer uses a lightweight HGB reranker, not the complete BioASQ KCH-MedRank pipeline.
+
+\input{tables/pubmedqa_retrieval_diagnostic}
+
+BEIR NFCorpus tests the supervised reranking layer in isolation, since MeSH, entity, PrimeKG, and hypergraph features are not built there (Table~\ref{tab:nfcorpus-retrieval-diagnostic}). Retrieval-feature LambdaMART improves Recall@10 from 0.1676 to 0.1770 ($p=0.0034$) and nDCG@10 from 0.3436 to 0.3627 ($p=0.0002$) over Hybrid RRF. This confirms that listwise supervised reranking generalizes beyond BioASQ even without domain-specific knowledge features. Full KCH-MedRank generalization, including biomedical knowledge and hypergraph features, remains to be tested on datasets where such features can be constructed.
+
+\input{tables/nfcorpus_retrieval_diagnostic}
