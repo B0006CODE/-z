@@ -1,0 +1,51 @@
+\section{Experimental Setup}
+
+\subsection{Dataset}
+
+The primary dataset is \texttt{rag-datasets/rag-mini-bioasq}, used as a compact BioASQ-style biomedical evidence retrieval setting. The full processed set contains 4,719 questions. We use a deterministic question-level split based on question identifier buckets: training questions are all buckets except validation and test, validation uses bucket remainder 3, and test uses bucket remainder 4 under modulo 5. In the enhanced BioASQ experiment, this gives 2,832 training questions, 944 validation questions, and 943 held-out test questions. The split is fixed before model selection.
+
+Each question is paired with a set of gold evidence passage identifiers. Evaluation is performed at the passage level. The reranker receives only candidates returned by the first-stage retrieval pool, so Recall@100 of the candidate generator is reported as an upper-bound analysis. The split is question-level, and passages from test questions are not used as positive training labels for the reranker. PubMedQA is used as a secondary diagnostic dataset rather than the main result source. BEIR NFCorpus is added as an external retrieval-only robustness diagnostic using its official train, validation, and test qrels; because the project-specific MeSH, entity, PrimeKG, and local graph/hypergraph features are not directly constructed for NFCorpus, this diagnostic compares BM25, dense retrieval, Hybrid RRF, and retrieval-feature LambdaMART only.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/gpt_image2_figure_04.png}
+\caption{Controlled experimental design for candidate generation, reranking baselines, ablations, validation-only model selection, held-out test evaluation, and paired statistical testing. The diagram is schematic; the reported BioASQ experiments use validation-selected top-100 candidate pools and evaluate $k \in \{1,3,5,10,20,50,100\}$ as specified in the protocol.}
+\label{fig:gpt-experimental-design}
+\end{figure}
+
+\subsection{Baselines}
+
+We compare against both first-stage retrieval baselines and reranking baselines. The first-stage baselines are BM25, dense biomedical retrieval, original Hybrid BM25 + dense RRF, fielded BM25 with MeSH expansion, MedCPT dual-encoder retrieval, and enhanced Hybrid RRF. Enhanced Hybrid RRF is not tuned on the test split; its selected w122 weights are chosen by validation Recall@100.
+
+The reranking baselines are MedCPT Cross-Encoder on the same enhanced candidate pool, retrieval-feature-only LambdaMART, flat biomedical knowledge LambdaMART without graph structure, pairwise graph learning-to-rank, hypergraph learning-to-rank without medical knowledge, and full KCH-MedRank. The flat knowledge baseline uses the same retrieval, biomedical semantic, entity, exact MeSH, hierarchy-aware MeSH, and PrimeKG relation features as the full model, but removes graph and hypergraph diffusion, centrality, local edge-count, and graph-interaction features. This baseline directly tests whether medical knowledge features alone explain the gain. Leave-one-feature-group ablations (removing the biomedical semantic score, MeSH hierarchy features, biomedical entity features, hypergraph diffusion and centrality, and PrimeKG relation features) are retained in the appendix as complementary diagnostics but are not the primary ablation evidence, because high multicollinearity among knowledge features leads to automatic compensation in tree-based models.
+
+\subsection{Evaluation}
+
+The main retrieval metrics are Recall@$k$, Hit@$k$, MRR@$k$, nDCG@$k$, and evidence coverage for $k \in \{1,3,5,10,20,50,100\}$. With multiple gold passages per question, Recall@$k$ is macro evidence coverage: for each question, it is the fraction of that question's gold passages appearing in the top $k$, then averaged over questions. Hit@$k$ is query-level success: it is 1 if at least one gold passage appears in the top $k$ and 0 otherwise. MRR@$k$ is also query-level: it is the reciprocal rank of the first gold passage within the top $k$, or 0 if no gold passage appears. nDCG@$k$ uses qrel relevance values as gains; because the current evidence labels are binary, it reduces to binary-gain DCG normalized by the ideal ordering of all available gold passages up to $k$. Evidence coverage is reported as the same macro passage recall value as Recall@$k$ to connect the metric to the medical evidence-grounding interpretation.
+
+Statistical testing uses paired bootstrap over held-out test questions with 10,000 resamples and a fixed random seed. We report confidence intervals and two-sided p-values against original or enhanced Hybrid RRF and against the true MedCPT Cross-Encoder baseline when available. A hard reranking subset is used for diagnosis: it contains test questions for which Hybrid top-100 includes at least one gold passage but Hybrid top-10 misses all gold passages. This subset is not a replacement for the full held-out test evaluation.
+
+\subsection{Validation Selection}
+
+Table~\ref{tab:enhanced-candidate-selection} reports the enhanced candidate-generation validation selection. The selected w122 setting uses BM25 and dense retrieval as base sources, fielded BM25 as a stronger recall source, and MedCPT dual-encoder retrieval as an additional biomedical semantic source. It is selected because it maximizes validation Recall@100, matching the reranking objective of improving the candidate ceiling.
+
+The complete candidate-fusion search space contains the original Hybrid setting $(1.0,1.0,0.0,0.0)$ for BM25, dense, fielded BM25, and MedCPT dual encoder weights, plus w052 $(1.0,1.0,0.5,0.2)$, w084 $(1.0,1.0,0.8,0.4)$, w102 $(1.0,1.0,1.0,0.2)$, and w122 $(1.0,1.0,1.2,0.2)$. Only validation Recall@100 is used to choose among these settings; the held-out test split is evaluated after this selection. The LambdaMART hyperparameter search space is specified in Section~4, and model selection is likewise validation-only.
+
+\input{tables/enhanced_candidate_selection}
+
+\subsection{Downstream Generation Pilot}
+
+To connect evidence selection with the medical RAG setting without expanding generation into the main claim, we retain a controlled PubMedQA pilot with DashScope's OpenAI-compatible Qwen3-8B endpoint as an appendix-style diagnostic. The evaluation uses 100 PubMedQA questions from the common subset covered by Hybrid RRF, the available semantic cross-encoder PubMedQA output, and the KCH-style hypergraph reranker output. Each condition uses the same top-5 evidence passages, prompt template, temperature 0, maximum 256 output tokens, and no fine-tuning. The model must return one of \texttt{yes}, \texttt{no}, or \texttt{maybe} with passage citations. We report Accuracy, Macro-F1, citation support rate, unsupported claim rate, and answer-evidence entity consistency. This pilot is not a replacement for the BioASQ or NFCorpus retrieval evaluations.
+
+\subsection{Hyperparameter Sensitivity}
+
+KCH-MedRank introduces two hypergraph diffusion hyperparameters: damping $d$ and iterations $t$. To assess sensitivity, we perform a correlation-based stability analysis on 30 randomly sampled held-out questions. For each question, we build the full knowledge hypergraph once and run diffusion with all $(d, t)$ combinations from $d \in \{0.7, 0.8, 0.85, 0.9, 0.95\}$ and $t \in \{3, 5, 7, 10\}$. We compute the Pearson correlation between per-passage diffusion scores under each parameter pair and the baseline $(d=0.85, t=5)$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\linewidth]{figures/data_figures/hyperparameter_heatmap.pdf}
+\caption{Hypergraph diffusion sensitivity. Each cell reports the Pearson correlation between per-passage diffusion scores under a damping--iteration pair and the default setting $(d=0.85,t=5)$ on 30 sampled held-out questions.}
+\label{fig:hyperparameter-sensitivity}
+\end{figure}
+
+Figure~\ref{fig:hyperparameter-sensitivity} presents the results. For $t \geq 5$, per-passage diffusion scores are highly correlated with the baseline, with $r > 0.99$ for same-damping comparisons and $r \geq 0.89$ in all cases. At $t = 3$, diffusion is under-converged ($r \approx 0.51$) and produces substantially different passage scores. At $t = 10$, excessive iterations cause score compression ($r = 0.75\text{--}0.84$). The chosen defaults $(d=0.85, t=5)$ fall within the stable region where diffusion scores show high linear correlation with the baseline. This correlation-level analysis suggests that hypergraph diffusion is robust to the exact $(d, t)$ choice for $t \geq 5$, though full retrieval-metric stability under the complete LambdaMART pipeline remains to be systematically confirmed.

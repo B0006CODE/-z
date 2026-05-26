@@ -1,0 +1,50 @@
+\section{Introduction}
+
+\begin{quote}
+\small
+\itshape
+\noindent Ask a biomedical search engine ``What is the function of DITPA?'' and it retrieves dozens of passages about thyroid hormone analogs. A clinician scanning those results spots the connection immediately: DITPA is a thyroid hormone analog, and its mechanism sits under the Medical Subject Headings (MeSH) tree node for thyroid hormones. A standard retrieval pipeline scores each passage against the query by lexical overlap or embedding similarity, placing the most relevant evidence at rank 54. The passage is present in the candidate pool---but pairwise scoring alone cannot surface it.
+\end{quote}
+
+Evidence-grounded medical question answering requires systems to retrieve relevant biomedical evidence before producing or selecting an answer. Retrieval-augmented generation (RAG) provides a general framework for combining retrieved evidence with language models \citep{lewis2020rag}, and recent medical benchmarking studies confirm that retrieval component selection critically shapes medical QA performance \citep{xiong2024benchmarking}. Yet the dominant paradigm---scoring each passage independently against the query through lexical or dense embeddings---suffers from a structural blind spot: biomedical evidence is frequently organized through higher-order relations among questions, passages, MeSH concepts, biomedical entities, documents, and knowledge-base entries. Pairwise query-passage comparisons cannot trace these multi-hop domain pathways.
+
+\subsection*{The Problem}
+
+Across 943 held-out BioASQ test questions, a strong Hybrid RRF retriever leaves every gold evidence passage outside the top 10 for over 6\% of queries where that evidence does exist somewhere in the top 100. This gap persists because biomedical evidence lives in higher-order relations. A passage about DITPA and a passage about levothyroxine share no surface lexical overlap and sit far apart in embedding space---yet both belong to the same MeSH subtree for thyroid hormones. A pairwise scoring function never asks about that shared membership.
+
+Existing biomedical retrievers \citep{jin2023medcpt} and medical RAG systems \citep{xiong2024benchmarking,xiong2024imedrag} score each passage independently against the query. They do not check whether two candidate passages share a MeSH ancestor, nor whether the biomedical entities extracted from a question form a dense cluster with those of a lower-ranked passage. Recent GraphRAG-style approaches \citep{edge2024graphrag,wu2024medgraphrag,luo2025hypergraphrag} apply graph structure to retrieval, but their edges are typically derived from lexical co-occurrence or embedding similarity rather than from domain-grounded concept annotations such as MeSH, biomedical entity linking, or curated knowledge graphs like PrimeKG. Critically, no existing work isolates whether raw graph topology---stripped of medical knowledge---helps or actively \textit{hurts} biomedical evidence ranking.
+
+\subsection*{Our Approach}
+
+We introduce KCH-MedRank to answer precisely that question. The method builds on a reproducible candidate pool constructed with BM25 \citep{robertson2009bm25}, dense retrieval, and Reciprocal Rank Fusion (RRF) \citep{cormack2009rrf}. It then enriches each query's local candidate neighborhood with four categories of features: (1) retrieval scores from lexical, dense, and fused sources; (2) biomedical semantic features from MeSH hierarchy annotations and entity overlap metrics; (3) relation features from the PrimeKG biomedical knowledge graph; and (4) optional structural features from a local hypergraph that captures n-ary concept interactions that decompose into information loss under pairwise graph representations. All features are fed into query-grouped LambdaMART---a gradient-boosted tree-based learning-to-rank algorithm \citep{burges2010lambdamart}---yielding a transparent, feature-attributable reranker.
+
+We design three controlled architectural variants to isolate the contribution of structural topology from that of domain knowledge:
+\begin{enumerate}[label=(\arabic*)]
+  \item \textbf{Flat Knowledge LTR}: retrieval, MeSH, entity, and relation features with \textit{no} graph structure whatsoever;
+  \item \textbf{Pairwise Graph LTR}: the same knowledge features plus pairwise graph edges connecting entities anchored to the query;
+  \item \textbf{KCH-MedRank (Local Hypergraph)}: knowledge features plus local hypergraph diffusion that preserves multi-entity interactions across hyperedges.
+\end{enumerate}
+The core experimental design isolates three research questions:
+\begin{itemize}
+  \item \textbf{RQ1:} Do flat biomedical knowledge features (MeSH hierarchy, entity overlap, PrimeKG relations) alone improve retrieval over pure retrieval signals, without any graph topology?
+  \item \textbf{RQ2:} Does hypergraph structure help, or does raw topology introduce noise that degrades ranking?
+  \item \textbf{RQ3:} Can medical knowledge constraints (MeSH annotations and entity grounding) reverse structural noise into a useful ranking signal?
+\end{itemize}
+
+\subsection*{Key Findings}
+
+A flat biomedical knowledge LTR baseline without graph structure already captures most of the aggregate gains over retrieval-only baselines, so our main performance claim is attributed to the combined knowledge-constrained learning-to-rank framework rather than to hypergraph topology alone. A controlled structural ablation reveals that raw hypergraph topology, applied without MeSH or entity annotations, degrades nDCG@10 by 0.0074 ($p = 0.0002$) relative to the flat knowledge model. However, adding MeSH, entity, and PrimeKG constraints to the same hypergraph reverses this degradation into a statistically significant improvement ($p < 0.01$). The hypergraph architecture provides a modest additional benefit over pairwise graph decomposition mainly at $k{=}5$; at $k{=}10$ the difference is not statistically significant. On the BioASQ held-out test split, KCH-MedRank achieves significant Recall@10 improvement over a true MedCPT Cross-Encoder baseline ($+0.0157$, $p=0.0076$) while running $18.6\times$ faster at reranking time. An interpretability analysis traces all 648 rescued gold passages to three knowledge-grounded mechanisms: MeSH hierarchy paths account for 75.9\% of rescues, shared entity clusters for 23.9\%, and PrimeKG relations for the remainder.
+
+\subsection*{Contributions}
+
+\begin{itemize}
+  \item A reproducible two-stage biomedical evidence retrieval pipeline with BM25, dense retrieval, Hybrid RRF, enhanced candidate fusion, and deterministic held-out evaluation.
+  \item A knowledge-constrained learning-to-rank reranker that jointly exploits retrieval scores, biomedical semantic features, MeSH hierarchy signals, entity annotations, PrimeKG relations, and optional hypergraph structural features under query-grouped LambdaMART.
+  \item A controlled structural ablation framework with three architectural variants (flat, pairwise graph, local hypergraph) that isolates the effect of domain knowledge from that of graph topology, demonstrating that medical knowledge constraints are \textit{necessary} for structural signals to avoid becoming harmful noise.
+  \item Interpretable post-hoc feature attribution showing that MeSH hierarchy paths drive 75.9\% of rescued gold evidence passages, providing specific guidance for biomedical retrieval system design.
+  \item Evidence-oriented evaluation across BioASQ, PubMedQA, and BEIR NFCorpus including Recall@k, Hit@k, MRR@k, nDCG@k, hard reranking subsets, paired bootstrap significance tests (10,000 resamples), failure analysis, and a $18.6\times$ speed advantage over Cross-Encoder reranking.
+\end{itemize}
+
+\subsection*{Scope and Limitations}
+
+We position KCH-MedRank as a focused evidence selection module rather than a complete clinical QA system. The method does not replace clinical judgment, provide clinical diagnosis, or guarantee answer correctness. The failure analysis reveals cases where gold passages remain lost, and the hypergraph benefit over flat knowledge features is modest and concentrated at early ranks ($k \leq 5$). In the discussion, we characterize the method's remaining failure modes and identify directions for future work, including broader knowledge graph coverage and integration with generation-level evaluation.

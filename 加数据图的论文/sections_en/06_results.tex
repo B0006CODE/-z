@@ -1,0 +1,61 @@
+\section{Results}
+
+\subsection{Candidate Pool Quality}
+
+Table~\ref{tab:enhanced-bioasq-main-results} and Figure~\ref{fig:main-results-bars} summarize the main held-out BioASQ retrieval results. The original Hybrid RRF test baseline has Recall@10 of 0.4636, MRR@10 of 0.7550, nDCG@10 of 0.5848, and Recall@100 of 0.6077. The enhanced w122 candidate pool was selected on validation Recall@100 and reaches test Recall@100 of 0.7388, providing a stronger candidate ceiling for reranking. This step is important because reranking cannot recover gold evidence that is absent from the candidate pool.
+
+\input{tables/enhanced_bioasq_main_results}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/data_figures/main_results_bars.pdf}
+\caption{BioASQ held-out retrieval performance. The grouped bars make the candidate-pool ceiling and final top-10 reranking gains visible across Recall@10, MRR@10, nDCG@10, and Recall@100.}
+\label{fig:main-results-bars}
+\end{figure}
+
+\subsection{Main Held-Out Test Results}
+
+Enhanced KCH-MedRank reaches Recall@10 of 0.5329, MRR@10 of 0.7867, nDCG@10 of 0.6433, and Recall@100 of 0.7388. Relative to original Hybrid RRF, this corresponds to gains of +0.0693 Recall@10, +0.0317 MRR@10, and +0.0585 nDCG@10. Relative to the enhanced Hybrid RRF candidate ordering, KCH-MedRank improves Recall@10 by +0.0669, MRR@10 by +0.0337, nDCG@10 by +0.0589, and evidence coverage@10 by +0.0669.
+
+Figure~\ref{fig:significance-forest} reports paired bootstrap testing against enhanced Hybrid RRF. All four top-10 metrics are significant with $p=0.0002$. This confirms that the improvement is not only a consequence of the stronger candidate pool: the reranking step itself changes the top-10 evidence ordering in a measurable way.
+
+\subsection{Comparison with Biomedical Semantic Reranking}
+
+On the same enhanced candidate pool, the true MedCPT Cross-Encoder baseline reaches Recall@10 of 0.5172, MRR@10 of 0.7775, and nDCG@10 of 0.6390. Figure~\ref{fig:significance-forest} also reports paired bootstrap results against this strong semantic baseline. KCH-MedRank significantly improves Recall@10 (+0.0157, $p=0.0076$), while MRR@10 and nDCG@10 are positive but not statistically significant.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.96\linewidth]{figures/data_figures/significance_forest.pdf}
+\caption{Paired bootstrap gains of KCH-MedRank over enhanced Hybrid RRF and MedCPT Cross-Encoder on BioASQ. Points are metric deltas and whiskers indicate 95\% confidence intervals.}
+\label{fig:significance-forest}
+\end{figure}
+
+The comparison with MedCPT Cross-Encoder is the stricter test for the proposed reranker. It shows that KCH-MedRank improves evidence coverage at top 10 beyond a strong biomedical semantic reranker. The rank-sensitive MRR and nDCG gains are positive trends but not significant, consistent with the interpretation that the method is particularly effective at recovering additional relevant evidence into the top-10 set. These results support the paper's evidence-retrieval claim. They do not yet justify making answer generation the primary contribution.
+
+\subsection{Hard Reranking and PubMedQA Diagnostics}
+
+Figure~\ref{fig:hard-subset-diagnostic} reports the diagnostic hard subset in which the enhanced Hybrid candidate pool contains gold evidence in the top 100 but misses all gold evidence in the top 10. This subset contains 65 held-out BioASQ questions and is not used as a replacement for the full test set. On this subset, enhanced Hybrid RRF has Recall@10 of 0 by construction, while full KCH-MedRank reaches Recall@10 of 0.4704 and the retrieval-feature-only LambdaMART reaches 0.4411. The result indicates that the reranker can recover a substantial fraction of missed top-10 evidence when the candidate pool contains recoverable gold passages. Section~7 provides a detailed structural ablation showing that flat biomedical knowledge features explain much of this recovery, while graph and hypergraph signals provide complementary interpretable structure.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/data_figures/hard_subset_recovery.pdf}
+\caption{Hard-subset reranking diagnostic. The subset contains questions where enhanced Hybrid top-100 contains gold evidence but enhanced Hybrid top-10 misses it, so improvements reflect the reranker's ability to recover already available evidence.}
+\label{fig:hard-subset-diagnostic}
+\end{figure}
+
+Figure~\ref{fig:external-diagnostics} gives a secondary PubMedQA retrieval diagnostic. PubMedQA has a different evidence structure and much stronger first-rank retrieval behavior than BioASQ, so it is used only as a robustness check. The lightweight HGB knowledge reranker improves Recall@10 from 0.8200 to 0.8953 over its Hybrid RRF source, with paired bootstrap Recall@10 delta of +0.0754 and $p=0.0002$ in the experiment logs. MRR@10 changes only from 0.9850 to 0.9861 and is not significant, consistent with the observation that PubMedQA already has very high first-hit retrieval. This supports an evidence-coverage interpretation rather than a claim of broad answer-generation improvement.
+
+The same figure reports the external BEIR NFCorpus retrieval-only diagnostic. This run uses the official train, validation, and test qrels, with 2,590 training queries, 324 validation queries, and 323 test queries. Because NFCorpus does not use the same project-specific MeSH, entity, PrimeKG, and local hypergraph feature files, the diagnostic is intentionally limited to BM25, dense retrieval, Hybrid RRF, and retrieval-feature LambdaMART. Retrieval-feature LambdaMART improves Recall@10 from 0.1676 to 0.1770, MRR@10 from 0.5530 to 0.5725, and nDCG@10 from 0.3436 to 0.3627 over Hybrid RRF. Paired bootstrap against Hybrid RRF gives significant Recall@10 and nDCG@10 improvements ($p=0.0034$ and $p=0.0002$), while MRR@10 is a positive trend ($p=0.0592$). The result supports robustness of the supervised reranking layer, not a claim that the full BioASQ knowledge-constrained hypergraph feature set transfers unchanged to NFCorpus.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/data_figures/external_diagnostics.pdf}
+\caption{Secondary retrieval diagnostics on PubMedQA and NFCorpus. These results are used as robustness checks, not as replacements for the main BioASQ held-out evaluation.}
+\label{fig:external-diagnostics}
+\end{figure}
+
+\subsection{Diagnostic Answer-Support Analysis}
+
+PubMedQA answer-selection analysis further separates evidence retrieval from answer correctness. For Hybrid and HGB evidence at top 10, the rule-based citation support rate is 1.0000 because at least one gold evidence passage is retrieved for each evaluated question. However, answer-supported rate remains limited by the lightweight yes/no/maybe answer selector: the majority baseline reaches 0.5550 supported answers, while TF-IDF logistic regression reaches 0.5050 for Hybrid and 0.4800 for HGB at top 10. Among the 98 questions with extracted question entities, answer-evidence entity consistency is 0.5510 at top 10. These analyses use qrels, gold labels, and deterministic entity overlap rather than an LLM judge. They support keeping generation secondary until stronger answer and faithfulness modeling is added.
+
+The Qwen3-8B downstream generation pilot is moved to the appendix as a limited diagnostic. It is useful for checking whether evidence ordering can affect a fixed downstream answer loop, but it is not used as a primary contribution or as evidence of clinically reliable generation.

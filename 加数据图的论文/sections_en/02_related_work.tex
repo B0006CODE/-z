@@ -1,0 +1,17 @@
+\section{Related Work}
+
+\subsection{Medical Retrieval-Augmented Question Answering}
+
+Medical RAG benchmarking has recently made systematic evaluation of corpora, retrievers, and backbone models more visible. The MedRAG/MIRAGE benchmark evaluates medical RAG configurations over multiple QA datasets and highlights that retrieval settings have a large effect on downstream medical QA \citep{xiong2024benchmarking}. Iterative medical RAG extends this direction by generating follow-up retrieval queries for complex questions \citep{xiong2024imedrag}. This work is narrower: it focuses on evidence retrieval and reranking before making strong generation claims.
+
+\subsection{Biomedical QA Datasets and Biomedical Retrieval}
+
+BioASQ provides a long-running biomedical semantic indexing and QA benchmark \citep{tsatsaronis2015bioasq}, and BioASQ-QA offers manually curated questions, reference answers, documents, snippets, and concepts for biomedical QA research \citep{krithara2023bioasqqa}. PubMedQA is a complementary biomedical research question answering dataset with yes/no/maybe labels over PubMed abstracts \citep{jin2019pubmedqa}. BEIR provides a heterogeneous information retrieval benchmark that includes biomedical subsets such as NFCorpus \citep{thakur2021beir}; here it is used only for an external retrieval-only diagnostic. For biomedical semantic retrieval, MedCPT uses large-scale PubMed search logs to train a biomedical retriever and reranker \citep{jin2023medcpt}.
+
+\subsection{Graph and Hypergraph RAG}
+
+GraphRAG-style methods organize retrieved information using graph structure, with local-to-global search proposed for query-focused summarization \citep{edge2024graphrag}. Medical Graph RAG connects user documents, credible medical sources, and controlled vocabularies for medical response grounding \citep{wu2024medgraphrag}. HyperGraphRAG argues that hyperedges can represent n-ary relations beyond ordinary pairwise graph edges \citep{luo2025hypergraphrag}, and cross-granularity HGRAG models entities and passages at different retrieval granularities \citep{wang2026hgrag}. A recent Medical HyperRAG preprint studies patient-centered clinical QA with a ClinBridge hypergraph over records, cases, and guidelines \citep{xu2026medicalhyperrag}. KCH-MedRank follows the high-order relation motivation, but differs in scope: it uses public biomedical QA resources, avoids private clinical records, and evaluates a local evidence-reranking module rather than a full patient-centered clinical decision-support framework.
+
+\subsection{Controlled Biomedical Knowledge}
+
+MeSH is a controlled, hierarchically organized vocabulary maintained by the National Library of Medicine for indexing and searching biomedical information \citep{nlm2026mesh}. PrimeKG integrates multimodal precision-medicine relations across diseases, proteins, drugs, phenotypes, and other biomedical entities \citep{chandak2023primekg}. In this study, MeSH hierarchy features are central to the medical constraint design, while PrimeKG is treated as an auxiliary relation source because exact-name coverage is sparse.

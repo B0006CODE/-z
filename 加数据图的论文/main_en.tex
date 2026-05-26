@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\emergencystretch=3em
+\Urlmuskip=0mu plus 1mu
+
+\title{KCH-MedRank: Knowledge-Constrained Learning-to-Rank for Evidence-Grounded Medical Retrieval-Augmented Generation}
+\author{Bo Shan\\\href{mailto:24302230@muc.edu.cn}{24302230@muc.edu.cn}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Biomedical evidence retrieval for medical question answering suffers from a fundamental limitation: standard pairwise query-passage scoring cannot capture the higher-order domain relationships that organize clinical knowledge. A passage about the thyroid hormone analog DITPA and a passage about levothyroxine share almost no surface lexical overlap, yet they belong to the same Medical Subject Headings (MeSH) subtree---a shared relationship invisible to any pairwise scoring function.
+
+We introduce KCH-MedRank, a knowledge-constrained learning-to-rank framework for biomedical evidence reranking. The method augments a reproducible hybrid retrieval pipeline (BM25, dense retrieval, and Reciprocal Rank Fusion) with structured biomedical knowledge features derived from MeSH hierarchy annotations, biomedical entity linking, and the PrimeKG knowledge graph, organized through flat, pairwise graph, and local hypergraph architectural variants. Rather than treating structural signals as a standalone scoring formula, all features are fed into query-grouped LambdaMART---a tree-based learning-to-rank algorithm---yielding an interpretable, white-box reranker.
+
+A key structural ablation reveals our central finding: \textbf{flat biomedical knowledge features} (MeSH hierarchy signals, entity overlap, and PrimeKG relations) already carry most of the retrieval gains without requiring any graph topology. Raw hypergraph structure applied \textit{without} domain-grounded concept annotations introduces noise and degrades ranking. However, incorporating MeSH, entity, and PrimeKG constraints into the hypergraph reverses this noise into a statistically significant signal ($p < 0.01$). On the BioASQ held-out test split, KCH-MedRank achieves significant Recall@10 improvement over a true MedCPT Cross-Encoder baseline ($+0.0157$, $p=0.0076$) while running $18.6\times$ faster at reranking time. Interpretability analysis traces all 648 rescued gold passages to three knowledge-grounded mechanisms: MeSH hierarchy paths (75.9\%), shared entity clusters (23.9\%), and PrimeKG relations (remainder). External validation on BEIR NFCorpus and PubMedQA provides supplementary robustness evidence. We position KCH-MedRank as a medical knowledge-grounded evidence selection module rather than as a clinical decision system.
+\end{abstract}
+
+\input{sections_en/01_introduction}
+\input{sections_en/02_related_work}
+\input{sections_en/03_task_definition}
+\input{sections_en/04_method}
+\input{sections_en/05_experimental_setup}
+\input{sections_en/06_results}
+\input{sections_en/07_ablation}
+\input{sections_en/08_case_study}
+\input{sections_en/09_discussion}
+\input{sections_en/10_conclusion}
+\appendix
+\input{sections_en/11_appendix}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

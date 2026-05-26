@@ -1,0 +1,33 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Stratified paired bootstrap analysis of KCH-MedRank vs. Pairwise Graph LTR, grouped by gold passage structural characteristics at $k=5$ and $k=10$. ``MeSH Overlap'' refers to whether the gold passage shares any MeSH terms with the question. ``Entity Overlap'' refers to shared biomedical entities. $p$-values are two-sided from 10,000 paired bootstrap iterations.}
+\label{tab:hypergraph-vs-pairwise-stratified}
+\begin{tabular}{lrrrrrl}
+\toprule
+Subset & $n$ & KCH Rec@5 & PW Rec@5 & $\Delta$ & 95\% CI & $p$ \\
+\midrule
+\multicolumn{7}{c}{\textbf{Recall@5}} \\
+\midrule
+Overall & 943 & 0.4210 & 0.4156 & +0.0054 & [+0.0016, +0.0099] & 0.005** \\
+\midrule
+MeSH Overlap = 0 & 366 & 0.4114 & 0.4016 & +0.0098 & [+0.0021, +0.0196] & 0.006** \\
+MeSH Overlap $\geq$ 1 & 577 & 0.4271 & 0.4245 & +0.0026 & [--0.0010, +0.0065] & 0.159 \\
+Entity Overlap = 0 & 649 & 0.4177 & 0.4132 & +0.0046 & [--0.0002, +0.0102] & 0.062 \\
+Entity Overlap $\geq$ 1 & 294 & 0.4283 & 0.4211 & +0.0072 & [+0.0014, +0.0136] & 0.015* \\
+1 gold passage & 204 & 0.5637 & 0.5539 & +0.0098 & [+0.0000, +0.0245] & 0.277 \\
+$\geq$ 2 gold passages & 739 & 0.3816 & 0.3775 & +0.0042 & [+0.0006, +0.0079] & 0.023* \\
+\midrule
+\multicolumn{7}{c}{\textbf{Recall@10}} \\
+\midrule
+Overall & 943 & 0.5329 & 0.5306 & +0.0023 & [--0.0011, +0.0064] & 0.205 \\
+\midrule
+MeSH Overlap = 0 & 366 & 0.4754 & 0.4722 & +0.0032 & [--0.0021, +0.0102] & 0.306 \\
+MeSH Overlap $\geq$ 1 & 577 & 0.5693 & 0.5676 & +0.0017 & [--0.0024, +0.0067] & 0.471 \\
+Entity Overlap = 0 & 649 & 0.5205 & 0.5162 & +0.0043 & [--0.0002, +0.0096] & 0.066 \\
+Entity Overlap $\geq$ 1 & 294 & 0.5603 & 0.5623 & --0.0020 & [--0.0068, +0.0025] & 0.378 \\
+1 gold passage & 204 & 0.5833 & 0.5735 & +0.0098 & [+0.0000, +0.0245] & 0.273 \\
+$\geq$ 2 gold passages & 739 & 0.5189 & 0.5187 & +0.0002 & [--0.0027, +0.0031] & 0.867 \\
+\bottomrule
+\end{tabular}
+\end{table}
