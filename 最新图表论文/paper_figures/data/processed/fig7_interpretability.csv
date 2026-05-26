@@ -1,0 +1,9 @@
+panel,mechanism,active_mechanisms,count,percent,Avg Rank Gain,MeSH Hierarchy,Entity Cluster,Relation,source_table,notes
+dominant,MeSH Hierarchy Path,,492.0,75.9,22.1,,,,tab:interpretability-mechanisms,Dominant mechanism classification; Total row is retained but not plotted as a mechanism.
+dominant,Shared Entity Cluster Path,,155.0,23.9,14.0,,,,tab:interpretability-mechanisms,Dominant mechanism classification; Total row is retained but not plotted as a mechanism.
+dominant,PrimeKG Relation Path,,1.0,0.2,25.0,,,,tab:interpretability-mechanisms,Dominant mechanism classification; Total row is retained but not plotted as a mechanism.
+dominant,Total,,648.0,100.0,20.3,,,,tab:interpretability-mechanisms,Dominant mechanism classification; Total row is retained but not plotted as a mechanism.
+cooccurrence,,MeSH Hierarchy + Entity Cluster + Relation,256.0,39.5,,1.0,1.0,1.0,tab:mech-cooccurrence,Mechanism co-occurrence table; rendered as an UpSet-style intersection plot.
+cooccurrence,,MeSH Hierarchy + Entity Cluster,322.0,49.7,,1.0,1.0,0.0,tab:mech-cooccurrence,Mechanism co-occurrence table; rendered as an UpSet-style intersection plot.
+cooccurrence,,Entity Cluster + Relation,38.0,5.9,,0.0,1.0,1.0,tab:mech-cooccurrence,Mechanism co-occurrence table; rendered as an UpSet-style intersection plot.
+cooccurrence,,Entity Cluster only,32.0,4.9,,0.0,1.0,0.0,tab:mech-cooccurrence,Mechanism co-occurrence table; rendered as an UpSet-style intersection plot.

@@ -1,0 +1,19 @@
+panel,comparison,method,metric,value,baseline_value,kch_value,delta,ci_lower,ci_upper,p-value,source_table,notes
+A,Main BioASQ result,Original Hybrid RRF,Recall@10,0.4636,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Original Hybrid RRF,MRR@10,0.755,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Original Hybrid RRF,nDCG@10,0.5848,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Enhanced Hybrid w122,Recall@10,0.466,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Enhanced Hybrid w122,MRR@10,0.753,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Enhanced Hybrid w122,nDCG@10,0.5844,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,MedCPT Cross-Encoder,Recall@10,0.5172,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,MedCPT Cross-Encoder,MRR@10,0.7775,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,MedCPT Cross-Encoder,nDCG@10,0.639,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Enhanced KCH-MedRank,Recall@10,0.5329,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Enhanced KCH-MedRank,MRR@10,0.7867,,,,,,,tab:enhanced-bioasq-main-results,
+A,Main BioASQ result,Enhanced KCH-MedRank,nDCG@10,0.6433,,,,,,,tab:enhanced-bioasq-main-results,
+B,KCH-MedRank - Enhanced Hybrid RRF,Enhanced KCH-MedRank,Recall@10,,0.466,0.5329,0.0669,0.0548,0.08,0.0002,tab:enhanced-bioasq-bootstrap-hybrid,95% CI reported in manuscript table.
+B,KCH-MedRank - Enhanced Hybrid RRF,Enhanced KCH-MedRank,MRR@10,,0.753,0.7867,0.0337,0.0207,0.047,0.0002,tab:enhanced-bioasq-bootstrap-hybrid,95% CI reported in manuscript table.
+B,KCH-MedRank - Enhanced Hybrid RRF,Enhanced KCH-MedRank,nDCG@10,,0.5844,0.6433,0.0589,0.0495,0.0687,0.0002,tab:enhanced-bioasq-bootstrap-hybrid,95% CI reported in manuscript table.
+C,KCH-MedRank - MedCPT Cross-Encoder,Enhanced KCH-MedRank,Recall@10,,0.5172,0.5329,0.0157,,,0.0076,tab:enhanced-bioasq-significance,95% CI unavailable in manuscript table; point estimate and p-value only.
+C,KCH-MedRank - MedCPT Cross-Encoder,Enhanced KCH-MedRank,MRR@10,,0.7775,0.7867,0.0093,,,0.206,tab:enhanced-bioasq-significance,95% CI unavailable in manuscript table; point estimate and p-value only.
+C,KCH-MedRank - MedCPT Cross-Encoder,Enhanced KCH-MedRank,nDCG@10,,0.639,0.6433,0.0043,,,0.384,tab:enhanced-bioasq-significance,95% CI unavailable in manuscript table; point estimate and p-value only.

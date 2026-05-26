@@ -1,0 +1,18 @@
+panel,configuration,metric,value,feature,Gold mean,Non-gold mean,Gold pos. rate,Ratio,source_table,notes
+performance,Hybrid RRF source (no rerank),MRR@10,0.7564,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,Hybrid RRF source (no rerank),Recall@10,0.4907,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,Hybrid RRF source (no rerank),nDCG@10,0.6001,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,"Base KCH-MedRank (flat knowledge, no normalization)",MRR@10,0.7757,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,"Base KCH-MedRank (flat knowledge, no normalization)",Recall@10,0.5005,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,"Base KCH-MedRank (flat knowledge, no normalization)",nDCG@10,0.6166,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,+ Synonym-aware features (16 dimensions),MRR@10,0.7788,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,+ Synonym-aware features (16 dimensions),Recall@10,0.5061,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+performance,+ Synonym-aware features (16 dimensions),nDCG@10,0.6257,,,,,,tab:normalization-ablation,Validation split; synonym-aware features are added to flat-knowledge KCH-MedRank.
+separability,,,,norm_entity_overlap_count,0.3014,0.1059,0.2597,2.85,tab:feature-separability,Gold mean divided by non-gold mean.
+separability,,,,norm_entity_jaccard,0.0207,0.0068,0.2597,3.04,tab:feature-separability,Gold mean divided by non-gold mean.
+separability,,,,question_norm_entity_coverage,0.2062,0.0675,0.2597,3.05,tab:feature-separability,Gold mean divided by non-gold mean.
+separability,,,,mesh_normalized_overlap_count,0.5065,0.1758,0.3808,2.88,tab:feature-separability,Gold mean divided by non-gold mean.
+separability,,,,mesh_major_overlap_count,0.0464,0.0202,0.0462,2.3,tab:feature-separability,Gold mean divided by non-gold mean.
+separability,,,,mesh_weighted_overlap,1.1753,0.4821,0.9093,2.44,tab:feature-separability,Gold mean divided by non-gold mean.
+separability,,,,q2p_mesh_alias_count,0.5873,0.2289,0.2682,2.57,tab:feature-separability,Gold mean divided by non-gold mean.
+separability,,,,abbreviation_match_count,0.0497,0.0088,0.0474,5.64,tab:feature-separability,Gold mean divided by non-gold mean.

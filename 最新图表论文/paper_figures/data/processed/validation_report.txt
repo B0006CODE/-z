@@ -1,0 +1,3 @@
+fig2: KCH values match main and comparison tables.
+fig4: Full KCH-MedRank values match main results.
+fig7: dominant and co-occurrence totals match.

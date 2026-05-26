@@ -1,0 +1,16 @@
+method,source_method,method_order,metric,value,source_table,notes
+Retrieval-feature-only LambdaMART,Retrieval-feature-only LambdaMART,1,Recall@10,0.5208,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Retrieval-feature-only LambdaMART,Retrieval-feature-only LambdaMART,1,MRR@10,0.7791,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Retrieval-feature-only LambdaMART,Retrieval-feature-only LambdaMART,1,nDCG@10,0.6282,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Flat knowledge LTR,"Flat knowledge LTR, no graph",2,Recall@10,0.5309,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Flat knowledge LTR,"Flat knowledge LTR, no graph",2,MRR@10,0.7872,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Flat knowledge LTR,"Flat knowledge LTR, no graph",2,nDCG@10,0.6436,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Pairwise graph LTR,Pairwise graph LTR,4,Recall@10,0.5306,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Pairwise graph LTR,Pairwise graph LTR,4,MRR@10,0.7866,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Pairwise graph LTR,Pairwise graph LTR,4,nDCG@10,0.6409,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Hypergraph without medical knowledge,Hypergraph LTR without medical knowledge,3,Recall@10,0.5266,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Hypergraph without medical knowledge,Hypergraph LTR without medical knowledge,3,MRR@10,0.7782,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Hypergraph without medical knowledge,Hypergraph LTR without medical knowledge,3,nDCG@10,0.6362,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Full KCH-MedRank,Full KCH-MedRank,5,Recall@10,0.5329,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Full KCH-MedRank,Full KCH-MedRank,5,MRR@10,0.7867,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
+Full KCH-MedRank,Full KCH-MedRank,5,nDCG@10,0.6433,tab:kch-ablation-summary,Distinct method values used for structural-ablation visualization.
