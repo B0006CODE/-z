@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KCH-MedRank 论文解读</title>
+    <meta
+      name="description"
+      content="KCH-MedRank: 面向循证医学检索增强生成的知识约束学习排序方法论文展示页。"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"><span id="scroll-progress"></span></div>
+
+    <header class="site-header" id="top">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span class="brand-mark">KCH</span>
+        <span>MedRank</span>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#background">背景</a>
+        <a href="#method">方法</a>
+        <a href="#results">结果</a>
+        <a href="#ablation">消融</a>
+        <a href="#case">案例</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true"></div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Knowledge-Constrained Hypergraph Learning-to-Rank</p>
+          <h1 id="hero-title">
+            <span>用医学知识约束，</span>
+            <span>让 RAG 找到</span>
+            <span>更可靠的证据</span>
+          </h1>
+          <p class="hero-copy">
+            KCH-MedRank 是一个面向循证医学问答的白盒证据重排序模块。它不训练大模型，
+            而是在 BM25、稠密检索和 Hybrid RRF 候选池之上，引入 MeSH 层级、实体、PrimeKG
+            和局部超图特征，再用 LambdaMART 学习排序。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#results">看核心结果</a>
+            <a class="secondary-link" href="#method">理解方法</a>
+          </div>
+        </div>
+        <aside class="hero-facts" aria-label="论文关键信息">
+          <div>
+            <span class="fact-value">BioASQ</span>
+            <span class="fact-label">主实验数据集</span>
+          </div>
+          <div>
+            <span class="fact-value">Recall@10 +0.0157</span>
+            <span class="fact-label">相对 MedCPT Cross-Encoder</span>
+          </div>
+          <div>
+            <span class="fact-value">18.6x</span>
+            <span class="fact-label">重排序阶段速度优势</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section lead-section" id="background">
+        <div class="section-kicker">01 / 研究背景</div>
+        <div class="split">
+          <div>
+            <h2>医学问答的关键不是“会说”，而是“证据找得准”。</h2>
+            <p>
+              循证医学问答要求系统先检索到可靠的生物医学证据，再生成或选择答案。普通 RAG
+              常按词汇重叠或嵌入相似度逐段打分，但医学证据经常藏在疾病、药物、基因、MeSH
+              概念和文档之间的高阶关系里。
+            </p>
+          </div>
+          <div class="problem-panel">
+            <p class="panel-title">一个典型盲点</p>
+            <p>
+              关于 DITPA 的问题和关于左甲状腺素的段落，表面词可能很少重叠，但它们同属
+              “甲状腺激素” MeSH 子树。成对查询-段落打分很难主动利用这层共享医学结构。
+            </p>
+          </div>
+        </div>
+
+        <div class="question-grid" aria-label="研究问题">
+          <article>
+            <span>RQ1</span>
+            <h3>医学知识特征是否单独有效？</h3>
+            <p>MeSH 层级、实体重叠和 PrimeKG 关系能否不依赖图结构就提升排序。</p>
+          </article>
+          <article>
+            <span>RQ2</span>
+            <h3>超图结构到底帮不帮？</h3>
+            <p>裸拓扑是否会引入噪声，或能捕捉普通 pairwise 图丢失的多元关系。</p>
+          </article>
+          <article>
+            <span>RQ3</span>
+            <h3>医学约束能否抑制结构噪声？</h3>
+            <p>用 MeSH、实体和关系锚定局部结构，是否能让结构信号变得可用。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section method-section" id="method">
+        <div class="section-kicker">02 / 研究内容与方法</div>
+        <div class="section-heading">
+          <h2>两阶段管线：先做高召回候选池，再做知识约束重排序。</h2>
+          <p>
+            论文的贡献不是发明 RAG 或 GraphRAG，而是把医学受控词表、实体和局部超图变成
+            可复现、可解释、可消融的证据控制层。
+          </p>
+        </div>
+
+        <div class="pipeline" aria-label="KCH-MedRank 方法流程">
+          <article>
+            <span class="step-number">1</span>
+            <h3>第一阶段检索</h3>
+            <p>BM25、稠密检索、fielded BM25 和 MedCPT dual-encoder 组成增强候选池。</p>
+          </article>
+          <article>
+            <span class="step-number">2</span>
+            <h3>局部知识建图</h3>
+            <p>围绕每个问题和 top-100 候选构建问题、段落、文档、实体和 MeSH 概念节点。</p>
+          </article>
+          <article>
+            <span class="step-number">3</span>
+            <h3>超图扩散特征</h3>
+            <p>从问题节点、问题实体和问题 MeSH 出发传播质量，得到段落级结构信号。</p>
+          </article>
+          <article>
+            <span class="step-number">4</span>
+            <h3>LambdaMART 学习排序</h3>
+            <p>把检索、语义、MeSH、实体、关系和结构特征输入 query-group 排序模型。</p>
+          </article>
+        </div>
+
+        <figure class="image-frame">
+          <img src="../paper/figures/gpt_image2_method_overview_v3.png" alt="KCH-MedRank 方法总览图" />
+          <figcaption>KCH-MedRank 将候选检索、生物医学知识特征和局部结构特征统一到学习排序框架中。</figcaption>
+        </figure>
+
+        <div class="feature-board">
+          <div>
+            <h3>节点</h3>
+            <p>问题、候选段落、文档、生物医学实体、MeSH 概念、层级概念、可选关系端点。</p>
+          </div>
+          <div>
+            <h3>超边</h3>
+            <p>question-entity、passage-entity、document-MeSH、shared-entity、MeSH hierarchy、PrimeKG relation。</p>
+          </div>
+          <div>
+            <h3>排序信号</h3>
+            <p>原始排名、BM25/稠密/RRF 分数、MedCPT 语义、MeSH 层级、实体覆盖、扩散与中心性。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section results-section" id="results">
+        <div class="section-kicker">03 / 核心结果</div>
+        <div class="section-heading compact">
+          <h2>主要收益体现在把更多正确证据推进 top-10。</h2>
+          <p>
+            最稳健的主张是 evidence retrieval 的提升，尤其是 Recall@10。MRR@10 和 nDCG@10
+            对强语义重排序器是正向趋势，但不应过度表述为显著优势。
+          </p>
+        </div>
+
+        <div class="metric-strip" aria-label="核心指标">
+          <div class="metric-card">
+            <span class="metric-value" data-count="0.5329">0.5329</span>
+            <span class="metric-label">KCH-MedRank Recall@10</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" data-count="0.7867">0.7867</span>
+            <span class="metric-label">KCH-MedRank MRR@10</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" data-count="0.6433">0.6433</span>
+            <span class="metric-label">KCH-MedRank nDCG@10</span>
+          </div>
+          <div class="metric-card accent">
+            <span class="metric-value">p=0.0076</span>
+            <span class="metric-label">Recall@10 vs MedCPT Cross-Encoder</span>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-tabs" role="tablist" aria-label="结果表切换">
+            <button class="tab-button active" type="button" data-table="bioasq">BioASQ 主结果</button>
+            <button class="tab-button" type="button" data-table="external">外部诊断</button>
+            <button class="tab-button" type="button" data-table="efficiency">效率</button>
+          </div>
+
+          <div class="table-wrap table-view active" id="table-bioasq">
+            <table>
+              <thead>
+                <tr>
+                  <th>方法</th>
+                  <th>Recall@10</th>
+                  <th>MRR@10</th>
+                  <th>nDCG@10</th>
+                  <th>Recall@100</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>原始 Hybrid RRF</td>
+                  <td>0.4636</td>
+                  <td>0.7550</td>
+                  <td>0.5848</td>
+                  <td>0.6077</td>
+                </tr>
+                <tr>
+                  <td>增强 Hybrid w122</td>
+                  <td>0.4660</td>
+                  <td>0.7530</td>
+                  <td>0.5844</td>
+                  <td>0.7388</td>
+                </tr>
+                <tr>
+                  <td>MedCPT Cross-Encoder</td>
+                  <td>0.5172</td>
+                  <td>0.7775</td>
+                  <td>0.6390</td>
+                  <td>0.7388</td>
+                </tr>
+                <tr class="highlight-row">
+                  <td>增强 KCH-MedRank</td>
+                  <td>0.5329</td>
+                  <td>0.7867</td>
+                  <td>0.6433</td>
+                  <td>0.7388</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap table-view" id="table-external">
+            <table>
+              <thead>
+                <tr>
+                  <th>数据集</th>
+                  <th>方法</th>
+                  <th>Recall@10</th>
+                  <th>MRR@10</th>
+                  <th>nDCG@10</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PubMedQA</td>
+                  <td>Hybrid RRF</td>
+                  <td>0.8200</td>
+                  <td>0.9850</td>
+                  <td>0.8369</td>
+                </tr>
+                <tr class="highlight-row">
+                  <td>PubMedQA</td>
+                  <td>HGB 知识重排序器</td>
+                  <td>0.8953</td>
+                  <td>0.9861</td>
+                  <td>0.9021</td>
+                </tr>
+                <tr>
+                  <td>NFCorpus</td>
+                  <td>Hybrid RRF</td>
+                  <td>0.1676</td>
+                  <td>0.5530</td>
+                  <td>0.3436</td>
+                </tr>
+                <tr class="highlight-row">
+                  <td>NFCorpus</td>
+                  <td>Retrieval-feature LambdaMART</td>
+                  <td>0.1770</td>
+                  <td>0.5725</td>
+                  <td>0.3627</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap table-view" id="table-efficiency">
+            <table>
+              <thead>
+                <tr>
+                  <th>方法</th>
+                  <th>在线 Cross-Encoder</th>
+                  <th>秒</th>
+                  <th>ms/问题</th>
+                  <th>Recall@10</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>MedCPT Cross-Encoder</td>
+                  <td>是</td>
+                  <td>699.46</td>
+                  <td>741.74</td>
+                  <td>0.5172</td>
+                </tr>
+                <tr class="highlight-row">
+                  <td>KCH-MedRank</td>
+                  <td>否</td>
+                  <td>37.59</td>
+                  <td>39.86</td>
+                  <td>0.5329</td>
+                </tr>
+                <tr>
+                  <td>KCH-MedRank 无语义特征</td>
+                  <td>否</td>
+                  <td>37.50</td>
+                  <td>39.77</td>
+                  <td>0.5244</td>
+                </tr>
+                <tr>
+                  <td>仅检索特征 LambdaMART</td>
+                  <td>否</td>
+                  <td>0.84</td>
+                  <td>0.89</td>
+                  <td>0.5208</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section ablation-section" id="ablation">
+        <div class="section-kicker">04 / 消融与解释边界</div>
+        <div class="section-heading compact">
+          <h2>结果不是“超图一个模块包打天下”。</h2>
+          <p>
+            消融说明：检索和语义特征很强；MeSH、实体和关系特征提供可解释医学信号；
+            超图结构更像互补的白盒结构层，其收益集中在早期排序和间接知识路径场景。
+          </p>
+        </div>
+
+        <div class="ablation-layout">
+          <div class="bar-chart" aria-label="消融 Recall@10 对比">
+            <div class="bar-row">
+              <span>增强 Hybrid RRF</span>
+              <div class="bar"><i style="width: 87.4%"></i></div>
+              <strong>0.4660</strong>
+            </div>
+            <div class="bar-row">
+              <span>检索特征 LTR</span>
+              <div class="bar"><i style="width: 97.7%"></i></div>
+              <strong>0.5208</strong>
+            </div>
+            <div class="bar-row">
+              <span>扁平医学知识 LTR</span>
+              <div class="bar"><i style="width: 99.6%"></i></div>
+              <strong>0.5309</strong>
+            </div>
+            <div class="bar-row">
+              <span>成对图 LTR</span>
+              <div class="bar"><i style="width: 99.6%"></i></div>
+              <strong>0.5306</strong>
+            </div>
+            <div class="bar-row">
+              <span>无医学知识超图</span>
+              <div class="bar"><i style="width: 98.8%"></i></div>
+              <strong>0.5266</strong>
+            </div>
+            <div class="bar-row emphasis">
+              <span>完整 KCH-MedRank</span>
+              <div class="bar"><i style="width: 100%"></i></div>
+              <strong>0.5329</strong>
+            </div>
+          </div>
+
+          <div class="takeaways">
+            <article>
+              <h3>更强候选池是前提</h3>
+              <p>增强候选池把 Recall@100 提到 0.7388，否则后续重排序无法恢复未进入候选池的证据。</p>
+            </article>
+            <article>
+              <h3>平面医学知识已经很强</h3>
+              <p>不使用图结构的医学知识 LTR 达到 Recall@10 0.5309，说明总体收益不能只归因于超图。</p>
+            </article>
+            <article>
+              <h3>医学约束让结构信号可用</h3>
+              <p>裸超图可能引入噪声；加入 MeSH、实体和关系约束后，结构特征才更具解释价值。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section case-section" id="case">
+        <div class="section-kicker">05 / 案例与可解释性</div>
+        <div class="case-grid">
+          <div>
+            <h2>648 条被救回的金标准证据，可以追溯到具体知识路径。</h2>
+            <p>
+              论文将从 Hybrid RRF top-10 外被 KCH-MedRank 推入 top-10 的金标准段落，按主导机制分为
+              MeSH 层级路径、共享实体簇路径和 PrimeKG 关系路径。该分析说明系统能解释“为什么这条证据被提上来”。
+            </p>
+            <div class="donut-list">
+              <div><span class="dot mesh"></span>MeSH 层级路径：492 条，75.9%，平均排名提升 +22.1</div>
+              <div><span class="dot entity"></span>共享实体簇路径：155 条，23.9%，平均排名提升 +14.0</div>
+              <div><span class="dot relation"></span>PrimeKG 关系路径：1 条，0.2%，平均排名提升 +25.0</div>
+            </div>
+          </div>
+          <figure class="image-frame no-margin">
+            <img src="../paper/figures/gpt_image2_figure_05.png" alt="KCH-MedRank 案例分析示意图" />
+            <figcaption>案例示意：疾病实体、EGFR 突变、治疗实体、MeSH 层级和共享候选簇共同把指南证据推到前列。</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section scope-section">
+        <div class="scope-card">
+          <div>
+            <div class="section-kicker">06 / 结论与边界</div>
+            <h2>这是一层可解释的医学证据控制模块，不是临床决策系统。</h2>
+          </div>
+          <div class="scope-columns">
+            <p>
+              KCH-MedRank 的价值在于：在不训练大模型、不依赖私有病历的条件下，用公共数据和受控医学知识增强证据检索。
+              它最适合作为 medical RAG 中的证据选择与重排序层。
+            </p>
+            <p>
+              当前证据支持 Recall@10 和证据覆盖提升。答案生成仍应作为次要诊断，PrimeKG 也应保持辅助定位；
+              后续重点是更好的概念归一化、更完整的下游生成评估和更大范围的外部检索验证。
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>KCH-MedRank 论文解读网页</span>
+      <a href="#top">返回顶部</a>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
