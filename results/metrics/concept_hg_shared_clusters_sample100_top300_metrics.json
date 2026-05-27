@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-05-27T02:06:15.384357+00:00",
+  "timestamp": "2026-05-27T01:37:55.365896+00:00",
   "base_predictions": "outputs\\retrieval\\enhanced_hybrid_w122_full_top100.jsonl",
-  "output": "outputs\\retrieval\\concept_hg_shared_clusters_full_top300.jsonl",
+  "output": "outputs\\retrieval\\concept_hg_shared_clusters_sample100_top300.jsonl",
   "top_k": 300,
   "base_keep": 100,
   "preserve_base_ranks": true,
@@ -10,16 +10,16 @@
   ],
   "seed_top_n": 25,
   "max_df": 8044,
-  "num_questions": 4719,
-  "num_predictions": 1415700,
+  "num_questions": 100,
+  "num_predictions": 30000,
   "num_passages_with_concepts": 40221,
   "num_concepts": 111916,
   "question_cui": null,
   "passage_cui": null,
   "mean_added_per_query": 200.0,
   "expansion_reason_counts": {
-    "base": 471900,
-    "shared_candidate_concept": 170211412
+    "base": 10000,
+    "shared_candidate_concept": 3915164
   },
   "expansion_quality": {
     "new_gold_evidence_recovered@100": 0,
@@ -28,64 +28,64 @@
     "added_non_gold_candidates@100": 0,
     "noise_ratio@100": 0.0,
     "new_gold_reason_counts@100": {},
-    "new_gold_evidence_recovered@200": 5118,
-    "queries_with_new_gold_recovered@200": 1845,
-    "added_candidates@200": 471900,
-    "added_non_gold_candidates@200": 466782,
-    "noise_ratio@200": 0.9891544818817546,
+    "new_gold_evidence_recovered@200": 145,
+    "queries_with_new_gold_recovered@200": 54,
+    "added_candidates@200": 10000,
+    "added_non_gold_candidates@200": 9855,
+    "noise_ratio@200": 0.9855,
     "new_gold_reason_counts@200": {
-      "shared_candidate_concept": 1114138
+      "shared_candidate_concept": 37877
     },
-    "new_gold_evidence_recovered@300": 5978,
-    "queries_with_new_gold_recovered@300": 2038,
-    "added_candidates@300": 943800,
-    "added_non_gold_candidates@300": 937822,
-    "noise_ratio@300": 0.9936660309387582,
+    "new_gold_evidence_recovered@300": 174,
+    "queries_with_new_gold_recovered@300": 58,
+    "added_candidates@300": 20000,
+    "added_non_gold_candidates@300": 19826,
+    "noise_ratio@300": 0.9913,
     "new_gold_reason_counts@300": {
-      "shared_candidate_concept": 1208319
+      "shared_candidate_concept": 41376
     }
   },
   "base_metrics": {
-    "num_questions_with_qrels": 4719,
-    "num_questions_with_predictions": 4719,
+    "num_questions_with_qrels": 100,
+    "num_questions_with_predictions": 100,
     "ks": [
       100,
       200,
       300
     ],
-    "recall@100": 0.753366384206391,
-    "hit@100": 0.9298580207671117,
-    "mrr@100": 0.765581693828992,
-    "ndcg@100": 0.6444943607939063,
-    "recall@200": 0.753366384206391,
-    "hit@200": 0.9298580207671117,
-    "mrr@200": 0.765581693828992,
-    "ndcg@200": 0.644417068293518,
-    "recall@300": 0.753366384206391,
-    "hit@300": 0.9298580207671117,
-    "mrr@300": 0.765581693828992,
-    "ndcg@300": 0.644417068293518
+    "recall@100": 0.7972033671586256,
+    "hit@100": 0.99,
+    "mrr@100": 0.8821340579710144,
+    "ndcg@100": 0.7070042320839052,
+    "recall@200": 0.7972033671586256,
+    "hit@200": 0.99,
+    "mrr@200": 0.8821340579710144,
+    "ndcg@200": 0.7070042320839052,
+    "recall@300": 0.7972033671586256,
+    "hit@300": 0.99,
+    "mrr@300": 0.8821340579710144,
+    "ndcg@300": 0.7070042320839052
   },
   "expanded_metrics": {
-    "num_questions_with_qrels": 4719,
-    "num_questions_with_predictions": 4719,
+    "num_questions_with_qrels": 100,
+    "num_questions_with_predictions": 100,
     "ks": [
       100,
       200,
       300
     ],
-    "recall@100": 0.753366384206391,
-    "hit@100": 0.9298580207671117,
-    "mrr@100": 0.765581693828992,
-    "ndcg@100": 0.6444943607939063,
-    "recall@200": 0.8471441377079434,
-    "hit@200": 0.9423606696333969,
-    "mrr@200": 0.7656775369241676,
-    "ndcg@200": 0.6730867563020313,
-    "recall@300": 0.866991424597335,
-    "hit@300": 0.9476584022038568,
-    "mrr@300": 0.7656987758199101,
-    "ndcg@300": 0.6777819109406938
+    "recall@100": 0.7972033671586256,
+    "hit@100": 0.99,
+    "mrr@100": 0.8821340579710144,
+    "ndcg@100": 0.7070042320839052,
+    "recall@200": 0.9149836685887023,
+    "hit@200": 0.99,
+    "mrr@200": 0.8821340579710144,
+    "ndcg@200": 0.7444148199075284,
+    "recall@300": 0.927486721433376,
+    "hit@300": 0.99,
+    "mrr@300": 0.8821340579710144,
+    "ndcg@300": 0.7490371877409683
   },
   "per_query_stats_preview": [
     {

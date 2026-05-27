@@ -1,0 +1,51 @@
+{
+  "num_questions_with_qrels": 1,
+  "num_questions_with_predictions": 1,
+  "ks": [
+    5,
+    10,
+    100,
+    200,
+    300
+  ],
+  "recall@5": 1.0,
+  "hit@5": 1.0,
+  "mrr@5": 1.0,
+  "ndcg@5": 1.0,
+  "recall@10": 1.0,
+  "hit@10": 1.0,
+  "mrr@10": 1.0,
+  "ndcg@10": 1.0,
+  "recall@100": 1.0,
+  "hit@100": 1.0,
+  "mrr@100": 1.0,
+  "ndcg@100": 1.0,
+  "recall@200": 1.0,
+  "hit@200": 1.0,
+  "mrr@200": 1.0,
+  "ndcg@200": 1.0,
+  "recall@300": 1.0,
+  "hit@300": 1.0,
+  "mrr@300": 1.0,
+  "ndcg@300": 1.0,
+  "evidence_coverage@5": 1.0,
+  "evidence_coverage@10": 1.0,
+  "evidence_coverage@100": 1.0,
+  "evidence_coverage@200": 1.0,
+  "evidence_coverage@300": 1.0,
+  "hard_subset_metrics": {
+    "num_questions_with_qrels": 0,
+    "num_questions_with_predictions": 0,
+    "ks": [
+      5,
+      10,
+      100,
+      200,
+      300
+    ],
+    "warning": "No qrels found; retrieval metrics cannot be computed."
+  },
+  "predictions": "outputs\\rerank\\kch_shared_hg_sample10_top300_full_kch_medrank_test_top300.jsonl",
+  "display_name": "Full KCH-MedRank",
+  "setting_name": "full_kch_medrank"
+}

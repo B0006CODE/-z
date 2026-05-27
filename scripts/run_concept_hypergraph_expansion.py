@@ -62,7 +62,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--mesh-hierarchy-weight", type=float, default=0.16)
     parser.add_argument("--cluster-weight", type=float, default=0.12)
     parser.add_argument("--relation-weight", type=float, default=0.18)
-    parser.add_argument("--ks", type=int, nargs="+", default=[10, 20, 50, 100, 200])
+    parser.add_argument(
+        "--sources",
+        nargs="+",
+        default=[
+            "query_mesh_exact",
+            "mesh_hierarchy",
+            "shared_candidate_concept_clusters",
+            "entity_overlap_clusters",
+            "primekg_relation",
+            "cui_exact",
+        ],
+        help=(
+            "Expansion sources to enable. Options: query_mesh_exact, mesh_hierarchy, "
+            "shared_candidate_concept_clusters, entity_overlap_clusters, primekg_relation, cui_exact."
+        ),
+    )
+    parser.add_argument("--ks", type=int, nargs="+", default=[10, 20, 50, 100, 200, 300])
     parser.add_argument("--seed", type=int, default=None)
     return parser.parse_args()
 
@@ -216,13 +232,13 @@ def filter_qrels(qrels: list[dict[str, Any]], qids: set[str]) -> list[dict[str, 
 
 def metric_row(name: str, metrics: dict[str, Any]) -> dict[str, str]:
     row = {"method": name}
-    for key in ["recall@10", "recall@20", "recall@50", "recall@100", "recall@200", "mrr@10", "ndcg@10"]:
+    for key in ["recall@10", "recall@20", "recall@50", "recall@100", "recall@200", "recall@300", "mrr@10", "ndcg@10"]:
         row[key] = f"{float(metrics.get(key, 0.0)):.4f}" if key in metrics else ""
     return row
 
 
 def write_markdown_table(path: str | Path, rows: list[dict[str, str]]) -> None:
-    columns = ["method", "recall@10", "recall@20", "recall@50", "recall@100", "recall@200", "mrr@10", "ndcg@10"]
+    columns = ["method", "recall@10", "recall@20", "recall@50", "recall@100", "recall@200", "recall@300", "mrr@10", "ndcg@10"]
     lines = ["| " + " | ".join(columns) + " |", "| " + " | ".join(["---"] * len(columns)) + " |"]
     for row in rows:
         lines.append("| " + " | ".join(row.get(column, "") for column in columns) + " |")
@@ -236,8 +252,68 @@ def write_markdown_table(path: str | Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
+def expansion_quality(
+    qrels: list[dict[str, Any]],
+    base_predictions: list[dict[str, Any]],
+    expanded_predictions: list[dict[str, Any]],
+    *,
+    base_keep: int,
+    ks: list[int],
+) -> dict[str, Any]:
+    gold_by_qid: dict[str, set[str]] = defaultdict(set)
+    for row in qrels:
+        gold_by_qid[str(row["question_id"])].add(str(row["passage_id"]))
+    base_by_qid = group_rows(base_predictions, "question_id")
+    expanded_by_qid = group_rows(expanded_predictions, "question_id")
+    diagnostics: dict[str, Any] = {}
+    for k in sorted(set(ks)):
+        new_gold: set[tuple[str, str]] = set()
+        added = 0
+        added_non_gold = 0
+        queries_with_new_gold: set[str] = set()
+        new_gold_reason_counts: Counter[str] = Counter()
+        for qid, expanded_rows in expanded_by_qid.items():
+            gold = gold_by_qid.get(qid, set())
+            base_ids = {
+                str(row["passage_id"])
+                for row in sorted(base_by_qid.get(qid, []), key=lambda item: int(item["rank"]))[:base_keep]
+            }
+            for row in sorted(expanded_rows, key=lambda item: int(item["rank"]))[:k]:
+                pid = str(row["passage_id"])
+                if pid in base_ids:
+                    continue
+                added += 1
+                if pid in gold:
+                    new_gold.add((qid, pid))
+                    queries_with_new_gold.add(qid)
+                    for reason, count in row.get("metadata", {}).get("reason_counts", {}).items():
+                        if reason != "base":
+                            new_gold_reason_counts[reason] += int(count)
+                else:
+                    added_non_gold += 1
+        diagnostics[f"new_gold_evidence_recovered@{k}"] = len(new_gold)
+        diagnostics[f"queries_with_new_gold_recovered@{k}"] = len(queries_with_new_gold)
+        diagnostics[f"added_candidates@{k}"] = added
+        diagnostics[f"added_non_gold_candidates@{k}"] = added_non_gold
+        diagnostics[f"noise_ratio@{k}"] = added_non_gold / added if added else 0.0
+        diagnostics[f"new_gold_reason_counts@{k}"] = dict(new_gold_reason_counts)
+    return diagnostics
+
+
 def main() -> None:
     args = parse_args()
+    enabled_sources = set(args.sources)
+    supported_sources = {
+        "query_mesh_exact",
+        "mesh_hierarchy",
+        "shared_candidate_concept_clusters",
+        "entity_overlap_clusters",
+        "primekg_relation",
+        "cui_exact",
+    }
+    unsupported = enabled_sources - supported_sources
+    if unsupported:
+        raise ValueError(f"Unsupported expansion sources: {sorted(unsupported)}. Supported: {sorted(supported_sources)}")
     config = load_config(args.config)
     seed = args.seed if args.seed is not None else int(config.get("seed", 42))
     set_seed(seed)
@@ -285,82 +361,88 @@ def main() -> None:
             scores[pid] += args.base_weight / (args.rrf_k + rank)
             reasons[pid]["base"] += 1
 
-        add_concept_matches(
-            scores,
-            reasons,
-            concept_to_passages,
-            df,
-            q_concepts["mesh"],
-            reason="direct_mesh",
-            weight=args.direct_mesh_weight,
-            max_df=max_df,
-            max_per_concept=args.max_expansion_per_concept,
-        )
-        add_concept_matches(
-            scores,
-            reasons,
-            concept_to_passages,
-            df,
-            q_concepts["entity"],
-            reason="direct_entity",
-            weight=args.direct_entity_weight,
-            max_df=max_df,
-            max_per_concept=args.max_expansion_per_concept,
-        )
-        add_concept_matches(
-            scores,
-            reasons,
-            concept_to_passages,
-            df,
-            q_concepts["cui"],
-            reason="direct_cui",
-            weight=args.direct_cui_weight,
-            max_df=max_df,
-            max_per_concept=args.max_expansion_per_concept,
-        )
-        add_concept_matches(
-            scores,
-            reasons,
-            concept_to_passages,
-            df,
-            q_concepts["hierarchy"],
-            reason="mesh_hierarchy",
-            weight=args.mesh_hierarchy_weight,
-            max_df=max_df,
-            max_per_concept=args.max_expansion_per_concept,
-        )
-        add_concept_matches(
-            scores,
-            reasons,
-            concept_to_passages,
-            df,
-            relation_target_entities(q_entity_set, relations),
-            reason="primekg_relation",
-            weight=args.relation_weight,
-            max_df=max_df,
-            max_per_concept=args.max_expansion_per_concept,
-        )
-
-        for seed_row in base_rows[: args.seed_top_n]:
-            seed_pid = str(seed_row["passage_id"])
-            seed_rank = int(seed_row["rank"])
-            seed_concepts = rare_concepts(
-                concept_by_passage.get(seed_pid, {}).get("all", set()),
-                df,
-                args.max_shared_concepts,
-            )
-            local_weight = args.cluster_weight / (args.rrf_k + seed_rank)
+        if "query_mesh_exact" in enabled_sources:
             add_concept_matches(
                 scores,
                 reasons,
                 concept_to_passages,
                 df,
-                seed_concepts,
-                reason="shared_candidate_concept",
-                weight=local_weight,
+                q_concepts["mesh"],
+                reason="direct_mesh",
+                weight=args.direct_mesh_weight,
                 max_df=max_df,
                 max_per_concept=args.max_expansion_per_concept,
             )
+        if "entity_overlap_clusters" in enabled_sources:
+            add_concept_matches(
+                scores,
+                reasons,
+                concept_to_passages,
+                df,
+                q_concepts["entity"],
+                reason="direct_entity",
+                weight=args.direct_entity_weight,
+                max_df=max_df,
+                max_per_concept=args.max_expansion_per_concept,
+            )
+        if "cui_exact" in enabled_sources:
+            add_concept_matches(
+                scores,
+                reasons,
+                concept_to_passages,
+                df,
+                q_concepts["cui"],
+                reason="direct_cui",
+                weight=args.direct_cui_weight,
+                max_df=max_df,
+                max_per_concept=args.max_expansion_per_concept,
+            )
+        if "mesh_hierarchy" in enabled_sources:
+            add_concept_matches(
+                scores,
+                reasons,
+                concept_to_passages,
+                df,
+                q_concepts["hierarchy"],
+                reason="mesh_hierarchy",
+                weight=args.mesh_hierarchy_weight,
+                max_df=max_df,
+                max_per_concept=args.max_expansion_per_concept,
+            )
+        if "primekg_relation" in enabled_sources:
+            add_concept_matches(
+                scores,
+                reasons,
+                concept_to_passages,
+                df,
+                relation_target_entities(q_entity_set, relations),
+                reason="primekg_relation",
+                weight=args.relation_weight,
+                max_df=max_df,
+                max_per_concept=args.max_expansion_per_concept,
+            )
+
+        if "shared_candidate_concept_clusters" in enabled_sources:
+            for seed_row in base_rows[: args.seed_top_n]:
+                seed_pid = str(seed_row["passage_id"])
+                seed_rank = int(seed_row["rank"])
+                seed_concepts = rare_concepts(
+                    concept_by_passage.get(seed_pid, {}).get("all", set()),
+                    df,
+                    args.max_shared_concepts,
+                )
+                local_weight = args.cluster_weight / (args.rrf_k + seed_rank)
+                add_concept_matches(
+                    scores,
+                    reasons,
+                    concept_to_passages,
+                    df,
+                    seed_concepts,
+                    reason="shared_candidate_concept",
+                    weight=local_weight,
+                    max_df=max_df,
+                    max_per_concept=args.max_expansion_per_concept,
+                )
 
         base_pid_set = {str(row["passage_id"]) for row in base_rows}
         if args.preserve_base_ranks:
@@ -421,6 +503,7 @@ def main() -> None:
         "top_k": args.top_k,
         "base_keep": args.base_keep,
         "preserve_base_ranks": args.preserve_base_ranks,
+        "sources": sorted(enabled_sources),
         "seed_top_n": args.seed_top_n,
         "max_df": max_df,
         "num_questions": len(qids),
@@ -431,6 +514,13 @@ def main() -> None:
         "passage_cui": args.passage_cui,
         "mean_added_per_query": sum(row["num_added"] for row in per_query_stats) / len(per_query_stats) if per_query_stats else 0.0,
         "expansion_reason_counts": dict(expansion_stats),
+        "expansion_quality": expansion_quality(
+            eval_qrels,
+            base_predictions,
+            expanded,
+            base_keep=args.base_keep,
+            ks=args.ks,
+        ),
         "base_metrics": base_metrics,
         "expanded_metrics": expanded_metrics,
         "per_query_stats_preview": per_query_stats[:20],

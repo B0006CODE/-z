@@ -1,0 +1,10 @@
+method,recall@5,recall@10,mrr@10,ndcg@10,evidence_coverage@10,recall@100,mrr@100,ndcg@100,delta_mrr@10,delta_recall@10
+BM25,,,,,,,,,,
+Dense,,,,,,,,,,
+Hybrid RRF,,,,,,,,,,
+Biomedical semantic reranker only,,,,,,,,,,
+Retrieval-feature-only LambdaMART,,,,,,,,,,
+Flat biomedical knowledge LambdaMART without graph structure,,,,,,,,,,
+Retrieval + hypergraph structural LambdaMART,,,,,,,,,,
+Full KCH-MedRank,,,,,,,,,,
+Remove hypergraph diffusion and centrality,,,,,,,,,,

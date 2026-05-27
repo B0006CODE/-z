@@ -341,6 +341,8 @@ def feature_names_for(setting: str) -> list[str]:
         selected = set(RETRIEVAL_FEATURES)
     elif setting in {"semantic_no_hypergraph_ltr", "flat_knowledge_ltr"}:
         selected = set(RETRIEVAL_FEATURES + SEMANTIC_FEATURES + ENTITY_FEATURES + MESH_EXACT_FEATURES + MESH_HIERARCHY_FEATURES + PRIMEKG_FEATURES)
+    elif setting == "retrieval_hypergraph_ltr":
+        selected = set(RETRIEVAL_FEATURES + HYPERGRAPH_FEATURES + INTERACTION_FEATURES)
     elif setting == "pairwise_graph_ltr":
         selected = set(ALL_FEATURES)
     elif setting == "hypergraph_no_medical_knowledge_ltr":
@@ -689,6 +691,7 @@ def default_settings() -> list[tuple[str, str, str]]:
     return [
         ("Retrieval-feature-only LambdaMART", "retrieval_ltr", "full"),
         ("Flat biomedical knowledge LambdaMART without graph structure", "semantic_no_hypergraph_ltr", "full"),
+        ("Retrieval + hypergraph structural LambdaMART", "retrieval_hypergraph_ltr", "full"),
         ("Pairwise graph LTR", "pairwise_graph_ltr", "pairwise"),
         ("Hypergraph LTR without medical knowledge", "hypergraph_no_medical_knowledge_ltr", "no_knowledge"),
         ("Full KCH-MedRank", "full_kch_medrank", "full"),

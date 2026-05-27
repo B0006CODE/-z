@@ -1,0 +1,51 @@
+{
+  "num_questions_with_qrels": 18,
+  "num_questions_with_predictions": 18,
+  "ks": [
+    5,
+    10,
+    100,
+    200,
+    300
+  ],
+  "recall@5": 0.41336459658987595,
+  "hit@5": 1.0,
+  "mrr@5": 0.9722222222222222,
+  "ndcg@5": 0.7528073430513014,
+  "recall@10": 0.5430810481753977,
+  "hit@10": 1.0,
+  "mrr@10": 0.9722222222222222,
+  "ndcg@10": 0.7130548496096468,
+  "recall@100": 0.8473647400381535,
+  "hit@100": 1.0,
+  "mrr@100": 0.9722222222222222,
+  "ndcg@100": 0.7580774353146285,
+  "recall@200": 0.8773567946058985,
+  "hit@200": 1.0,
+  "mrr@200": 0.9722222222222222,
+  "ndcg@200": 0.7711341370020972,
+  "recall@300": 0.8929525671461155,
+  "hit@300": 1.0,
+  "mrr@300": 0.9722222222222222,
+  "ndcg@300": 0.7767592417947521,
+  "evidence_coverage@5": 0.41336459658987595,
+  "evidence_coverage@10": 0.5430810481753977,
+  "evidence_coverage@100": 0.8473647400381535,
+  "evidence_coverage@200": 0.8773567946058985,
+  "evidence_coverage@300": 0.8929525671461155,
+  "hard_subset_metrics": {
+    "num_questions_with_qrels": 0,
+    "num_questions_with_predictions": 0,
+    "ks": [
+      5,
+      10,
+      100,
+      200,
+      300
+    ],
+    "warning": "No qrels found; retrieval metrics cannot be computed."
+  },
+  "predictions": "outputs\\rerank\\kch_shared_hg_sample100_top300_full_kch_medrank_test_top300.jsonl",
+  "display_name": "Full KCH-MedRank",
+  "setting_name": "full_kch_medrank"
+}

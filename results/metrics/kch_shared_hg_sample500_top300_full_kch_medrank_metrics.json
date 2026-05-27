@@ -1,0 +1,51 @@
+{
+  "num_questions_with_qrels": 99,
+  "num_questions_with_predictions": 99,
+  "ks": [
+    5,
+    10,
+    100,
+    200,
+    300
+  ],
+  "recall@5": 0.3557626305401407,
+  "hit@5": 0.9696969696969697,
+  "mrr@5": 0.8951178451178451,
+  "ndcg@5": 0.7095224115794874,
+  "recall@10": 0.48808458941928995,
+  "hit@10": 0.9797979797979798,
+  "mrr@10": 0.8963804713804713,
+  "ndcg@10": 0.6526227983800643,
+  "recall@100": 0.8584071989839467,
+  "hit@100": 0.9797979797979798,
+  "mrr@100": 0.8963804713804713,
+  "ndcg@100": 0.7491141031070361,
+  "recall@200": 0.896312942468366,
+  "hit@200": 0.9797979797979798,
+  "mrr@200": 0.8963804713804713,
+  "ndcg@200": 0.7617497528018398,
+  "recall@300": 0.9026093844098014,
+  "hit@300": 0.9797979797979798,
+  "mrr@300": 0.8963804713804713,
+  "ndcg@300": 0.7640396764461745,
+  "evidence_coverage@5": 0.3557626305401407,
+  "evidence_coverage@10": 0.48808458941928995,
+  "evidence_coverage@100": 0.8584071989839467,
+  "evidence_coverage@200": 0.896312942468366,
+  "evidence_coverage@300": 0.9026093844098014,
+  "hard_subset_metrics": {
+    "num_questions_with_qrels": 0,
+    "num_questions_with_predictions": 0,
+    "ks": [
+      5,
+      10,
+      100,
+      200,
+      300
+    ],
+    "warning": "No qrels found; retrieval metrics cannot be computed."
+  },
+  "predictions": "outputs\\rerank\\kch_shared_hg_sample500_top300_full_kch_medrank_test_top300.jsonl",
+  "display_name": "Full KCH-MedRank",
+  "setting_name": "full_kch_medrank"
+}

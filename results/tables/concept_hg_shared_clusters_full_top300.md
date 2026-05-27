@@ -1,0 +1,4 @@
+| method | recall@10 | recall@20 | recall@50 | recall@100 | recall@200 | recall@300 | mrr@10 | ndcg@10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Enhanced Hybrid w122 |  |  |  | 0.7534 | 0.7534 | 0.7534 |  |  |
+| Concept-Hypergraph Expansion |  |  |  | 0.7534 | 0.8471 | 0.8670 |  |  |

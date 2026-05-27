@@ -1,0 +1,5 @@
+method,recall@5,recall@10,mrr@10,ndcg@10,recall@100,recall@200
+Flat knowledge LTR,0.3584,0.4865,0.8964,0.6507,0.8452,0.8947
+Full hypergraph LTR,0.3532,0.4901,0.8914,0.6490,0.8627,0.8982
+Learned hypergraph gate,0.3587,0.4907,0.8913,0.6486,0.8516,0.8945
+Oracle hypergraph gate,0.3622,0.4984,0.8968,0.6606,0.8501,0.8960

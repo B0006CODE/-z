@@ -1,0 +1,36 @@
+subset,n,method,recall@5,recall@10,mrr@10,ndcg@10,recall@100,mrr@100,ndcg@100
+overall,99,Hybrid RRF,0.3585,0.4725,0.8966,0.6402,0.7590,0.8966,0.6943
+overall,99,Flat LTR,0.3584,0.4865,0.8964,0.6507,0.8452,0.8964,0.7431
+overall,99,Retrieval+Hypergraph,0.3532,0.4901,0.8914,0.6490,0.8627,0.8914,0.7488
+overall,99,Full KCH,0.3558,0.4881,0.8964,0.6526,0.8584,0.8964,0.7491
+overall,99,Remove Hypergraph,0.3546,0.4999,0.8966,0.6575,0.8563,0.8966,0.7503
+hard_subset,0,Hybrid RRF,,,,,,,
+hard_subset,0,Flat LTR,,,,,,,
+hard_subset,0,Retrieval+Hypergraph,,,,,,,
+hard_subset,0,Full KCH,,,,,,,
+hard_subset,0,Remove Hypergraph,,,,,,,
+no_direct_mesh_overlap,9,Hybrid RRF,0.5189,0.6166,0.8148,0.7173,0.7262,0.8148,0.7413
+no_direct_mesh_overlap,9,Flat LTR,0.5189,0.6268,0.8148,0.7251,0.7946,0.8148,0.7715
+no_direct_mesh_overlap,9,Retrieval+Hypergraph,0.5103,0.6334,0.7593,0.6889,0.8182,0.7593,0.7393
+no_direct_mesh_overlap,9,Full KCH,0.5189,0.6334,0.8148,0.7325,0.8182,0.8148,0.7831
+no_direct_mesh_overlap,9,Remove Hypergraph,0.5103,0.6268,0.8148,0.7250,0.8049,0.8148,0.7751
+entity_overlap_zero,46,Hybrid RRF,0.3144,0.4174,0.8486,0.5681,0.7194,0.8486,0.6420
+entity_overlap_zero,46,Flat LTR,0.3102,0.4229,0.8486,0.5734,0.7868,0.8486,0.6799
+entity_overlap_zero,46,Retrieval+Hypergraph,0.2971,0.4215,0.8478,0.5685,0.8049,0.8478,0.6870
+entity_overlap_zero,46,Full KCH,0.3102,0.4257,0.8486,0.5753,0.7994,0.8486,0.6864
+entity_overlap_zero,46,Remove Hypergraph,0.3059,0.4307,0.8486,0.5743,0.7985,0.8486,0.6857
+high_hypergraph_signal,99,Hybrid RRF,0.3585,0.4725,0.8966,0.6402,0.7590,0.8966,0.6943
+high_hypergraph_signal,99,Flat LTR,0.3584,0.4865,0.8964,0.6507,0.8452,0.8964,0.7431
+high_hypergraph_signal,99,Retrieval+Hypergraph,0.3532,0.4901,0.8914,0.6490,0.8627,0.8914,0.7488
+high_hypergraph_signal,99,Full KCH,0.3558,0.4881,0.8964,0.6526,0.8584,0.8964,0.7491
+high_hypergraph_signal,99,Remove Hypergraph,0.3546,0.4999,0.8966,0.6575,0.8563,0.8966,0.7503
+shared_cluster_size_ge4,99,Hybrid RRF,0.3585,0.4725,0.8966,0.6402,0.7590,0.8966,0.6943
+shared_cluster_size_ge4,99,Flat LTR,0.3584,0.4865,0.8964,0.6507,0.8452,0.8964,0.7431
+shared_cluster_size_ge4,99,Retrieval+Hypergraph,0.3532,0.4901,0.8914,0.6490,0.8627,0.8914,0.7488
+shared_cluster_size_ge4,99,Full KCH,0.3558,0.4881,0.8964,0.6526,0.8584,0.8964,0.7491
+shared_cluster_size_ge4,99,Remove Hypergraph,0.3546,0.4999,0.8966,0.6575,0.8563,0.8966,0.7503
+multi_evidence,93,Hybrid RRF,0.3278,0.4492,0.9060,0.6317,0.7542,0.9060,0.6893
+multi_evidence,93,Flat LTR,0.3277,0.4641,0.9058,0.6429,0.8460,0.9058,0.7412
+multi_evidence,93,Retrieval+Hypergraph,0.3223,0.4679,0.9059,0.6450,0.8646,0.9059,0.7512
+multi_evidence,93,Full KCH,0.3250,0.4658,0.9058,0.6449,0.8600,0.9058,0.7476
+multi_evidence,93,Remove Hypergraph,0.3238,0.4784,0.9060,0.6502,0.8577,0.9060,0.7489
