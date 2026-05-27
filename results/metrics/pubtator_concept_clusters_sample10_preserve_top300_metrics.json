@@ -1,0 +1,191 @@
+{
+  "timestamp": "2026-05-27T02:38:43.310914+00:00",
+  "base_predictions": "outputs\\retrieval\\enhanced_hybrid_w122_full_top100.jsonl",
+  "output": "outputs\\retrieval\\pubtator_concept_clusters_sample10_preserve_top300.jsonl",
+  "top_k": 300,
+  "base_keep": 100,
+  "preserve_base_ranks": true,
+  "sources": [
+    "pubtator_concept_clusters"
+  ],
+  "seed_top_n": 25,
+  "max_df": 8044,
+  "num_questions": 10,
+  "num_predictions": 2364,
+  "num_passages_with_concepts": 40221,
+  "num_concepts": 112641,
+  "question_cui": null,
+  "passage_cui": null,
+  "question_pubtator": "data\\processed\\bioasq_question_pubtator_concepts_sample10.jsonl",
+  "passage_pubtator": "data\\processed\\bioasq_passage_pubtator_concepts_sample10.jsonl",
+  "mean_added_per_query": 136.4,
+  "expansion_reason_counts": {
+    "base": 1000,
+    "pubtator_direct_concept": 332,
+    "pubtator_concept_cluster": 26702
+  },
+  "expansion_quality": {
+    "new_gold_evidence_recovered@100": 0,
+    "queries_with_new_gold_recovered@100": 0,
+    "added_candidates@100": 0,
+    "added_non_gold_candidates@100": 0,
+    "noise_ratio@100": 0.0,
+    "new_gold_reason_counts@100": {},
+    "new_gold_evidence_recovered@200": 0,
+    "queries_with_new_gold_recovered@200": 0,
+    "added_candidates@200": 1000,
+    "added_non_gold_candidates@200": 1000,
+    "noise_ratio@200": 1.0,
+    "new_gold_reason_counts@200": {},
+    "new_gold_evidence_recovered@300": 0,
+    "queries_with_new_gold_recovered@300": 0,
+    "added_candidates@300": 1364,
+    "added_non_gold_candidates@300": 1364,
+    "noise_ratio@300": 1.0,
+    "new_gold_reason_counts@300": {}
+  },
+  "base_metrics": {
+    "num_questions_with_qrels": 10,
+    "num_questions_with_predictions": 10,
+    "ks": [
+      100,
+      200,
+      300
+    ],
+    "recall@100": 0.8174007936507935,
+    "hit@100": 1.0,
+    "mrr@100": 0.7025,
+    "ndcg@100": 0.6027087067030987,
+    "recall@200": 0.8174007936507935,
+    "hit@200": 1.0,
+    "mrr@200": 0.7025,
+    "ndcg@200": 0.6027087067030987,
+    "recall@300": 0.8174007936507935,
+    "hit@300": 1.0,
+    "mrr@300": 0.7025,
+    "ndcg@300": 0.6027087067030987
+  },
+  "expanded_metrics": {
+    "num_questions_with_qrels": 10,
+    "num_questions_with_predictions": 10,
+    "ks": [
+      100,
+      200,
+      300
+    ],
+    "recall@100": 0.8174007936507935,
+    "hit@100": 1.0,
+    "mrr@100": 0.7025,
+    "ndcg@100": 0.6027087067030987,
+    "recall@200": 0.8174007936507935,
+    "hit@200": 1.0,
+    "mrr@200": 0.7025,
+    "ndcg@200": 0.6027087067030987,
+    "recall@300": 0.8174007936507935,
+    "hit@300": 1.0,
+    "mrr@300": 0.7025,
+    "ndcg@300": 0.6027087067030987
+  },
+  "per_query_stats_preview": [
+    {
+      "question_id": "0",
+      "num_ranked": 234,
+      "num_base_kept": 100,
+      "num_added": 134,
+      "num_question_mesh_concepts": 3,
+      "num_question_entity_concepts": 1,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 16
+    },
+    {
+      "question_id": "1",
+      "num_ranked": 231,
+      "num_base_kept": 100,
+      "num_added": 131,
+      "num_question_mesh_concepts": 5,
+      "num_question_entity_concepts": 2,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 64
+    },
+    {
+      "question_id": "2",
+      "num_ranked": 243,
+      "num_base_kept": 100,
+      "num_added": 143,
+      "num_question_mesh_concepts": 3,
+      "num_question_entity_concepts": 1,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 9
+    },
+    {
+      "question_id": "3",
+      "num_ranked": 244,
+      "num_base_kept": 100,
+      "num_added": 144,
+      "num_question_mesh_concepts": 5,
+      "num_question_entity_concepts": 0,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 51
+    },
+    {
+      "question_id": "4",
+      "num_ranked": 241,
+      "num_base_kept": 100,
+      "num_added": 141,
+      "num_question_mesh_concepts": 2,
+      "num_question_entity_concepts": 1,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 1
+    },
+    {
+      "question_id": "5",
+      "num_ranked": 234,
+      "num_base_kept": 100,
+      "num_added": 134,
+      "num_question_mesh_concepts": 4,
+      "num_question_entity_concepts": 0,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 23
+    },
+    {
+      "question_id": "6",
+      "num_ranked": 234,
+      "num_base_kept": 100,
+      "num_added": 134,
+      "num_question_mesh_concepts": 8,
+      "num_question_entity_concepts": 1,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 67
+    },
+    {
+      "question_id": "7",
+      "num_ranked": 220,
+      "num_base_kept": 100,
+      "num_added": 120,
+      "num_question_mesh_concepts": 10,
+      "num_question_entity_concepts": 1,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 60
+    },
+    {
+      "question_id": "8",
+      "num_ranked": 238,
+      "num_base_kept": 100,
+      "num_added": 138,
+      "num_question_mesh_concepts": 2,
+      "num_question_entity_concepts": 1,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 32
+    },
+    {
+      "question_id": "9",
+      "num_ranked": 245,
+      "num_base_kept": 100,
+      "num_added": 145,
+      "num_question_mesh_concepts": 4,
+      "num_question_entity_concepts": 1,
+      "num_question_cui_concepts": 0,
+      "num_question_hierarchy_concepts": 38
+    }
+  ]
+}

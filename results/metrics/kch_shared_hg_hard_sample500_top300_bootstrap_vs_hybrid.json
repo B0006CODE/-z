@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-05-27T02:29:20.656039+00:00",
+  "dataset": "bioasq_shared_hg_hard_sample500_top300",
+  "baseline_label": "Hybrid RRF",
+  "candidate_label": "Full KCH-MedRank",
+  "num_paired_questions": 19,
+  "num_bootstrap": 500,
+  "seed": 42,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.0,
+      "candidate_mean": 0.02330827067669173,
+      "delta": 0.02330827067669173,
+      "relative_delta_percent": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.049624060150375945,
+      "p_value_two_sided": 0.07984031936127745
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.0,
+      "candidate_mean": 0.08333333333333333,
+      "delta": 0.08333333333333333,
+      "relative_delta_percent": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.21052631578947367,
+      "p_value_two_sided": 0.0718562874251497
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.0,
+      "candidate_mean": 0.03263183815755718,
+      "delta": 0.03263183815755718,
+      "relative_delta_percent": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.07485913500487898,
+      "p_value_two_sided": 0.09181636726546906
+    },
+    {
+      "metric": "evidence_coverage",
+      "k": 10,
+      "baseline_mean": 0.0,
+      "candidate_mean": 0.08333333333333333,
+      "delta": 0.08333333333333333,
+      "relative_delta_percent": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.19967105263157883,
+      "p_value_two_sided": 0.059880239520958084
+    }
+  ]
+}

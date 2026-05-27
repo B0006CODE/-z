@@ -37,6 +37,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--passage-entities", default=None)
     parser.add_argument("--question-cui", default=None, help="Optional UMLS CUI annotations from build_umls_concepts.py.")
     parser.add_argument("--passage-cui", default=None, help="Optional UMLS CUI annotations from build_umls_concepts.py.")
+    parser.add_argument("--question-pubtator", default=None, help="Optional PubTator3 annotations from build_pubtator3_concepts.py.")
+    parser.add_argument("--passage-pubtator", default=None, help="Optional PubTator3 annotations from build_pubtator3_concepts.py.")
     parser.add_argument("--mesh-hierarchy", default="data/external_knowledge/mesh_hierarchy_2026.jsonl")
     parser.add_argument("--relations", default=None)
     parser.add_argument("--output", default="outputs/retrieval/concept_hypergraph_expanded_top200.jsonl")
@@ -51,6 +53,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--seed-top-n", type=int, default=25)
     parser.add_argument("--max-qids", type=int, default=None)
+    parser.add_argument("--qid-selection-order", choices=["lexical", "numeric"], default="lexical")
     parser.add_argument("--max-expansion-per-concept", type=int, default=250)
     parser.add_argument("--max-shared-concepts", type=int, default=80)
     parser.add_argument("--max-concept-df-ratio", type=float, default=0.20)
@@ -72,10 +75,12 @@ def parse_args() -> argparse.Namespace:
             "entity_overlap_clusters",
             "primekg_relation",
             "cui_exact",
+            "pubtator_concept_clusters",
         ],
         help=(
             "Expansion sources to enable. Options: query_mesh_exact, mesh_hierarchy, "
-            "shared_candidate_concept_clusters, entity_overlap_clusters, primekg_relation, cui_exact."
+            "shared_candidate_concept_clusters, entity_overlap_clusters, primekg_relation, cui_exact, "
+            "pubtator_concept_clusters."
         ),
     )
     parser.add_argument("--ks", type=int, nargs="+", default=[10, 20, 50, 100, 200, 300])
@@ -88,6 +93,12 @@ def group_rows(rows: list[dict[str, Any]], key: str) -> dict[str, list[dict[str,
     for row in rows:
         grouped[str(row[key])].append(row)
     return dict(grouped)
+
+
+def qid_sort_key(qid: str, order: str) -> tuple[int, int | str]:
+    if order == "numeric" and qid.isdigit():
+        return (0, int(qid))
+    return (1, qid)
 
 
 def mesh_ids(rows: list[dict[str, Any]]) -> set[str]:
@@ -104,6 +115,20 @@ def cui_map(rows: list[dict[str, Any]], id_key: str) -> dict[str, list[dict[str,
 
 def cui_ids(rows: list[dict[str, Any]]) -> set[str]:
     return {str(row.get("cui", "")).strip() for row in rows if str(row.get("cui", "")).strip()}
+
+
+def pubtator_map(rows: list[dict[str, Any]], id_key: str) -> dict[str, list[dict[str, Any]]]:
+    return {str(row[id_key]): list(row.get("concepts", [])) for row in rows}
+
+
+def pubtator_ids(rows: list[dict[str, Any]]) -> set[str]:
+    concepts = set()
+    for row in rows:
+        concept_type = str(row.get("type", "")).strip().lower().replace(" ", "_")
+        concept_id = str(row.get("concept_id", "")).strip()
+        if concept_type and concept_id:
+            concepts.add(f"pubtator:{concept_type}:{concept_id}")
+    return concepts
 
 
 def mesh_tree_concepts(mesh_ui: str, hierarchy: dict[str, Any], *, min_depth: int = 3) -> set[str]:
@@ -125,20 +150,24 @@ def passage_concepts(
     passage_mesh: dict[str, list[dict[str, Any]]],
     passage_entities: dict[str, list[dict[str, Any]]],
     passage_cui: dict[str, list[dict[str, Any]]],
+    passage_pubtator: dict[str, list[dict[str, Any]]],
     hierarchy: dict[str, Any],
 ) -> dict[str, set[str]]:
     meshes = mesh_ids(passage_mesh.get(passage_id, []))
     entities = entity_ids(passage_entities.get(passage_id, []))
     cuis = cui_ids(passage_cui.get(passage_id, []))
+    pubtator = pubtator_ids(passage_pubtator.get(passage_id, []))
     hierarchy_concepts = {concept for mesh_ui in meshes for concept in mesh_tree_concepts(mesh_ui, hierarchy)}
     return {
         "mesh": {f"mesh:{mesh_ui}" for mesh_ui in meshes},
         "entity": {f"entity:{entity_id}" for entity_id in entities},
         "cui": {f"cui:{cui}" for cui in cuis},
+        "pubtator": pubtator,
         "hierarchy": hierarchy_concepts,
         "all": {f"mesh:{mesh_ui}" for mesh_ui in meshes}
         | {f"entity:{entity_id}" for entity_id in entities}
         | {f"cui:{cui}" for cui in cuis}
+        | pubtator
         | hierarchy_concepts,
     }
 
@@ -148,20 +177,24 @@ def question_concepts(
     question_mesh: dict[str, list[dict[str, Any]]],
     question_entities: dict[str, list[dict[str, Any]]],
     question_cui: dict[str, list[dict[str, Any]]],
+    question_pubtator: dict[str, list[dict[str, Any]]],
     hierarchy: dict[str, Any],
 ) -> dict[str, set[str]]:
     meshes = mesh_ids(question_mesh.get(qid, []))
     entities = entity_ids(question_entities.get(qid, []))
     cuis = cui_ids(question_cui.get(qid, []))
+    pubtator = pubtator_ids(question_pubtator.get(qid, []))
     hierarchy_concepts = {concept for mesh_ui in meshes for concept in mesh_tree_concepts(mesh_ui, hierarchy)}
     return {
         "mesh": {f"mesh:{mesh_ui}" for mesh_ui in meshes},
         "entity": {f"entity:{entity_id}" for entity_id in entities},
         "cui": {f"cui:{cui}" for cui in cuis},
+        "pubtator": pubtator,
         "hierarchy": hierarchy_concepts,
         "all": {f"mesh:{mesh_ui}" for mesh_ui in meshes}
         | {f"entity:{entity_id}" for entity_id in entities}
         | {f"cui:{cui}" for cui in cuis}
+        | pubtator
         | hierarchy_concepts,
     }
 
@@ -170,13 +203,14 @@ def build_indexes(
     passage_mesh: dict[str, list[dict[str, Any]]],
     passage_entities: dict[str, list[dict[str, Any]]],
     passage_cui: dict[str, list[dict[str, Any]]],
+    passage_pubtator: dict[str, list[dict[str, Any]]],
     hierarchy: dict[str, Any],
 ) -> tuple[dict[str, list[str]], dict[str, dict[str, set[str]]], Counter[str]]:
     concept_to_passages: dict[str, set[str]] = defaultdict(set)
     concept_by_passage: dict[str, dict[str, set[str]]] = {}
-    all_pids = sorted(set(passage_mesh) | set(passage_entities) | set(passage_cui))
+    all_pids = sorted(set(passage_mesh) | set(passage_entities) | set(passage_cui) | set(passage_pubtator))
     for pid in all_pids:
-        concepts = passage_concepts(pid, passage_mesh, passage_entities, passage_cui, hierarchy)
+        concepts = passage_concepts(pid, passage_mesh, passage_entities, passage_cui, passage_pubtator, hierarchy)
         concept_by_passage[pid] = concepts
         for concept in concepts["all"]:
             concept_to_passages[concept].add(pid)
@@ -310,6 +344,7 @@ def main() -> None:
         "entity_overlap_clusters",
         "primekg_relation",
         "cui_exact",
+        "pubtator_concept_clusters",
     }
     unsupported = enabled_sources - supported_sources
     if unsupported:
@@ -328,7 +363,12 @@ def main() -> None:
 
     base_predictions = read_jsonl(args.base_predictions)
     if args.max_qids is not None:
-        selected = set(sorted({str(row["question_id"]) for row in base_predictions})[: args.max_qids])
+        selected = set(
+            sorted(
+                {str(row["question_id"]) for row in base_predictions},
+                key=lambda qid: qid_sort_key(qid, args.qid_selection_order),
+            )[: args.max_qids]
+        )
         base_predictions = [row for row in base_predictions if str(row["question_id"]) in selected]
 
     question_mesh = mesh_map(read_jsonl(q_mesh_path), "question_id")
@@ -337,11 +377,13 @@ def main() -> None:
     passage_entities = entity_map(read_jsonl(p_entity_path), "passage_id")
     question_cui = cui_map(read_jsonl(args.question_cui), "question_id") if args.question_cui and Path(args.question_cui).exists() else {}
     passage_cui = cui_map(read_jsonl(args.passage_cui), "passage_id") if args.passage_cui and Path(args.passage_cui).exists() else {}
+    question_pubtator = pubtator_map(read_jsonl(args.question_pubtator), "question_id") if args.question_pubtator and Path(args.question_pubtator).exists() else {}
+    passage_pubtator = pubtator_map(read_jsonl(args.passage_pubtator), "passage_id") if args.passage_pubtator and Path(args.passage_pubtator).exists() else {}
     hierarchy = load_mesh_hierarchy(read_jsonl(args.mesh_hierarchy)) if Path(args.mesh_hierarchy).exists() else {}
     relations = relations_map(read_jsonl(relations_path)) if Path(relations_path).exists() else {}
     qrels = read_jsonl(qrels_path)
 
-    concept_to_passages, concept_by_passage, df = build_indexes(passage_mesh, passage_entities, passage_cui, hierarchy)
+    concept_to_passages, concept_by_passage, df = build_indexes(passage_mesh, passage_entities, passage_cui, passage_pubtator, hierarchy)
     max_df = max(1, int(len(concept_by_passage) * args.max_concept_df_ratio))
     base_by_qid = group_rows(base_predictions, "question_id")
     expanded: list[dict[str, Any]] = []
@@ -349,7 +391,7 @@ def main() -> None:
     per_query_stats: list[dict[str, Any]] = []
 
     for qid in sorted(base_by_qid):
-        q_concepts = question_concepts(qid, question_mesh, question_entities, question_cui, hierarchy)
+        q_concepts = question_concepts(qid, question_mesh, question_entities, question_cui, question_pubtator, hierarchy)
         q_entity_set = {concept.removeprefix("entity:") for concept in q_concepts["entity"]}
         scores: dict[str, float] = defaultdict(float)
         reasons: dict[str, Counter[str]] = defaultdict(Counter)
@@ -397,6 +439,18 @@ def main() -> None:
                 max_df=max_df,
                 max_per_concept=args.max_expansion_per_concept,
             )
+        if "pubtator_concept_clusters" in enabled_sources:
+            add_concept_matches(
+                scores,
+                reasons,
+                concept_to_passages,
+                df,
+                q_concepts["pubtator"],
+                reason="pubtator_direct_concept",
+                weight=args.direct_cui_weight,
+                max_df=max_df,
+                max_per_concept=args.max_expansion_per_concept,
+            )
         if "mesh_hierarchy" in enabled_sources:
             add_concept_matches(
                 scores,
@@ -439,6 +493,27 @@ def main() -> None:
                     df,
                     seed_concepts,
                     reason="shared_candidate_concept",
+                    weight=local_weight,
+                    max_df=max_df,
+                    max_per_concept=args.max_expansion_per_concept,
+                )
+        if "pubtator_concept_clusters" in enabled_sources:
+            for seed_row in base_rows[: args.seed_top_n]:
+                seed_pid = str(seed_row["passage_id"])
+                seed_rank = int(seed_row["rank"])
+                seed_concepts = rare_concepts(
+                    concept_by_passage.get(seed_pid, {}).get("pubtator", set()),
+                    df,
+                    args.max_shared_concepts,
+                )
+                local_weight = args.cluster_weight / (args.rrf_k + seed_rank)
+                add_concept_matches(
+                    scores,
+                    reasons,
+                    concept_to_passages,
+                    df,
+                    seed_concepts,
+                    reason="pubtator_concept_cluster",
                     weight=local_weight,
                     max_df=max_df,
                     max_per_concept=args.max_expansion_per_concept,
@@ -512,6 +587,8 @@ def main() -> None:
         "num_concepts": len(concept_to_passages),
         "question_cui": args.question_cui,
         "passage_cui": args.passage_cui,
+        "question_pubtator": args.question_pubtator,
+        "passage_pubtator": args.passage_pubtator,
         "mean_added_per_query": sum(row["num_added"] for row in per_query_stats) / len(per_query_stats) if per_query_stats else 0.0,
         "expansion_reason_counts": dict(expansion_stats),
         "expansion_quality": expansion_quality(

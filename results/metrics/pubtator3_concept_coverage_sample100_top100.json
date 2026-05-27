@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-05-27T02:50:05.897832+00:00",
+  "api": "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export/biocjson",
+  "candidate_predictions": "outputs/retrieval/enhanced_hybrid_w122_full_top100.jsonl",
+  "max_qids": 100,
+  "num_questions": 100,
+  "num_candidate_pmids": 3000,
+  "candidate_top_k": 100,
+  "max_pmids": 3000,
+  "num_failed_pmids": 0,
+  "failed_pmids_preview": [],
+  "num_passages_with_concepts": 2920,
+  "passage_concept_count": 23070,
+  "passage_concept_type_counts": {
+    "chemical": 4068,
+    "disease": 10155,
+    "species": 3132,
+    "gene": 4949,
+    "mutation": 476,
+    "cellline": 290
+  },
+  "num_questions_with_concepts": 89,
+  "question_concept_count": 259,
+  "question_concept_type_counts": {
+    "disease": 185,
+    "chemical": 16,
+    "gene": 44,
+    "species": 13,
+    "cellline": 1
+  },
+  "question_annotation_note": "Questions are matched against names and mentions from PubTator3 PMID annotations in the selected candidate pool.",
+  "passage_output": "data\\processed\\bioasq_passage_pubtator_concepts_sample100_top100.jsonl",
+  "question_output": "data\\processed\\bioasq_question_pubtator_concepts_sample100_top100.jsonl"
+}

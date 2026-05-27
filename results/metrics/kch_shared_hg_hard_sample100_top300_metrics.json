@@ -1,0 +1,1919 @@
+{
+  "timestamp": "2026-05-27T02:22:54.974746+00:00",
+  "dataset_label": "bioasq_shared_hg_hard_sample100_top300",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "hybrid_predictions": "outputs\\retrieval\\concept_hg_shared_clusters_full_top300.jsonl",
+  "semantic_source": "hybrid_metadata.dense_score_fallback",
+  "mesh_hierarchy": "data/external_knowledge/mesh_hierarchy_2026.jsonl",
+  "enable_mesh_hierarchy_graph_edges": false,
+  "top_k": 300,
+  "selection_primary": "recall",
+  "settings": [
+    "semantic_no_hypergraph_ltr",
+    "retrieval_hypergraph_ltr",
+    "full_kch_medrank",
+    "remove_hypergraph"
+  ],
+  "split": {
+    "modulo": 5,
+    "train_qids": 76,
+    "validation_qids": 19,
+    "test_qids": 5,
+    "hard_subset_qids": 5,
+    "hard_test_mode": "hybrid_top100_or_expanded_top300",
+    "hard_reference_predictions": "outputs\\retrieval\\enhanced_hybrid_w122_full_top100.jsonl",
+    "hard_expanded_predictions": "outputs\\retrieval\\concept_hg_shared_clusters_full_top300.jsonl",
+    "qid_selection_order": "numeric",
+    "validation_remainders": [
+      3
+    ],
+    "test_remainders": [
+      4
+    ],
+    "max_qids": 100
+  },
+  "baseline_metrics": {
+    "BM25": {
+      "num_questions_with_qrels": 5,
+      "num_questions_with_predictions": 5,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.2,
+      "hit@5": 0.2,
+      "mrr@5": 0.1,
+      "ndcg@5": 0.1261859507142915,
+      "recall@10": 0.2,
+      "hit@10": 0.2,
+      "mrr@10": 0.1,
+      "ndcg@10": 0.1261859507142915,
+      "recall@100": 0.4133333333333333,
+      "hit@100": 0.8,
+      "mrr@100": 0.12473477901247887,
+      "ndcg@100": 0.19137446106217293,
+      "recall@200": 0.4133333333333333,
+      "hit@200": 0.8,
+      "mrr@200": 0.12473477901247887,
+      "ndcg@200": 0.19137446106217293,
+      "recall@300": 0.4133333333333333,
+      "hit@300": 0.8,
+      "mrr@300": 0.12473477901247887,
+      "ndcg@300": 0.19137446106217293,
+      "evidence_coverage@5": 0.2,
+      "evidence_coverage@10": 0.2,
+      "evidence_coverage@100": 0.4133333333333333,
+      "evidence_coverage@200": 0.4133333333333333,
+      "evidence_coverage@300": 0.4133333333333333
+    },
+    "Dense": {
+      "num_questions_with_qrels": 5,
+      "num_questions_with_predictions": 5,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.10666666666666666,
+      "hit@5": 0.4,
+      "mrr@5": 0.3,
+      "ndcg@5": 0.1366529981514568,
+      "recall@10": 0.10666666666666666,
+      "hit@10": 0.4,
+      "mrr@10": 0.3,
+      "ndcg@10": 0.1366529981514568,
+      "recall@100": 0.30666666666666664,
+      "hit@100": 0.6,
+      "mrr@100": 0.3027027027027027,
+      "ndcg@100": 0.1687618152382611,
+      "recall@200": 0.30666666666666664,
+      "hit@200": 0.6,
+      "mrr@200": 0.3027027027027027,
+      "ndcg@200": 0.1687618152382611,
+      "recall@300": 0.30666666666666664,
+      "hit@300": 0.6,
+      "mrr@300": 0.3027027027027027,
+      "ndcg@300": 0.1687618152382611,
+      "evidence_coverage@5": 0.10666666666666666,
+      "evidence_coverage@10": 0.10666666666666666,
+      "evidence_coverage@100": 0.30666666666666664,
+      "evidence_coverage@200": 0.30666666666666664,
+      "evidence_coverage@300": 0.30666666666666664
+    },
+    "Hybrid RRF": {
+      "num_questions_with_qrels": 5,
+      "num_questions_with_predictions": 5,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 0.7066666666666667,
+      "hit@100": 1.0,
+      "mrr@100": 0.053296760710553816,
+      "ndcg@100": 0.17640992487909132,
+      "recall@200": 0.7733333333333333,
+      "hit@200": 1.0,
+      "mrr@200": 0.053296760710553816,
+      "ndcg@200": 0.19047613624816748,
+      "recall@300": 0.7733333333333333,
+      "hit@300": 1.0,
+      "mrr@300": 0.053296760710553816,
+      "ndcg@300": 0.19047613624816748,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 0.7066666666666667,
+      "evidence_coverage@200": 0.7733333333333333,
+      "evidence_coverage@300": 0.7733333333333333
+    }
+  },
+  "biomedical_semantic_reranker_only": {
+    "num_questions_with_qrels": 5,
+    "num_questions_with_predictions": 5,
+    "ks": [
+      5,
+      10,
+      100,
+      200,
+      300
+    ],
+    "recall@5": 0.0,
+    "hit@5": 0.0,
+    "mrr@5": 0.0,
+    "ndcg@5": 0.0,
+    "recall@10": 0.0,
+    "hit@10": 0.0,
+    "mrr@10": 0.0,
+    "ndcg@10": 0.0,
+    "recall@100": 0.7066666666666667,
+    "hit@100": 1.0,
+    "mrr@100": 0.053296760710553816,
+    "ndcg@100": 0.17640992487909132,
+    "recall@200": 0.7733333333333333,
+    "hit@200": 1.0,
+    "mrr@200": 0.053296760710553816,
+    "ndcg@200": 0.19047613624816748,
+    "recall@300": 0.7733333333333333,
+    "hit@300": 1.0,
+    "mrr@300": 0.053296760710553816,
+    "ndcg@300": 0.19047613624816748,
+    "evidence_coverage@5": 0.0,
+    "evidence_coverage@10": 0.0,
+    "evidence_coverage@100": 0.7066666666666667,
+    "evidence_coverage@200": 0.7733333333333333,
+    "evidence_coverage@300": 0.7733333333333333
+  },
+  "setting_metrics": {
+    "Flat biomedical knowledge LambdaMART without graph structure": {
+      "num_questions_with_qrels": 5,
+      "num_questions_with_predictions": 5,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.2,
+      "hit@10": 0.2,
+      "mrr@10": 0.025,
+      "ndcg@10": 0.06309297535714575,
+      "recall@100": 0.7066666666666667,
+      "hit@100": 1.0,
+      "mrr@100": 0.07161066902446213,
+      "ndcg@100": 0.19930160387976179,
+      "recall@200": 0.7733333333333333,
+      "hit@200": 1.0,
+      "mrr@200": 0.07161066902446213,
+      "ndcg@200": 0.2130630822400473,
+      "recall@300": 0.7733333333333333,
+      "hit@300": 1.0,
+      "mrr@300": 0.07161066902446213,
+      "ndcg@300": 0.2130630822400473,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.2,
+      "evidence_coverage@100": 0.7066666666666667,
+      "evidence_coverage@200": 0.7733333333333333,
+      "evidence_coverage@300": 0.7733333333333333,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 5,
+        "num_questions_with_predictions": 5,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.2,
+        "hit@10": 0.2,
+        "mrr@10": 0.025,
+        "ndcg@10": 0.06309297535714575,
+        "recall@100": 0.7066666666666667,
+        "hit@100": 1.0,
+        "mrr@100": 0.07161066902446213,
+        "ndcg@100": 0.19930160387976179,
+        "recall@200": 0.7733333333333333,
+        "hit@200": 1.0,
+        "mrr@200": 0.07161066902446213,
+        "ndcg@200": 0.2130630822400473,
+        "recall@300": 0.7733333333333333,
+        "hit@300": 1.0,
+        "mrr@300": 0.07161066902446213,
+        "ndcg@300": 0.2130630822400473,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.2,
+        "evidence_coverage@100": 0.7066666666666667,
+        "evidence_coverage@200": 0.7733333333333333,
+        "evidence_coverage@300": 0.7733333333333333
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_semantic_no_hypergraph_ltr_test_top300.jsonl",
+      "display_name": "Flat biomedical knowledge LambdaMART without graph structure",
+      "setting_name": "semantic_no_hypergraph_ltr"
+    },
+    "Retrieval + hypergraph structural LambdaMART": {
+      "num_questions_with_qrels": 5,
+      "num_questions_with_predictions": 5,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.10666666666666666,
+      "hit@10": 0.4,
+      "mrr@10": 0.04722222222222222,
+      "ndcg@10": 0.05002767012116884,
+      "recall@100": 0.7733333333333333,
+      "hit@100": 1.0,
+      "mrr@100": 0.06290030632135894,
+      "ndcg@100": 0.19224300903170116,
+      "recall@200": 0.7733333333333333,
+      "hit@200": 1.0,
+      "mrr@200": 0.06290030632135894,
+      "ndcg@200": 0.19224300903170116,
+      "recall@300": 0.7733333333333333,
+      "hit@300": 1.0,
+      "mrr@300": 0.06290030632135894,
+      "ndcg@300": 0.19224300903170116,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.10666666666666666,
+      "evidence_coverage@100": 0.7733333333333333,
+      "evidence_coverage@200": 0.7733333333333333,
+      "evidence_coverage@300": 0.7733333333333333,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 5,
+        "num_questions_with_predictions": 5,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.10666666666666666,
+        "hit@10": 0.4,
+        "mrr@10": 0.04722222222222222,
+        "ndcg@10": 0.05002767012116884,
+        "recall@100": 0.7733333333333333,
+        "hit@100": 1.0,
+        "mrr@100": 0.06290030632135894,
+        "ndcg@100": 0.19224300903170116,
+        "recall@200": 0.7733333333333333,
+        "hit@200": 1.0,
+        "mrr@200": 0.06290030632135894,
+        "ndcg@200": 0.19224300903170116,
+        "recall@300": 0.7733333333333333,
+        "hit@300": 1.0,
+        "mrr@300": 0.06290030632135894,
+        "ndcg@300": 0.19224300903170116,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.10666666666666666,
+        "evidence_coverage@100": 0.7733333333333333,
+        "evidence_coverage@200": 0.7733333333333333,
+        "evidence_coverage@300": 0.7733333333333333
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_retrieval_hypergraph_ltr_test_top300.jsonl",
+      "display_name": "Retrieval + hypergraph structural LambdaMART",
+      "setting_name": "retrieval_hypergraph_ltr"
+    },
+    "Full KCH-MedRank": {
+      "num_questions_with_qrels": 5,
+      "num_questions_with_predictions": 5,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.06666666666666667,
+      "hit@10": 0.2,
+      "mrr@10": 0.02857142857142857,
+      "ndcg@10": 0.0312852484015171,
+      "recall@100": 0.7066666666666667,
+      "hit@100": 1.0,
+      "mrr@100": 0.0677656144696818,
+      "ndcg@100": 0.18450292480836433,
+      "recall@200": 0.7733333333333333,
+      "hit@200": 1.0,
+      "mrr@200": 0.0677656144696818,
+      "ndcg@200": 0.19853952658877116,
+      "recall@300": 0.7733333333333333,
+      "hit@300": 1.0,
+      "mrr@300": 0.0677656144696818,
+      "ndcg@300": 0.19853952658877116,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.06666666666666667,
+      "evidence_coverage@100": 0.7066666666666667,
+      "evidence_coverage@200": 0.7733333333333333,
+      "evidence_coverage@300": 0.7733333333333333,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 5,
+        "num_questions_with_predictions": 5,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.06666666666666667,
+        "hit@10": 0.2,
+        "mrr@10": 0.02857142857142857,
+        "ndcg@10": 0.0312852484015171,
+        "recall@100": 0.7066666666666667,
+        "hit@100": 1.0,
+        "mrr@100": 0.0677656144696818,
+        "ndcg@100": 0.18450292480836433,
+        "recall@200": 0.7733333333333333,
+        "hit@200": 1.0,
+        "mrr@200": 0.0677656144696818,
+        "ndcg@200": 0.19853952658877116,
+        "recall@300": 0.7733333333333333,
+        "hit@300": 1.0,
+        "mrr@300": 0.0677656144696818,
+        "ndcg@300": 0.19853952658877116,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.06666666666666667,
+        "evidence_coverage@100": 0.7066666666666667,
+        "evidence_coverage@200": 0.7733333333333333,
+        "evidence_coverage@300": 0.7733333333333333
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_full_kch_medrank_test_top300.jsonl",
+      "display_name": "Full KCH-MedRank",
+      "setting_name": "full_kch_medrank"
+    },
+    "Remove hypergraph diffusion and centrality": {
+      "num_questions_with_qrels": 5,
+      "num_questions_with_predictions": 5,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.2,
+      "hit@10": 0.2,
+      "mrr@10": 0.02222222222222222,
+      "ndcg@10": 0.06020599913279624,
+      "recall@100": 0.7066666666666667,
+      "hit@100": 1.0,
+      "mrr@100": 0.06094642484886387,
+      "ndcg@100": 0.19161960892902719,
+      "recall@200": 0.7733333333333333,
+      "hit@200": 1.0,
+      "mrr@200": 0.06094642484886387,
+      "ndcg@200": 0.20556979544481663,
+      "recall@300": 0.7733333333333333,
+      "hit@300": 1.0,
+      "mrr@300": 0.06094642484886387,
+      "ndcg@300": 0.20556979544481663,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.2,
+      "evidence_coverage@100": 0.7066666666666667,
+      "evidence_coverage@200": 0.7733333333333333,
+      "evidence_coverage@300": 0.7733333333333333,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 5,
+        "num_questions_with_predictions": 5,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.2,
+        "hit@10": 0.2,
+        "mrr@10": 0.02222222222222222,
+        "ndcg@10": 0.06020599913279624,
+        "recall@100": 0.7066666666666667,
+        "hit@100": 1.0,
+        "mrr@100": 0.06094642484886387,
+        "ndcg@100": 0.19161960892902719,
+        "recall@200": 0.7733333333333333,
+        "hit@200": 1.0,
+        "mrr@200": 0.06094642484886387,
+        "ndcg@200": 0.20556979544481663,
+        "recall@300": 0.7733333333333333,
+        "hit@300": 1.0,
+        "mrr@300": 0.06094642484886387,
+        "ndcg@300": 0.20556979544481663,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.2,
+        "evidence_coverage@100": 0.7066666666666667,
+        "evidence_coverage@200": 0.7733333333333333,
+        "evidence_coverage@300": 0.7733333333333333
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_remove_hypergraph_test_top300.jsonl",
+      "display_name": "Remove hypergraph diffusion and centrality",
+      "setting_name": "remove_hypergraph"
+    }
+  },
+  "diagnostics": {
+    "semantic_no_hypergraph_ltr": {
+      "label": "semantic_no_hypergraph_ltr",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "biomedical_semantic_score",
+        "biomedical_semantic_rank_score",
+        "entity_overlap_count",
+        "entity_jaccard",
+        "question_entity_coverage",
+        "passage_entity_count",
+        "mesh_overlap_count",
+        "mesh_jaccard",
+        "question_mesh_coverage",
+        "passage_mesh_count",
+        "mesh_hierarchy_exact_count",
+        "mesh_parent_match_count",
+        "mesh_ancestor_match_count",
+        "mesh_sibling_match_count",
+        "mesh_tree_similarity_max",
+        "mesh_tree_similarity_mean",
+        "mesh_tree_distance_min",
+        "question_mesh_hierarchy_coverage",
+        "passage_mesh_hierarchy_coverage",
+        "passage_mesh_specificity",
+        "shared_mesh_term_cluster_size",
+        "shared_mesh_parent_cluster_size",
+        "shared_mesh_term_cluster_ratio",
+        "shared_mesh_parent_cluster_ratio",
+        "mesh_fallback_specificity",
+        "mesh_fallback_count",
+        "primekg_relation_count",
+        "question_relation_coverage",
+        "local_primekg_relation_edges",
+        "local_primekg_relation_edges"
+      ],
+      "num_features": 37,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 15,
+        "learning_rate": 0.05,
+        "n_estimators": 80,
+        "blend_weight": 0.0,
+        "validation_mrr@10": 0.7631578947368421,
+        "validation_recall@10": 0.48879059536954267,
+        "validation_ndcg@10": 0.5550431591914434
+      },
+      "top_trials": [
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4760314247156352,
+          "validation_ndcg@10": 0.5603858115983928
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5510715947515824
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5503765348160016
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.4843191895823475,
+          "validation_ndcg@10": 0.5612818088687237
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.468968312389365,
+          "validation_ndcg@10": 0.5498961409285092
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.4687404700562596,
+          "validation_ndcg@10": 0.5475589698609191
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 40,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.46834174597332495,
+          "validation_ndcg@10": 0.5534639756671658
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5520438723102864
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 40,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5499085289112955
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5435765014333357
+        }
+      ],
+      "train_rows": 22800,
+      "train_positive_rows": 895,
+      "final_train_rows": 28500,
+      "final_train_positive_rows": 1064,
+      "feature_importance": [
+        {
+          "feature": "base_rank_score",
+          "importance": 254.0
+        },
+        {
+          "feature": "hybrid_score",
+          "importance": 183.0
+        },
+        {
+          "feature": "passage_entity_count",
+          "importance": 102.0
+        },
+        {
+          "feature": "passage_mesh_specificity",
+          "importance": 75.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 63.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_size",
+          "importance": 52.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_size",
+          "importance": 52.0
+        },
+        {
+          "feature": "passage_mesh_count",
+          "importance": 40.0
+        },
+        {
+          "feature": "mesh_tree_similarity_mean",
+          "importance": 35.0
+        },
+        {
+          "feature": "mesh_jaccard",
+          "importance": 28.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 26.0
+        },
+        {
+          "feature": "question_entity_coverage",
+          "importance": 25.0
+        },
+        {
+          "feature": "question_mesh_coverage",
+          "importance": 23.0
+        },
+        {
+          "feature": "mesh_overlap_count",
+          "importance": 19.0
+        },
+        {
+          "feature": "passage_mesh_hierarchy_coverage",
+          "importance": 18.0
+        },
+        {
+          "feature": "mesh_tree_similarity_max",
+          "importance": 17.0
+        },
+        {
+          "feature": "question_mesh_hierarchy_coverage",
+          "importance": 17.0
+        },
+        {
+          "feature": "mesh_tree_distance_min",
+          "importance": 15.0
+        },
+        {
+          "feature": "entity_jaccard",
+          "importance": 14.0
+        },
+        {
+          "feature": "mesh_fallback_specificity",
+          "importance": 14.0
+        },
+        {
+          "feature": "mesh_sibling_match_count",
+          "importance": 12.0
+        },
+        {
+          "feature": "mesh_ancestor_match_count",
+          "importance": 7.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_ratio",
+          "importance": 7.0
+        },
+        {
+          "feature": "primekg_relation_count",
+          "importance": 5.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_ratio",
+          "importance": 4.0
+        },
+        {
+          "feature": "mesh_fallback_count",
+          "importance": 4.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 4.0
+        },
+        {
+          "feature": "mesh_parent_match_count",
+          "importance": 2.0
+        },
+        {
+          "feature": "question_relation_coverage",
+          "importance": 2.0
+        },
+        {
+          "feature": "entity_overlap_count",
+          "importance": 1.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_hierarchy_exact_count",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_semantic_no_hypergraph_ltr_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 19,
+        "num_questions_with_predictions": 19,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.4368052999631947,
+        "hit@5": 1.0,
+        "mrr@5": 0.9649122807017543,
+        "ndcg@5": 0.7383938022901468,
+        "recall@10": 0.5594103265155898,
+        "hit@10": 1.0,
+        "mrr@10": 0.9649122807017543,
+        "ndcg@10": 0.6937733940240607,
+        "recall@100": 0.8470733214154267,
+        "hit@100": 1.0,
+        "mrr@100": 0.9649122807017543,
+        "ndcg@100": 0.7726018142165698,
+        "recall@200": 0.8949188968925811,
+        "hit@200": 1.0,
+        "mrr@200": 0.9649122807017543,
+        "ndcg@200": 0.7899442163917327,
+        "recall@300": 0.8971118793487215,
+        "hit@300": 1.0,
+        "mrr@300": 0.9649122807017543,
+        "ndcg@300": 0.7907767642474226,
+        "evidence_coverage@5": 0.4368052999631947,
+        "evidence_coverage@10": 0.5594103265155898,
+        "evidence_coverage@100": 0.8470733214154267,
+        "evidence_coverage@200": 0.8949188968925811,
+        "evidence_coverage@300": 0.8971118793487215
+      }
+    },
+    "retrieval_hypergraph_ltr": {
+      "label": "retrieval_hypergraph_ltr",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "local_primekg_relation_edges",
+        "hypergraph_score_norm",
+        "hypergraph_degree_centrality",
+        "hypergraph_degree_centrality_norm",
+        "local_num_nodes",
+        "local_num_hyperedges",
+        "local_shared_entity_edges",
+        "local_document_mesh_edges",
+        "local_mesh_hierarchy_edges",
+        "local_mesh_parent_edges",
+        "local_mesh_ancestor_edges",
+        "local_primekg_relation_edges",
+        "hypergraph_x_inverse_rank",
+        "mesh_cluster_x_inverse_semantic",
+        "mesh_specificity_x_inverse_rank"
+      ],
+      "num_features": 22,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 15,
+        "learning_rate": 0.05,
+        "n_estimators": 80,
+        "blend_weight": 0.0,
+        "validation_mrr@10": 0.8157894736842105,
+        "validation_recall@10": 0.49368482394798185,
+        "validation_ndcg@10": 0.5674477485076767
+      },
+      "top_trials": [
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.49368482394798185,
+          "validation_ndcg@10": 0.5674477485076767
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.4720682825945984,
+          "validation_ndcg@10": 0.5494958517223263
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.4694765760555234,
+          "validation_ndcg@10": 0.5554769664336364
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.46469188706030806,
+          "validation_ndcg@10": 0.5507243492327675
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.46249890460416776,
+          "validation_ndcg@10": 0.5439282048132609
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.4599071980650928,
+          "validation_ndcg@10": 0.5497054070573373
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.4577142156089525,
+          "validation_ndcg@10": 0.540953447360851
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.8131578947368421,
+          "validation_recall@10": 0.4599071980650928,
+          "validation_ndcg@10": 0.5478381278499281
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.48875773349457563,
+          "validation_ndcg@10": 0.562963844955268
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.4694765760555234,
+          "validation_ndcg@10": 0.5504228785901225
+        }
+      ],
+      "train_rows": 22800,
+      "train_positive_rows": 895,
+      "final_train_rows": 28500,
+      "final_train_positive_rows": 1064,
+      "feature_importance": [
+        {
+          "feature": "hybrid_score",
+          "importance": 205.0
+        },
+        {
+          "feature": "base_rank_score",
+          "importance": 199.0
+        },
+        {
+          "feature": "hypergraph_x_inverse_rank",
+          "importance": 139.0
+        },
+        {
+          "feature": "mesh_specificity_x_inverse_rank",
+          "importance": 127.0
+        },
+        {
+          "feature": "hypergraph_score_norm",
+          "importance": 118.0
+        },
+        {
+          "feature": "local_num_nodes",
+          "importance": 83.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality",
+          "importance": 66.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality_norm",
+          "importance": 57.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 52.0
+        },
+        {
+          "feature": "local_document_mesh_edges",
+          "importance": 39.0
+        },
+        {
+          "feature": "local_num_hyperedges",
+          "importance": 23.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 10.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 2.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_shared_entity_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_hierarchy_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_parent_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_ancestor_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_cluster_x_inverse_semantic",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_retrieval_hypergraph_ltr_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 19,
+        "num_questions_with_predictions": 19,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.42381828697618174,
+        "hit@5": 1.0,
+        "mrr@5": 0.8991228070175438,
+        "ndcg@5": 0.71779687939727,
+        "recall@10": 0.5702968084547032,
+        "hit@10": 1.0,
+        "mrr@10": 0.8991228070175438,
+        "ndcg@10": 0.6856255299504109,
+        "recall@100": 0.8479505143978828,
+        "hit@100": 1.0,
+        "mrr@100": 0.8991228070175438,
+        "ndcg@100": 0.7613494426636139,
+        "recall@200": 0.8949188968925811,
+        "hit@200": 1.0,
+        "mrr@200": 0.8991228070175438,
+        "ndcg@200": 0.7789724626696052,
+        "recall@300": 0.8971118793487215,
+        "hit@300": 1.0,
+        "mrr@300": 0.8991228070175438,
+        "ndcg@300": 0.7798026570088172,
+        "evidence_coverage@5": 0.42381828697618174,
+        "evidence_coverage@10": 0.5702968084547032,
+        "evidence_coverage@100": 0.8479505143978828,
+        "evidence_coverage@200": 0.8949188968925811,
+        "evidence_coverage@300": 0.8971118793487215
+      }
+    },
+    "full_kch_medrank": {
+      "label": "full_kch_medrank",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "biomedical_semantic_score",
+        "biomedical_semantic_rank_score",
+        "entity_overlap_count",
+        "entity_jaccard",
+        "question_entity_coverage",
+        "passage_entity_count",
+        "mesh_overlap_count",
+        "mesh_jaccard",
+        "question_mesh_coverage",
+        "passage_mesh_count",
+        "mesh_hierarchy_exact_count",
+        "mesh_parent_match_count",
+        "mesh_ancestor_match_count",
+        "mesh_sibling_match_count",
+        "mesh_tree_similarity_max",
+        "mesh_tree_similarity_mean",
+        "mesh_tree_distance_min",
+        "question_mesh_hierarchy_coverage",
+        "passage_mesh_hierarchy_coverage",
+        "passage_mesh_specificity",
+        "shared_mesh_term_cluster_size",
+        "shared_mesh_parent_cluster_size",
+        "shared_mesh_term_cluster_ratio",
+        "shared_mesh_parent_cluster_ratio",
+        "mesh_fallback_specificity",
+        "mesh_fallback_count",
+        "primekg_relation_count",
+        "question_relation_coverage",
+        "local_primekg_relation_edges",
+        "hypergraph_score_norm",
+        "hypergraph_degree_centrality",
+        "hypergraph_degree_centrality_norm",
+        "local_num_nodes",
+        "local_num_hyperedges",
+        "local_shared_entity_edges",
+        "local_document_mesh_edges",
+        "local_mesh_hierarchy_edges",
+        "local_mesh_parent_edges",
+        "local_mesh_ancestor_edges",
+        "local_primekg_relation_edges",
+        "hypergraph_x_inverse_rank",
+        "mesh_cluster_x_inverse_semantic",
+        "mesh_specificity_x_inverse_rank"
+      ],
+      "num_features": 50,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 15,
+        "learning_rate": 0.05,
+        "n_estimators": 80,
+        "blend_weight": 0.0,
+        "validation_mrr@10": 0.8201754385964912,
+        "validation_recall@10": 0.48921341816078656,
+        "validation_ndcg@10": 0.5656304934900257
+      },
+      "top_trials": [
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.8201754385964912,
+          "validation_recall@10": 0.48921341816078656,
+          "validation_ndcg@10": 0.5656304934900257
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.8201754385964912,
+          "validation_recall@10": 0.46469188706030806,
+          "validation_ndcg@10": 0.5534041808399535
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 40,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.8131578947368421,
+          "validation_recall@10": 0.46469188706030806,
+          "validation_ndcg@10": 0.5521843187400272
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4761168655905498,
+          "validation_ndcg@10": 0.5465754853581055
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4617627986049039,
+          "validation_ndcg@10": 0.5381410274881229
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4599071980650928,
+          "validation_ndcg@10": 0.5460938409466661
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.453688635925478,
+          "validation_ndcg@10": 0.5326833996250763
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.7868421052631579,
+          "validation_recall@10": 0.4744036665089297,
+          "validation_ndcg@10": 0.5540107314179974
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.7868421052631579,
+          "validation_recall@10": 0.467425995057574,
+          "validation_ndcg@10": 0.5493515258150764
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.7868421052631579,
+          "validation_recall@10": 0.4599071980650928,
+          "validation_ndcg@10": 0.5454753865679741
+        }
+      ],
+      "train_rows": 22800,
+      "train_positive_rows": 895,
+      "final_train_rows": 28500,
+      "final_train_positive_rows": 1064,
+      "feature_importance": [
+        {
+          "feature": "hybrid_score",
+          "importance": 169.0
+        },
+        {
+          "feature": "base_rank_score",
+          "importance": 157.0
+        },
+        {
+          "feature": "hypergraph_x_inverse_rank",
+          "importance": 109.0
+        },
+        {
+          "feature": "mesh_specificity_x_inverse_rank",
+          "importance": 74.0
+        },
+        {
+          "feature": "hypergraph_score_norm",
+          "importance": 49.0
+        },
+        {
+          "feature": "local_num_nodes",
+          "importance": 45.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_size",
+          "importance": 44.0
+        },
+        {
+          "feature": "passage_mesh_specificity",
+          "importance": 40.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality_norm",
+          "importance": 37.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_size",
+          "importance": 34.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 31.0
+        },
+        {
+          "feature": "mesh_tree_similarity_mean",
+          "importance": 30.0
+        },
+        {
+          "feature": "passage_entity_count",
+          "importance": 29.0
+        },
+        {
+          "feature": "local_document_mesh_edges",
+          "importance": 26.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 24.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality",
+          "importance": 23.0
+        },
+        {
+          "feature": "mesh_overlap_count",
+          "importance": 20.0
+        },
+        {
+          "feature": "question_mesh_coverage",
+          "importance": 18.0
+        },
+        {
+          "feature": "question_entity_coverage",
+          "importance": 16.0
+        },
+        {
+          "feature": "mesh_jaccard",
+          "importance": 15.0
+        },
+        {
+          "feature": "passage_mesh_hierarchy_coverage",
+          "importance": 15.0
+        },
+        {
+          "feature": "mesh_fallback_specificity",
+          "importance": 14.0
+        },
+        {
+          "feature": "passage_mesh_count",
+          "importance": 13.0
+        },
+        {
+          "feature": "question_mesh_hierarchy_coverage",
+          "importance": 13.0
+        },
+        {
+          "feature": "local_num_hyperedges",
+          "importance": 12.0
+        },
+        {
+          "feature": "mesh_tree_distance_min",
+          "importance": 11.0
+        },
+        {
+          "feature": "mesh_tree_similarity_max",
+          "importance": 10.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_ratio",
+          "importance": 9.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 7.0
+        },
+        {
+          "feature": "mesh_ancestor_match_count",
+          "importance": 6.0
+        },
+        {
+          "feature": "mesh_sibling_match_count",
+          "importance": 5.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_ratio",
+          "importance": 5.0
+        },
+        {
+          "feature": "entity_jaccard",
+          "importance": 4.0
+        },
+        {
+          "feature": "mesh_hierarchy_exact_count",
+          "importance": 2.0
+        },
+        {
+          "feature": "primekg_relation_count",
+          "importance": 2.0
+        },
+        {
+          "feature": "mesh_fallback_count",
+          "importance": 1.0
+        },
+        {
+          "feature": "question_relation_coverage",
+          "importance": 1.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "entity_overlap_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_parent_match_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_shared_entity_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_hierarchy_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_parent_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_ancestor_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_cluster_x_inverse_semantic",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_full_kch_medrank_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 19,
+        "num_questions_with_predictions": 19,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.43064917538601744,
+        "hit@5": 1.0,
+        "mrr@5": 0.9736842105263158,
+        "ndcg@5": 0.7296470229345731,
+        "recall@10": 0.5536927984296406,
+        "hit@10": 1.0,
+        "mrr@10": 0.9736842105263158,
+        "ndcg@10": 0.684902319779634,
+        "recall@100": 0.849266303871567,
+        "hit@100": 1.0,
+        "mrr@100": 0.9736842105263158,
+        "ndcg@100": 0.7752418247612487,
+        "recall@200": 0.8949188968925811,
+        "hit@200": 1.0,
+        "mrr@200": 0.9736842105263158,
+        "ndcg@200": 0.7914733579411947,
+        "recall@300": 0.8971118793487215,
+        "hit@300": 1.0,
+        "mrr@300": 0.9736842105263158,
+        "ndcg@300": 0.7922962347424212,
+        "evidence_coverage@5": 0.43064917538601744,
+        "evidence_coverage@10": 0.5536927984296406,
+        "evidence_coverage@100": 0.849266303871567,
+        "evidence_coverage@200": 0.8949188968925811,
+        "evidence_coverage@300": 0.8971118793487215
+      }
+    },
+    "remove_hypergraph": {
+      "label": "remove_hypergraph",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "biomedical_semantic_score",
+        "biomedical_semantic_rank_score",
+        "entity_overlap_count",
+        "entity_jaccard",
+        "question_entity_coverage",
+        "passage_entity_count",
+        "mesh_overlap_count",
+        "mesh_jaccard",
+        "question_mesh_coverage",
+        "passage_mesh_count",
+        "mesh_hierarchy_exact_count",
+        "mesh_parent_match_count",
+        "mesh_ancestor_match_count",
+        "mesh_sibling_match_count",
+        "mesh_tree_similarity_max",
+        "mesh_tree_similarity_mean",
+        "mesh_tree_distance_min",
+        "question_mesh_hierarchy_coverage",
+        "passage_mesh_hierarchy_coverage",
+        "passage_mesh_specificity",
+        "shared_mesh_term_cluster_size",
+        "shared_mesh_parent_cluster_size",
+        "shared_mesh_term_cluster_ratio",
+        "shared_mesh_parent_cluster_ratio",
+        "mesh_fallback_specificity",
+        "mesh_fallback_count",
+        "primekg_relation_count",
+        "question_relation_coverage"
+      ],
+      "num_features": 35,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 15,
+        "learning_rate": 0.05,
+        "n_estimators": 80,
+        "blend_weight": 0.0,
+        "validation_mrr@10": 0.7412280701754387,
+        "validation_recall@10": 0.5158183921341816,
+        "validation_ndcg@10": 0.5637224399099577
+      },
+      "top_trials": [
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 40,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.8157894736842105,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5532747341996047
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4782244071717756,
+          "validation_ndcg@10": 0.5600853386296546
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5492149215574423
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.793859649122807,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5470695407373726
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 40,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.46865502918134494,
+          "validation_ndcg@10": 0.5549094589881693
+        },
+        {
+          "num_leaves": 15,
+          "learning_rate": 0.03,
+          "n_estimators": 40,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.4639557810610442,
+          "validation_ndcg@10": 0.5476703645782696
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.7894736842105263,
+          "validation_recall@10": 0.45917109206582896,
+          "validation_ndcg@10": 0.539812527991009
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.7868421052631579,
+          "validation_recall@10": 0.45917109206582896,
+          "validation_ndcg@10": 0.539525103151333
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.35,
+          "validation_mrr@10": 0.7807017543859649,
+          "validation_recall@10": 0.4687404700562596,
+          "validation_ndcg@10": 0.5462393456307911
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.03,
+          "n_estimators": 80,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.7807017543859649,
+          "validation_recall@10": 0.4664620467252046,
+          "validation_ndcg@10": 0.5438775594793082
+        }
+      ],
+      "train_rows": 22800,
+      "train_positive_rows": 895,
+      "final_train_rows": 28500,
+      "final_train_positive_rows": 1064,
+      "feature_importance": [
+        {
+          "feature": "base_rank_score",
+          "importance": 299.0
+        },
+        {
+          "feature": "hybrid_score",
+          "importance": 184.0
+        },
+        {
+          "feature": "passage_entity_count",
+          "importance": 116.0
+        },
+        {
+          "feature": "passage_mesh_specificity",
+          "importance": 73.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_size",
+          "importance": 44.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_size",
+          "importance": 37.0
+        },
+        {
+          "feature": "mesh_tree_similarity_mean",
+          "importance": 36.0
+        },
+        {
+          "feature": "mesh_jaccard",
+          "importance": 31.0
+        },
+        {
+          "feature": "passage_mesh_count",
+          "importance": 31.0
+        },
+        {
+          "feature": "question_entity_coverage",
+          "importance": 28.0
+        },
+        {
+          "feature": "passage_mesh_hierarchy_coverage",
+          "importance": 25.0
+        },
+        {
+          "feature": "question_mesh_hierarchy_coverage",
+          "importance": 24.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 22.0
+        },
+        {
+          "feature": "mesh_overlap_count",
+          "importance": 20.0
+        },
+        {
+          "feature": "mesh_tree_distance_min",
+          "importance": 20.0
+        },
+        {
+          "feature": "mesh_fallback_specificity",
+          "importance": 20.0
+        },
+        {
+          "feature": "question_mesh_coverage",
+          "importance": 19.0
+        },
+        {
+          "feature": "mesh_tree_similarity_max",
+          "importance": 17.0
+        },
+        {
+          "feature": "mesh_sibling_match_count",
+          "importance": 15.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_ratio",
+          "importance": 14.0
+        },
+        {
+          "feature": "entity_jaccard",
+          "importance": 11.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_ratio",
+          "importance": 7.0
+        },
+        {
+          "feature": "mesh_fallback_count",
+          "importance": 7.0
+        },
+        {
+          "feature": "mesh_ancestor_match_count",
+          "importance": 5.0
+        },
+        {
+          "feature": "mesh_parent_match_count",
+          "importance": 4.0
+        },
+        {
+          "feature": "primekg_relation_count",
+          "importance": 4.0
+        },
+        {
+          "feature": "question_relation_coverage",
+          "importance": 3.0
+        },
+        {
+          "feature": "entity_overlap_count",
+          "importance": 2.0
+        },
+        {
+          "feature": "mesh_hierarchy_exact_count",
+          "importance": 2.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_rank_score",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample100_top300_remove_hypergraph_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 19,
+        "num_questions_with_predictions": 19,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.42364740522635264,
+        "hit@5": 1.0,
+        "mrr@5": 0.9736842105263158,
+        "ndcg@5": 0.7321244431875071,
+        "recall@10": 0.5548977338451022,
+        "hit@10": 1.0,
+        "mrr@10": 0.9736842105263158,
+        "ndcg@10": 0.694956450404778,
+        "recall@100": 0.8448803389592863,
+        "hit@100": 1.0,
+        "mrr@100": 0.9736842105263158,
+        "ndcg@100": 0.7676907474541842,
+        "recall@200": 0.8905329319803004,
+        "hit@200": 1.0,
+        "mrr@200": 0.9736842105263158,
+        "ndcg@200": 0.7847030347310128,
+        "recall@300": 0.8971118793487215,
+        "hit@300": 1.0,
+        "mrr@300": 0.9736842105263158,
+        "ndcg@300": 0.7868666030563212,
+        "evidence_coverage@5": 0.42364740522635264,
+        "evidence_coverage@10": 0.5548977338451022,
+        "evidence_coverage@100": 0.8448803389592863,
+        "evidence_coverage@200": 0.8905329319803004,
+        "evidence_coverage@300": 0.8971118793487215
+      }
+    }
+  },
+  "bootstrap_vs_hybrid": {
+    "timestamp": "2026-05-27T02:22:54.964745+00:00",
+    "dataset": "bioasq_shared_hg_hard_sample100_top300",
+    "baseline_label": "Hybrid RRF",
+    "candidate_label": "Full KCH-MedRank",
+    "num_paired_questions": 5,
+    "num_bootstrap": 200,
+    "seed": 42,
+    "results": [
+      {
+        "metric": "mrr",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.02857142857142857,
+        "delta": 0.02857142857142857,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.08571428571428572,
+        "p_value_two_sided": 0.5970149253731343
+      },
+      {
+        "metric": "recall",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.06666666666666667,
+        "delta": 0.06666666666666667,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.2,
+        "p_value_two_sided": 0.6965174129353234
+      },
+      {
+        "metric": "ndcg",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0312852484015171,
+        "delta": 0.0312852484015171,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.09385574520455128,
+        "p_value_two_sided": 0.6368159203980099
+      },
+      {
+        "metric": "evidence_coverage",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.06666666666666667,
+        "delta": 0.06666666666666667,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.2,
+        "p_value_two_sided": 0.6368159203980099
+      }
+    ]
+  },
+  "bootstrap_vs_semantic": {
+    "timestamp": "2026-05-27T02:22:54.972745+00:00",
+    "dataset": "bioasq_shared_hg_hard_sample100_top300",
+    "baseline_label": "Biomedical semantic reranker only",
+    "candidate_label": "Full KCH-MedRank",
+    "num_paired_questions": 5,
+    "num_bootstrap": 200,
+    "seed": 213,
+    "results": [
+      {
+        "metric": "mrr",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.02857142857142857,
+        "delta": 0.02857142857142857,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.08571428571428572,
+        "p_value_two_sided": 0.7263681592039801
+      },
+      {
+        "metric": "recall",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.06666666666666667,
+        "delta": 0.06666666666666667,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.2,
+        "p_value_two_sided": 0.6368159203980099
+      },
+      {
+        "metric": "ndcg",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0312852484015171,
+        "delta": 0.0312852484015171,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.09385574520455128,
+        "p_value_two_sided": 0.7761194029850746
+      },
+      {
+        "metric": "evidence_coverage",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.06666666666666667,
+        "delta": 0.06666666666666667,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.2,
+        "p_value_two_sided": 0.6965174129353234
+      }
+    ]
+  }
+}

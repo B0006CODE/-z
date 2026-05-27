@@ -150,6 +150,31 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--validation-remainders", type=int, nargs="+", default=[3])
     parser.add_argument("--test-remainders", type=int, nargs="+", default=[4])
     parser.add_argument("--max-qids", type=int, default=None)
+    parser.add_argument(
+        "--qid-selection-order",
+        choices=["lexical", "numeric"],
+        default="lexical",
+        help="Ordering used before max-qids sampling. Lexical preserves earlier runs; numeric is useful for contiguous BioASQ samples.",
+    )
+    parser.add_argument(
+        "--hard-test-mode",
+        choices=["none", "hybrid_top100", "hybrid_top100_or_expanded_top300"],
+        default="none",
+        help=(
+            "Replace the normal test split with hard queries where reference Hybrid top-10 misses gold "
+            "but Hybrid top-100 and optionally expanded top-300 contain gold."
+        ),
+    )
+    parser.add_argument(
+        "--hard-reference-predictions",
+        default=None,
+        help="Reference Hybrid predictions used to define hard top-10 misses; defaults to --hybrid-predictions.",
+    )
+    parser.add_argument(
+        "--hard-expanded-predictions",
+        default=None,
+        help="Optional expanded top-300 predictions used by hybrid_top100_or_expanded_top300 mode.",
+    )
     parser.add_argument("--num-leaves-grid", type=parse_int_grid, default=parse_int_grid("7,15,31"))
     parser.add_argument("--learning-rate-grid", type=parse_float_grid, default=parse_float_grid("0.03,0.05"))
     parser.add_argument("--n-estimators-grid", type=parse_int_grid, default=parse_int_grid("80,160"))
@@ -190,6 +215,12 @@ def split_qids(qids: list[str], modulo: int, validation_remainders: set[int], te
     if not train or not validation or not test:
         raise ValueError("Train, validation, and test splits must all be non-empty.")
     return {"train": train, "validation": validation, "test": test}
+
+
+def qid_sort_key(qid: str, order: str) -> tuple[int, int | str]:
+    if order == "numeric" and qid.isdigit():
+        return (0, int(qid))
+    return (1, qid)
 
 
 def source_feature(row: dict[str, Any], name: str, default: float = 0.0) -> float:
@@ -602,6 +633,35 @@ def hard_subset_qids(qrels: list[dict[str, Any]], hybrid_predictions: list[dict[
     return hard
 
 
+def expanded_hard_subset_qids(
+    qrels: list[dict[str, Any]],
+    reference_predictions: list[dict[str, Any]],
+    expanded_predictions: list[dict[str, Any]],
+    qids: set[str],
+    *,
+    mode: str,
+) -> set[str]:
+    qrels_by_qid = group_qrels(qrels)
+    reference_by_qid = group_predictions(reference_predictions)
+    expanded_by_qid = group_predictions(expanded_predictions)
+    hard: set[str] = set()
+    for qid in qids:
+        gold = set(qrels_by_qid.get(qid, {}))
+        if not gold:
+            continue
+        reference_rows = reference_by_qid.get(qid, [])
+        reference_top10 = {str(row["passage_id"]) for row in reference_rows[:10]}
+        reference_top100 = {str(row["passage_id"]) for row in reference_rows[:100]}
+        expanded_top300 = {str(row["passage_id"]) for row in expanded_by_qid.get(qid, [])[:300]}
+        if gold & reference_top10:
+            continue
+        if mode == "hybrid_top100" and gold & reference_top100:
+            hard.add(qid)
+        elif mode == "hybrid_top100_or_expanded_top300" and (gold & reference_top100 or gold & expanded_top300):
+            hard.add(qid)
+    return hard
+
+
 def train_setting(
     label: str,
     features_by_qid: dict[str, list[dict[str, Any]]],
@@ -759,7 +819,12 @@ def main() -> None:
     dense_predictions = read_jsonl(args.dense_predictions)
     hybrid_predictions = read_jsonl(args.hybrid_predictions)
     if args.max_qids is not None:
-        selected_qids = set(sorted({str(row["question_id"]) for row in hybrid_predictions})[: args.max_qids])
+        selected_qids = set(
+            sorted(
+                {str(row["question_id"]) for row in hybrid_predictions},
+                key=lambda qid: qid_sort_key(qid, args.qid_selection_order),
+            )[: args.max_qids]
+        )
         bm25_predictions = [row for row in bm25_predictions if str(row["question_id"]) in selected_qids]
         dense_predictions = [row for row in dense_predictions if str(row["question_id"]) in selected_qids]
         hybrid_predictions = [row for row in hybrid_predictions if str(row["question_id"]) in selected_qids]
@@ -847,9 +912,35 @@ def main() -> None:
         set(args.validation_remainders),
         set(args.test_remainders),
     )
+    hard_split_qids: set[str] = set()
+    if args.hard_test_mode != "none":
+        hard_reference_predictions = (
+            read_jsonl(args.hard_reference_predictions)
+            if args.hard_reference_predictions
+            else list(hybrid_predictions)
+        )
+        hard_expanded_predictions = (
+            read_jsonl(args.hard_expanded_predictions)
+            if args.hard_expanded_predictions
+            else list(hybrid_predictions)
+        )
+        hard_split_qids = expanded_hard_subset_qids(
+            qrels,
+            hard_reference_predictions,
+            hard_expanded_predictions,
+            set(all_qids),
+            mode=args.hard_test_mode,
+        )
+        if not hard_split_qids:
+            raise ValueError(f"No hard queries found for mode={args.hard_test_mode}.")
+        splits["test"] = hard_split_qids
+        splits["validation"] = splits["validation"] - hard_split_qids
+        splits["train"] = set(all_qids) - splits["validation"] - splits["test"]
+        if not splits["train"] or not splits["validation"] or not splits["test"]:
+            raise ValueError("Hard-test split produced an empty train, validation, or test partition.")
     validation_qrels = filter_qrels(qrels, splits["validation"])
     test_qrels = filter_qrels(qrels, splits["test"])
-    hard_qids = hard_subset_qids(qrels, hybrid_predictions, splits["test"])
+    hard_qids = set(hard_split_qids) if hard_split_qids else hard_subset_qids(qrels, hybrid_predictions, splits["test"])
     hard_qrels = filter_qrels(qrels, hard_qids)
 
     output_dir = Path("outputs/rerank")
@@ -986,6 +1077,10 @@ def main() -> None:
             "validation_qids": len(splits["validation"]),
             "test_qids": len(splits["test"]),
             "hard_subset_qids": len(hard_qids),
+            "hard_test_mode": args.hard_test_mode,
+            "hard_reference_predictions": args.hard_reference_predictions,
+            "hard_expanded_predictions": args.hard_expanded_predictions,
+            "qid_selection_order": args.qid_selection_order,
             "validation_remainders": args.validation_remainders,
             "test_remainders": args.test_remainders,
             "max_qids": args.max_qids,

@@ -1,0 +1,10 @@
+| method | recall@5 | recall@10 | mrr@10 | ndcg@10 | evidence_coverage@10 | recall@100 | mrr@100 | ndcg@100 | delta_mrr@10 | delta_recall@10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| BM25 | 0.0702 | 0.0760 | 0.0877 | 0.0657 | 0.0760 | 0.3310 | 0.1084 | 0.1348 |  |  |
+| Dense | 0.0842 | 0.1368 | 0.1743 | 0.1025 | 0.1368 | 0.2509 | 0.1773 | 0.1290 |  |  |
+| Hybrid RRF | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.7655 | 0.0373 | 0.1800 |  |  |
+| Biomedical semantic reranker only | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.7655 | 0.0373 | 0.1800 |  |  |
+| Flat biomedical knowledge LambdaMART without graph structure | 0.0000 | 0.0789 | 0.0163 | 0.0308 | 0.0789 | 0.7702 | 0.0525 | 0.2009 |  |  |
+| Retrieval + hypergraph structural LambdaMART | 0.0000 | 0.0439 | 0.0118 | 0.0196 | 0.0439 | 0.7673 | 0.0477 | 0.1965 |  |  |
+| Full KCH-MedRank | 0.0132 | 0.0833 | 0.0233 | 0.0326 | 0.0833 | 0.7965 | 0.0566 | 0.2088 |  |  |
+| Remove hypergraph diffusion and centrality | 0.0658 | 0.0965 | 0.0295 | 0.0426 | 0.0965 | 0.7749 | 0.0629 | 0.2116 |  |  |

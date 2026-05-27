@@ -1,0 +1,1631 @@
+{
+  "timestamp": "2026-05-27T02:20:08.475236+00:00",
+  "dataset_label": "bioasq_shared_hg_hard_sample10_top300",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "hybrid_predictions": "outputs\\retrieval\\concept_hg_shared_clusters_full_top300.jsonl",
+  "semantic_source": "hybrid_metadata.dense_score_fallback",
+  "mesh_hierarchy": "data/external_knowledge/mesh_hierarchy_2026.jsonl",
+  "enable_mesh_hierarchy_graph_edges": false,
+  "top_k": 300,
+  "selection_primary": "recall",
+  "settings": [
+    "semantic_no_hypergraph_ltr",
+    "retrieval_hypergraph_ltr",
+    "full_kch_medrank",
+    "remove_hypergraph"
+  ],
+  "split": {
+    "modulo": 5,
+    "train_qids": 7,
+    "validation_qids": 2,
+    "test_qids": 1,
+    "hard_subset_qids": 1,
+    "hard_test_mode": "hybrid_top100_or_expanded_top300",
+    "hard_reference_predictions": "outputs\\retrieval\\enhanced_hybrid_w122_full_top100.jsonl",
+    "hard_expanded_predictions": "outputs\\retrieval\\concept_hg_shared_clusters_full_top300.jsonl",
+    "qid_selection_order": "numeric",
+    "validation_remainders": [
+      3
+    ],
+    "test_remainders": [
+      4
+    ],
+    "max_qids": 10
+  },
+  "baseline_metrics": {
+    "BM25": {
+      "num_questions_with_qrels": 1,
+      "num_questions_with_predictions": 1,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 0.0,
+      "hit@100": 0.0,
+      "mrr@100": 0.0,
+      "ndcg@100": 0.0,
+      "recall@200": 0.0,
+      "hit@200": 0.0,
+      "mrr@200": 0.0,
+      "ndcg@200": 0.0,
+      "recall@300": 0.0,
+      "hit@300": 0.0,
+      "mrr@300": 0.0,
+      "ndcg@300": 0.0,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 0.0,
+      "evidence_coverage@200": 0.0,
+      "evidence_coverage@300": 0.0
+    },
+    "Dense": {
+      "num_questions_with_qrels": 1,
+      "num_questions_with_predictions": 1,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 0.0,
+      "hit@100": 0.0,
+      "mrr@100": 0.0,
+      "ndcg@100": 0.0,
+      "recall@200": 0.0,
+      "hit@200": 0.0,
+      "mrr@200": 0.0,
+      "ndcg@200": 0.0,
+      "recall@300": 0.0,
+      "hit@300": 0.0,
+      "mrr@300": 0.0,
+      "ndcg@300": 0.0,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 0.0,
+      "evidence_coverage@200": 0.0,
+      "evidence_coverage@300": 0.0
+    },
+    "Hybrid RRF": {
+      "num_questions_with_qrels": 1,
+      "num_questions_with_predictions": 1,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 1.0,
+      "hit@100": 1.0,
+      "mrr@100": 0.025,
+      "ndcg@100": 0.18665241123894338,
+      "recall@200": 1.0,
+      "hit@200": 1.0,
+      "mrr@200": 0.025,
+      "ndcg@200": 0.18665241123894338,
+      "recall@300": 1.0,
+      "hit@300": 1.0,
+      "mrr@300": 0.025,
+      "ndcg@300": 0.18665241123894338,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 1.0,
+      "evidence_coverage@200": 1.0,
+      "evidence_coverage@300": 1.0
+    }
+  },
+  "biomedical_semantic_reranker_only": {
+    "num_questions_with_qrels": 1,
+    "num_questions_with_predictions": 1,
+    "ks": [
+      5,
+      10,
+      100,
+      200,
+      300
+    ],
+    "recall@5": 0.0,
+    "hit@5": 0.0,
+    "mrr@5": 0.0,
+    "ndcg@5": 0.0,
+    "recall@10": 0.0,
+    "hit@10": 0.0,
+    "mrr@10": 0.0,
+    "ndcg@10": 0.0,
+    "recall@100": 1.0,
+    "hit@100": 1.0,
+    "mrr@100": 0.025,
+    "ndcg@100": 0.18665241123894338,
+    "recall@200": 1.0,
+    "hit@200": 1.0,
+    "mrr@200": 0.025,
+    "ndcg@200": 0.18665241123894338,
+    "recall@300": 1.0,
+    "hit@300": 1.0,
+    "mrr@300": 0.025,
+    "ndcg@300": 0.18665241123894338,
+    "evidence_coverage@5": 0.0,
+    "evidence_coverage@10": 0.0,
+    "evidence_coverage@100": 1.0,
+    "evidence_coverage@200": 1.0,
+    "evidence_coverage@300": 1.0
+  },
+  "setting_metrics": {
+    "Flat biomedical knowledge LambdaMART without graph structure": {
+      "num_questions_with_qrels": 1,
+      "num_questions_with_predictions": 1,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 1.0,
+      "hit@100": 1.0,
+      "mrr@100": 0.09090909090909091,
+      "ndcg@100": 0.27894294565112987,
+      "recall@200": 1.0,
+      "hit@200": 1.0,
+      "mrr@200": 0.09090909090909091,
+      "ndcg@200": 0.27894294565112987,
+      "recall@300": 1.0,
+      "hit@300": 1.0,
+      "mrr@300": 0.09090909090909091,
+      "ndcg@300": 0.27894294565112987,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 1.0,
+      "evidence_coverage@200": 1.0,
+      "evidence_coverage@300": 1.0,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 1,
+        "num_questions_with_predictions": 1,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "mrr@10": 0.0,
+        "ndcg@10": 0.0,
+        "recall@100": 1.0,
+        "hit@100": 1.0,
+        "mrr@100": 0.09090909090909091,
+        "ndcg@100": 0.27894294565112987,
+        "recall@200": 1.0,
+        "hit@200": 1.0,
+        "mrr@200": 0.09090909090909091,
+        "ndcg@200": 0.27894294565112987,
+        "recall@300": 1.0,
+        "hit@300": 1.0,
+        "mrr@300": 0.09090909090909091,
+        "ndcg@300": 0.27894294565112987,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.0,
+        "evidence_coverage@100": 1.0,
+        "evidence_coverage@200": 1.0,
+        "evidence_coverage@300": 1.0
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_semantic_no_hypergraph_ltr_test_top300.jsonl",
+      "display_name": "Flat biomedical knowledge LambdaMART without graph structure",
+      "setting_name": "semantic_no_hypergraph_ltr"
+    },
+    "Retrieval + hypergraph structural LambdaMART": {
+      "num_questions_with_qrels": 1,
+      "num_questions_with_predictions": 1,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 1.0,
+      "hit@100": 1.0,
+      "mrr@100": 0.05263157894736842,
+      "ndcg@100": 0.23137821315975915,
+      "recall@200": 1.0,
+      "hit@200": 1.0,
+      "mrr@200": 0.05263157894736842,
+      "ndcg@200": 0.23137821315975915,
+      "recall@300": 1.0,
+      "hit@300": 1.0,
+      "mrr@300": 0.05263157894736842,
+      "ndcg@300": 0.23137821315975915,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 1.0,
+      "evidence_coverage@200": 1.0,
+      "evidence_coverage@300": 1.0,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 1,
+        "num_questions_with_predictions": 1,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "mrr@10": 0.0,
+        "ndcg@10": 0.0,
+        "recall@100": 1.0,
+        "hit@100": 1.0,
+        "mrr@100": 0.05263157894736842,
+        "ndcg@100": 0.23137821315975915,
+        "recall@200": 1.0,
+        "hit@200": 1.0,
+        "mrr@200": 0.05263157894736842,
+        "ndcg@200": 0.23137821315975915,
+        "recall@300": 1.0,
+        "hit@300": 1.0,
+        "mrr@300": 0.05263157894736842,
+        "ndcg@300": 0.23137821315975915,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.0,
+        "evidence_coverage@100": 1.0,
+        "evidence_coverage@200": 1.0,
+        "evidence_coverage@300": 1.0
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_retrieval_hypergraph_ltr_test_top300.jsonl",
+      "display_name": "Retrieval + hypergraph structural LambdaMART",
+      "setting_name": "retrieval_hypergraph_ltr"
+    },
+    "Full KCH-MedRank": {
+      "num_questions_with_qrels": 1,
+      "num_questions_with_predictions": 1,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 1.0,
+      "hit@100": 1.0,
+      "mrr@100": 0.09090909090909091,
+      "ndcg@100": 0.27894294565112987,
+      "recall@200": 1.0,
+      "hit@200": 1.0,
+      "mrr@200": 0.09090909090909091,
+      "ndcg@200": 0.27894294565112987,
+      "recall@300": 1.0,
+      "hit@300": 1.0,
+      "mrr@300": 0.09090909090909091,
+      "ndcg@300": 0.27894294565112987,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 1.0,
+      "evidence_coverage@200": 1.0,
+      "evidence_coverage@300": 1.0,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 1,
+        "num_questions_with_predictions": 1,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "mrr@10": 0.0,
+        "ndcg@10": 0.0,
+        "recall@100": 1.0,
+        "hit@100": 1.0,
+        "mrr@100": 0.09090909090909091,
+        "ndcg@100": 0.27894294565112987,
+        "recall@200": 1.0,
+        "hit@200": 1.0,
+        "mrr@200": 0.09090909090909091,
+        "ndcg@200": 0.27894294565112987,
+        "recall@300": 1.0,
+        "hit@300": 1.0,
+        "mrr@300": 0.09090909090909091,
+        "ndcg@300": 0.27894294565112987,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.0,
+        "evidence_coverage@100": 1.0,
+        "evidence_coverage@200": 1.0,
+        "evidence_coverage@300": 1.0
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_full_kch_medrank_test_top300.jsonl",
+      "display_name": "Full KCH-MedRank",
+      "setting_name": "full_kch_medrank"
+    },
+    "Remove hypergraph diffusion and centrality": {
+      "num_questions_with_qrels": 1,
+      "num_questions_with_predictions": 1,
+      "ks": [
+        5,
+        10,
+        100,
+        200,
+        300
+      ],
+      "recall@5": 0.0,
+      "hit@5": 0.0,
+      "mrr@5": 0.0,
+      "ndcg@5": 0.0,
+      "recall@10": 0.0,
+      "hit@10": 0.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0,
+      "recall@100": 1.0,
+      "hit@100": 1.0,
+      "mrr@100": 0.09090909090909091,
+      "ndcg@100": 0.27894294565112987,
+      "recall@200": 1.0,
+      "hit@200": 1.0,
+      "mrr@200": 0.09090909090909091,
+      "ndcg@200": 0.27894294565112987,
+      "recall@300": 1.0,
+      "hit@300": 1.0,
+      "mrr@300": 0.09090909090909091,
+      "ndcg@300": 0.27894294565112987,
+      "evidence_coverage@5": 0.0,
+      "evidence_coverage@10": 0.0,
+      "evidence_coverage@100": 1.0,
+      "evidence_coverage@200": 1.0,
+      "evidence_coverage@300": 1.0,
+      "hard_subset_metrics": {
+        "num_questions_with_qrels": 1,
+        "num_questions_with_predictions": 1,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "mrr@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "mrr@10": 0.0,
+        "ndcg@10": 0.0,
+        "recall@100": 1.0,
+        "hit@100": 1.0,
+        "mrr@100": 0.09090909090909091,
+        "ndcg@100": 0.27894294565112987,
+        "recall@200": 1.0,
+        "hit@200": 1.0,
+        "mrr@200": 0.09090909090909091,
+        "ndcg@200": 0.27894294565112987,
+        "recall@300": 1.0,
+        "hit@300": 1.0,
+        "mrr@300": 0.09090909090909091,
+        "ndcg@300": 0.27894294565112987,
+        "evidence_coverage@5": 0.0,
+        "evidence_coverage@10": 0.0,
+        "evidence_coverage@100": 1.0,
+        "evidence_coverage@200": 1.0,
+        "evidence_coverage@300": 1.0
+      },
+      "predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_remove_hypergraph_test_top300.jsonl",
+      "display_name": "Remove hypergraph diffusion and centrality",
+      "setting_name": "remove_hypergraph"
+    }
+  },
+  "diagnostics": {
+    "semantic_no_hypergraph_ltr": {
+      "label": "semantic_no_hypergraph_ltr",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "biomedical_semantic_score",
+        "biomedical_semantic_rank_score",
+        "entity_overlap_count",
+        "entity_jaccard",
+        "question_entity_coverage",
+        "passage_entity_count",
+        "mesh_overlap_count",
+        "mesh_jaccard",
+        "question_mesh_coverage",
+        "passage_mesh_count",
+        "mesh_hierarchy_exact_count",
+        "mesh_parent_match_count",
+        "mesh_ancestor_match_count",
+        "mesh_sibling_match_count",
+        "mesh_tree_similarity_max",
+        "mesh_tree_similarity_mean",
+        "mesh_tree_distance_min",
+        "question_mesh_hierarchy_coverage",
+        "passage_mesh_hierarchy_coverage",
+        "passage_mesh_specificity",
+        "shared_mesh_term_cluster_size",
+        "shared_mesh_parent_cluster_size",
+        "shared_mesh_term_cluster_ratio",
+        "shared_mesh_parent_cluster_ratio",
+        "mesh_fallback_specificity",
+        "mesh_fallback_count",
+        "primekg_relation_count",
+        "question_relation_coverage",
+        "local_primekg_relation_edges",
+        "local_primekg_relation_edges"
+      ],
+      "num_features": 37,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 7,
+        "learning_rate": 0.05,
+        "n_estimators": 40,
+        "blend_weight": 0.2,
+        "validation_mrr@10": 0.35,
+        "validation_recall@10": 0.30952380952380953,
+        "validation_ndcg@10": 0.37649520156336774
+      },
+      "top_trials": [
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.35,
+          "validation_recall@10": 0.30952380952380953,
+          "validation_ndcg@10": 0.37649520156336774
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.35,
+          "validation_recall@10": 0.2857142857142857,
+          "validation_ndcg@10": 0.33912836819941444
+        }
+      ],
+      "train_rows": 2100,
+      "train_positive_rows": 71,
+      "final_train_rows": 2700,
+      "final_train_positive_rows": 95,
+      "feature_importance": [
+        {
+          "feature": "base_rank_score",
+          "importance": 70.0
+        },
+        {
+          "feature": "hybrid_score",
+          "importance": 54.0
+        },
+        {
+          "feature": "passage_entity_count",
+          "importance": 32.0
+        },
+        {
+          "feature": "passage_mesh_hierarchy_coverage",
+          "importance": 16.0
+        },
+        {
+          "feature": "question_mesh_hierarchy_coverage",
+          "importance": 13.0
+        },
+        {
+          "feature": "passage_mesh_specificity",
+          "importance": 13.0
+        },
+        {
+          "feature": "mesh_tree_similarity_mean",
+          "importance": 7.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 6.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_size",
+          "importance": 5.0
+        },
+        {
+          "feature": "mesh_jaccard",
+          "importance": 4.0
+        },
+        {
+          "feature": "passage_mesh_count",
+          "importance": 4.0
+        },
+        {
+          "feature": "question_mesh_coverage",
+          "importance": 3.0
+        },
+        {
+          "feature": "mesh_parent_match_count",
+          "importance": 3.0
+        },
+        {
+          "feature": "mesh_tree_similarity_max",
+          "importance": 2.0
+        },
+        {
+          "feature": "mesh_tree_distance_min",
+          "importance": 2.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 2.0
+        },
+        {
+          "feature": "mesh_overlap_count",
+          "importance": 1.0
+        },
+        {
+          "feature": "mesh_ancestor_match_count",
+          "importance": 1.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_ratio",
+          "importance": 1.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 1.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "entity_overlap_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "entity_jaccard",
+          "importance": 0.0
+        },
+        {
+          "feature": "question_entity_coverage",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_hierarchy_exact_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_sibling_match_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_size",
+          "importance": 0.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_ratio",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_fallback_specificity",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_fallback_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "primekg_relation_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "question_relation_coverage",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_semantic_no_hypergraph_ltr_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 2,
+        "num_questions_with_predictions": 2,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.2857142857142857,
+        "hit@5": 1.0,
+        "mrr@5": 1.0,
+        "ndcg@5": 0.7765732350040718,
+        "recall@10": 0.30952380952380953,
+        "hit@10": 1.0,
+        "mrr@10": 1.0,
+        "ndcg@10": 0.605943038473186,
+        "recall@100": 0.8452380952380952,
+        "hit@100": 1.0,
+        "mrr@100": 1.0,
+        "ndcg@100": 0.7542955850428328,
+        "recall@200": 0.8690476190476191,
+        "hit@200": 1.0,
+        "mrr@200": 1.0,
+        "ndcg@200": 0.7633431408912299,
+        "recall@300": 0.8690476190476191,
+        "hit@300": 1.0,
+        "mrr@300": 1.0,
+        "ndcg@300": 0.7633431408912299,
+        "evidence_coverage@5": 0.2857142857142857,
+        "evidence_coverage@10": 0.30952380952380953,
+        "evidence_coverage@100": 0.8452380952380952,
+        "evidence_coverage@200": 0.8690476190476191,
+        "evidence_coverage@300": 0.8690476190476191
+      }
+    },
+    "retrieval_hypergraph_ltr": {
+      "label": "retrieval_hypergraph_ltr",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "local_primekg_relation_edges",
+        "hypergraph_score_norm",
+        "hypergraph_degree_centrality",
+        "hypergraph_degree_centrality_norm",
+        "local_num_nodes",
+        "local_num_hyperedges",
+        "local_shared_entity_edges",
+        "local_document_mesh_edges",
+        "local_mesh_hierarchy_edges",
+        "local_mesh_parent_edges",
+        "local_mesh_ancestor_edges",
+        "local_primekg_relation_edges",
+        "hypergraph_x_inverse_rank",
+        "mesh_cluster_x_inverse_semantic",
+        "mesh_specificity_x_inverse_rank"
+      ],
+      "num_features": 22,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 7,
+        "learning_rate": 0.05,
+        "n_estimators": 40,
+        "blend_weight": 0.2,
+        "validation_mrr@10": 0.6666666666666666,
+        "validation_recall@10": 0.30952380952380953,
+        "validation_ndcg@10": 0.4429107037385316
+      },
+      "top_trials": [
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.6666666666666666,
+          "validation_recall@10": 0.30952380952380953,
+          "validation_ndcg@10": 0.4429107037385316
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.41666666666666663,
+          "validation_recall@10": 0.2857142857142857,
+          "validation_ndcg@10": 0.37412419472997815
+        }
+      ],
+      "train_rows": 2100,
+      "train_positive_rows": 71,
+      "final_train_rows": 2700,
+      "final_train_positive_rows": 95,
+      "feature_importance": [
+        {
+          "feature": "hybrid_score",
+          "importance": 65.0
+        },
+        {
+          "feature": "base_rank_score",
+          "importance": 39.0
+        },
+        {
+          "feature": "hypergraph_x_inverse_rank",
+          "importance": 38.0
+        },
+        {
+          "feature": "hypergraph_score_norm",
+          "importance": 33.0
+        },
+        {
+          "feature": "mesh_specificity_x_inverse_rank",
+          "importance": 30.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality",
+          "importance": 18.0
+        },
+        {
+          "feature": "local_document_mesh_edges",
+          "importance": 6.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 5.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality_norm",
+          "importance": 2.0
+        },
+        {
+          "feature": "local_num_nodes",
+          "importance": 2.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 1.0
+        },
+        {
+          "feature": "local_num_hyperedges",
+          "importance": 1.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_shared_entity_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_hierarchy_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_parent_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_ancestor_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_cluster_x_inverse_semantic",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_retrieval_hypergraph_ltr_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 2,
+        "num_questions_with_predictions": 2,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.26190476190476186,
+        "hit@5": 1.0,
+        "mrr@5": 1.0,
+        "ndcg@5": 0.710970696247901,
+        "recall@10": 0.30952380952380953,
+        "hit@10": 1.0,
+        "mrr@10": 1.0,
+        "ndcg@10": 0.6045369642230045,
+        "recall@100": 0.8452380952380952,
+        "hit@100": 1.0,
+        "mrr@100": 1.0,
+        "ndcg@100": 0.7524420430760306,
+        "recall@200": 0.8690476190476191,
+        "hit@200": 1.0,
+        "mrr@200": 1.0,
+        "ndcg@200": 0.7614808308013495,
+        "recall@300": 0.8690476190476191,
+        "hit@300": 1.0,
+        "mrr@300": 1.0,
+        "ndcg@300": 0.7614808308013495,
+        "evidence_coverage@5": 0.26190476190476186,
+        "evidence_coverage@10": 0.30952380952380953,
+        "evidence_coverage@100": 0.8452380952380952,
+        "evidence_coverage@200": 0.8690476190476191,
+        "evidence_coverage@300": 0.8690476190476191
+      }
+    },
+    "full_kch_medrank": {
+      "label": "full_kch_medrank",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "biomedical_semantic_score",
+        "biomedical_semantic_rank_score",
+        "entity_overlap_count",
+        "entity_jaccard",
+        "question_entity_coverage",
+        "passage_entity_count",
+        "mesh_overlap_count",
+        "mesh_jaccard",
+        "question_mesh_coverage",
+        "passage_mesh_count",
+        "mesh_hierarchy_exact_count",
+        "mesh_parent_match_count",
+        "mesh_ancestor_match_count",
+        "mesh_sibling_match_count",
+        "mesh_tree_similarity_max",
+        "mesh_tree_similarity_mean",
+        "mesh_tree_distance_min",
+        "question_mesh_hierarchy_coverage",
+        "passage_mesh_hierarchy_coverage",
+        "passage_mesh_specificity",
+        "shared_mesh_term_cluster_size",
+        "shared_mesh_parent_cluster_size",
+        "shared_mesh_term_cluster_ratio",
+        "shared_mesh_parent_cluster_ratio",
+        "mesh_fallback_specificity",
+        "mesh_fallback_count",
+        "primekg_relation_count",
+        "question_relation_coverage",
+        "local_primekg_relation_edges",
+        "hypergraph_score_norm",
+        "hypergraph_degree_centrality",
+        "hypergraph_degree_centrality_norm",
+        "local_num_nodes",
+        "local_num_hyperedges",
+        "local_shared_entity_edges",
+        "local_document_mesh_edges",
+        "local_mesh_hierarchy_edges",
+        "local_mesh_parent_edges",
+        "local_mesh_ancestor_edges",
+        "local_primekg_relation_edges",
+        "hypergraph_x_inverse_rank",
+        "mesh_cluster_x_inverse_semantic",
+        "mesh_specificity_x_inverse_rank"
+      ],
+      "num_features": 50,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 7,
+        "learning_rate": 0.05,
+        "n_estimators": 40,
+        "blend_weight": 0.2,
+        "validation_mrr@10": 0.625,
+        "validation_recall@10": 0.30952380952380953,
+        "validation_ndcg@10": 0.43295302994488816
+      },
+      "top_trials": [
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.625,
+          "validation_recall@10": 0.30952380952380953,
+          "validation_ndcg@10": 0.43295302994488816
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.29166666666666663,
+          "validation_recall@10": 0.30952380952380953,
+          "validation_ndcg@10": 0.3703013289806234
+        }
+      ],
+      "train_rows": 2100,
+      "train_positive_rows": 71,
+      "final_train_rows": 2700,
+      "final_train_positive_rows": 95,
+      "feature_importance": [
+        {
+          "feature": "hybrid_score",
+          "importance": 55.0
+        },
+        {
+          "feature": "base_rank_score",
+          "importance": 46.0
+        },
+        {
+          "feature": "hypergraph_x_inverse_rank",
+          "importance": 25.0
+        },
+        {
+          "feature": "hypergraph_score_norm",
+          "importance": 23.0
+        },
+        {
+          "feature": "question_mesh_hierarchy_coverage",
+          "importance": 13.0
+        },
+        {
+          "feature": "mesh_specificity_x_inverse_rank",
+          "importance": 13.0
+        },
+        {
+          "feature": "passage_entity_count",
+          "importance": 8.0
+        },
+        {
+          "feature": "passage_mesh_hierarchy_coverage",
+          "importance": 8.0
+        },
+        {
+          "feature": "passage_mesh_specificity",
+          "importance": 8.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality",
+          "importance": 8.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 5.0
+        },
+        {
+          "feature": "mesh_jaccard",
+          "importance": 4.0
+        },
+        {
+          "feature": "question_mesh_coverage",
+          "importance": 3.0
+        },
+        {
+          "feature": "mesh_overlap_count",
+          "importance": 2.0
+        },
+        {
+          "feature": "passage_mesh_count",
+          "importance": 2.0
+        },
+        {
+          "feature": "mesh_tree_similarity_mean",
+          "importance": 2.0
+        },
+        {
+          "feature": "mesh_tree_distance_min",
+          "importance": 2.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_size",
+          "importance": 2.0
+        },
+        {
+          "feature": "hypergraph_degree_centrality_norm",
+          "importance": 2.0
+        },
+        {
+          "feature": "local_num_nodes",
+          "importance": 2.0
+        },
+        {
+          "feature": "entity_jaccard",
+          "importance": 1.0
+        },
+        {
+          "feature": "mesh_parent_match_count",
+          "importance": 1.0
+        },
+        {
+          "feature": "mesh_ancestor_match_count",
+          "importance": 1.0
+        },
+        {
+          "feature": "mesh_tree_similarity_max",
+          "importance": 1.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_size",
+          "importance": 1.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 1.0
+        },
+        {
+          "feature": "local_document_mesh_edges",
+          "importance": 1.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "entity_overlap_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "question_entity_coverage",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_hierarchy_exact_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_sibling_match_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_ratio",
+          "importance": 0.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_ratio",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_fallback_specificity",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_fallback_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "primekg_relation_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "question_relation_coverage",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_num_hyperedges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_shared_entity_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_hierarchy_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_parent_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_mesh_ancestor_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "local_primekg_relation_edges",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_cluster_x_inverse_semantic",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_full_kch_medrank_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 2,
+        "num_questions_with_predictions": 2,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.2857142857142857,
+        "hit@5": 1.0,
+        "mrr@5": 1.0,
+        "ndcg@5": 0.7765732350040718,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "mrr@10": 1.0,
+        "ndcg@10": 0.6422369560936109,
+        "recall@100": 0.8452380952380952,
+        "hit@100": 1.0,
+        "mrr@100": 1.0,
+        "ndcg@100": 0.7608593379283566,
+        "recall@200": 0.8690476190476191,
+        "hit@200": 1.0,
+        "mrr@200": 1.0,
+        "ndcg@200": 0.7698981256536757,
+        "recall@300": 0.8690476190476191,
+        "hit@300": 1.0,
+        "mrr@300": 1.0,
+        "ndcg@300": 0.7698981256536757,
+        "evidence_coverage@5": 0.2857142857142857,
+        "evidence_coverage@10": 0.3333333333333333,
+        "evidence_coverage@100": 0.8452380952380952,
+        "evidence_coverage@200": 0.8690476190476191,
+        "evidence_coverage@300": 0.8690476190476191
+      }
+    },
+    "remove_hypergraph": {
+      "label": "remove_hypergraph",
+      "feature_names": [
+        "base_rank_score",
+        "hybrid_score",
+        "bm25_score",
+        "dense_score",
+        "bm25_rank_score",
+        "dense_rank_score",
+        "rank_percentile",
+        "biomedical_semantic_score",
+        "biomedical_semantic_rank_score",
+        "entity_overlap_count",
+        "entity_jaccard",
+        "question_entity_coverage",
+        "passage_entity_count",
+        "mesh_overlap_count",
+        "mesh_jaccard",
+        "question_mesh_coverage",
+        "passage_mesh_count",
+        "mesh_hierarchy_exact_count",
+        "mesh_parent_match_count",
+        "mesh_ancestor_match_count",
+        "mesh_sibling_match_count",
+        "mesh_tree_similarity_max",
+        "mesh_tree_similarity_mean",
+        "mesh_tree_distance_min",
+        "question_mesh_hierarchy_coverage",
+        "passage_mesh_hierarchy_coverage",
+        "passage_mesh_specificity",
+        "shared_mesh_term_cluster_size",
+        "shared_mesh_parent_cluster_size",
+        "shared_mesh_term_cluster_ratio",
+        "shared_mesh_parent_cluster_ratio",
+        "mesh_fallback_specificity",
+        "mesh_fallback_count",
+        "primekg_relation_count",
+        "question_relation_coverage"
+      ],
+      "num_features": 35,
+      "selection_primary": "recall",
+      "selected": {
+        "num_leaves": 7,
+        "learning_rate": 0.05,
+        "n_estimators": 40,
+        "blend_weight": 0.2,
+        "validation_mrr@10": 0.35,
+        "validation_recall@10": 0.2857142857142857,
+        "validation_ndcg@10": 0.3518069394158012
+      },
+      "top_trials": [
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.2,
+          "validation_mrr@10": 0.35,
+          "validation_recall@10": 0.2857142857142857,
+          "validation_ndcg@10": 0.3518069394158012
+        },
+        {
+          "num_leaves": 7,
+          "learning_rate": 0.05,
+          "n_estimators": 40,
+          "blend_weight": 0.0,
+          "validation_mrr@10": 0.35,
+          "validation_recall@10": 0.2857142857142857,
+          "validation_ndcg@10": 0.3437685665723667
+        }
+      ],
+      "train_rows": 2100,
+      "train_positive_rows": 71,
+      "final_train_rows": 2700,
+      "final_train_positive_rows": 95,
+      "feature_importance": [
+        {
+          "feature": "base_rank_score",
+          "importance": 76.0
+        },
+        {
+          "feature": "hybrid_score",
+          "importance": 45.0
+        },
+        {
+          "feature": "passage_entity_count",
+          "importance": 32.0
+        },
+        {
+          "feature": "passage_mesh_hierarchy_coverage",
+          "importance": 16.0
+        },
+        {
+          "feature": "passage_mesh_specificity",
+          "importance": 13.0
+        },
+        {
+          "feature": "question_mesh_hierarchy_coverage",
+          "importance": 11.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_size",
+          "importance": 7.0
+        },
+        {
+          "feature": "rank_percentile",
+          "importance": 6.0
+        },
+        {
+          "feature": "mesh_jaccard",
+          "importance": 6.0
+        },
+        {
+          "feature": "passage_mesh_count",
+          "importance": 6.0
+        },
+        {
+          "feature": "mesh_parent_match_count",
+          "importance": 5.0
+        },
+        {
+          "feature": "mesh_tree_similarity_mean",
+          "importance": 5.0
+        },
+        {
+          "feature": "question_mesh_coverage",
+          "importance": 4.0
+        },
+        {
+          "feature": "mesh_tree_distance_min",
+          "importance": 2.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_size",
+          "importance": 2.0
+        },
+        {
+          "feature": "question_entity_coverage",
+          "importance": 1.0
+        },
+        {
+          "feature": "mesh_ancestor_match_count",
+          "importance": 1.0
+        },
+        {
+          "feature": "mesh_tree_similarity_max",
+          "importance": 1.0
+        },
+        {
+          "feature": "shared_mesh_parent_cluster_ratio",
+          "importance": 1.0
+        },
+        {
+          "feature": "bm25_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "bm25_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "dense_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "biomedical_semantic_rank_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "entity_overlap_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "entity_jaccard",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_overlap_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_hierarchy_exact_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_sibling_match_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "shared_mesh_term_cluster_ratio",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_fallback_specificity",
+          "importance": 0.0
+        },
+        {
+          "feature": "mesh_fallback_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "primekg_relation_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "question_relation_coverage",
+          "importance": 0.0
+        }
+      ],
+      "validation_predictions": "outputs\\rerank\\kch_shared_hg_hard_sample10_top300_remove_hypergraph_validation_top300.jsonl",
+      "validation_metrics": {
+        "num_questions_with_qrels": 2,
+        "num_questions_with_predictions": 2,
+        "ks": [
+          5,
+          10,
+          100,
+          200,
+          300
+        ],
+        "recall@5": 0.26190476190476186,
+        "hit@5": 1.0,
+        "mrr@5": 1.0,
+        "ndcg@5": 0.710970696247901,
+        "recall@10": 0.30952380952380953,
+        "hit@10": 1.0,
+        "mrr@10": 1.0,
+        "ndcg@10": 0.6025706141417132,
+        "recall@100": 0.8452380952380952,
+        "hit@100": 1.0,
+        "mrr@100": 1.0,
+        "ndcg@100": 0.7468330838705082,
+        "recall@200": 0.8690476190476191,
+        "hit@200": 1.0,
+        "mrr@200": 1.0,
+        "ndcg@200": 0.7558806397189053,
+        "recall@300": 0.8690476190476191,
+        "hit@300": 1.0,
+        "mrr@300": 1.0,
+        "ndcg@300": 0.7558806397189053,
+        "evidence_coverage@5": 0.26190476190476186,
+        "evidence_coverage@10": 0.30952380952380953,
+        "evidence_coverage@100": 0.8452380952380952,
+        "evidence_coverage@200": 0.8690476190476191,
+        "evidence_coverage@300": 0.8690476190476191
+      }
+    }
+  },
+  "bootstrap_vs_hybrid": {
+    "timestamp": "2026-05-27T02:20:08.468120+00:00",
+    "dataset": "bioasq_shared_hg_hard_sample10_top300",
+    "baseline_label": "Hybrid RRF",
+    "candidate_label": "Full KCH-MedRank",
+    "num_paired_questions": 1,
+    "num_bootstrap": 100,
+    "seed": 42,
+    "results": [
+      {
+        "metric": "mrr",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      },
+      {
+        "metric": "recall",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      },
+      {
+        "metric": "ndcg",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      },
+      {
+        "metric": "evidence_coverage",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      }
+    ]
+  },
+  "bootstrap_vs_semantic": {
+    "timestamp": "2026-05-27T02:20:08.473649+00:00",
+    "dataset": "bioasq_shared_hg_hard_sample10_top300",
+    "baseline_label": "Biomedical semantic reranker only",
+    "candidate_label": "Full KCH-MedRank",
+    "num_paired_questions": 1,
+    "num_bootstrap": 100,
+    "seed": 213,
+    "results": [
+      {
+        "metric": "mrr",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      },
+      {
+        "metric": "recall",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      },
+      {
+        "metric": "ndcg",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      },
+      {
+        "metric": "evidence_coverage",
+        "k": 10,
+        "baseline_mean": 0.0,
+        "candidate_mean": 0.0,
+        "delta": 0.0,
+        "relative_delta_percent": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0,
+        "p_value_two_sided": 1.0
+      }
+    ]
+  }
+}
