@@ -1,0 +1,36 @@
+{
+  "decision": "do_not_run_full_top300_ltr",
+  "previous_pubtator_baseline": {
+    "recall@200": 0.7997,
+    "recall@300": 0.7997,
+    "new_gold@200": 38,
+    "new_gold@300": 38,
+    "noise@200": 0.999064,
+    "noise@300": 0.999518
+  },
+  "best_filtered_recovery": {
+    "setting": "pubtator_low_df_0.01",
+    "recall@200": 0.7999,
+    "recall@300": 0.7999,
+    "new_gold@200": 39,
+    "new_gold@300": 39,
+    "noise@200": 0.998941,
+    "noise@300": 0.999416
+  },
+  "lowest_noise_with_new_gold": {
+    "setting": "pubtator_direct_only",
+    "recall@200": 0.7978,
+    "recall@300": 0.7978,
+    "new_gold@200": 27,
+    "new_gold@300": 27,
+    "noise@200": 0.99794,
+    "noise@300": 0.998688
+  },
+  "full_hard_subset": {
+    "query_count": 374,
+    "gold_count": 957,
+    "hybrid_top100_hard_queries": 290,
+    "expanded_only_hard_queries": 84
+  },
+  "rationale": "Filtered PubTator expansion gives only a marginal recall/new-gold gain over the existing PubTator baseline and remains very noisy; stronger noise reduction sacrifices recovered gold. Combined with prior sample500 LTR results where Full KCH did not beat Remove-hypergraph, this does not justify a full top-300 LTR run."
+}

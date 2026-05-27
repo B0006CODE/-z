@@ -1,0 +1,4011 @@
+{
+  "timestamp": "2026-05-27T03:33:45.561411+00:00",
+  "base_predictions": "outputs/retrieval/enhanced_hybrid_w122_full_top100.jsonl",
+  "max_qids": 10,
+  "qid_selection_order": "numeric",
+  "num_questions": 10,
+  "num_qrels": 102,
+  "num_pubtator_passages": 40221,
+  "num_pubtator_concepts": 6607,
+  "base_keep": 100,
+  "top_k": 300,
+  "preserve_base_ranks": true,
+  "base_metrics": {
+    "num_questions_with_qrels": 10,
+    "num_questions_with_predictions": 10,
+    "ks": [
+      100,
+      200,
+      300
+    ],
+    "recall@100": 0.8174007936507935,
+    "hit@100": 1.0,
+    "mrr@100": 0.7025,
+    "ndcg@100": 0.6027087067030987,
+    "recall@200": 0.8174007936507935,
+    "hit@200": 1.0,
+    "mrr@200": 0.7025,
+    "ndcg@200": 0.6027087067030987,
+    "recall@300": 0.8174007936507935,
+    "hit@300": 1.0,
+    "mrr@300": 0.7025,
+    "ndcg@300": 0.6027087067030987
+  },
+  "best_rows": [
+    {
+      "setting": "pubtator_combined_lowdf_0.01_seed10",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.01,
+      "seed_top_n": 10,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 355,
+      "added@300": 520,
+      "added_non_gold@200": 355,
+      "added_non_gold@300": 520,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.01_seed20",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.01,
+      "seed_top_n": 20,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 503,
+      "added@300": 798,
+      "added_non_gold@200": 503,
+      "added_non_gold@300": 798,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.01_seed25",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.01,
+      "seed_top_n": 25,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 536,
+      "added@300": 873,
+      "added_non_gold@200": 536,
+      "added_non_gold@300": 873,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.01_seed5",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.01,
+      "seed_top_n": 5,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 314,
+      "added@300": 401,
+      "added_non_gold@200": 314,
+      "added_non_gold@300": 401,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.02_seed10",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.02,
+      "seed_top_n": 10,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 355,
+      "added@300": 520,
+      "added_non_gold@200": 355,
+      "added_non_gold@300": 520,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.02_seed20",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.02,
+      "seed_top_n": 20,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 503,
+      "added@300": 798,
+      "added_non_gold@200": 503,
+      "added_non_gold@300": 798,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.02_seed25",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.02,
+      "seed_top_n": 25,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 536,
+      "added@300": 873,
+      "added_non_gold@200": 536,
+      "added_non_gold@300": 873,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.02_seed5",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.02,
+      "seed_top_n": 5,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 314,
+      "added@300": 401,
+      "added_non_gold@200": 314,
+      "added_non_gold@300": 401,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.05_seed10",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.05,
+      "seed_top_n": 10,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 355,
+      "added@300": 520,
+      "added_non_gold@200": 355,
+      "added_non_gold@300": 520,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    },
+    {
+      "setting": "pubtator_combined_lowdf_0.05_seed20",
+      "types": "chemical,disease,gene",
+      "direct": "True",
+      "shared": "True",
+      "combined_filter": "True",
+      "max_df_ratio": 0.05,
+      "seed_top_n": 20,
+      "recall@100": "0.8174",
+      "recall@200": "0.8174",
+      "recall@300": "0.8174",
+      "new_gold@200": 0,
+      "new_gold@300": 0,
+      "queries_new_gold@200": 0,
+      "queries_new_gold@300": 0,
+      "added@200": 503,
+      "added@300": 798,
+      "added_non_gold@200": 503,
+      "added_non_gold@300": 798,
+      "noise@200": "1.000000",
+      "noise@300": "1.000000"
+    }
+  ],
+  "settings": [
+    {
+      "setting": {
+        "name": "pubtator_direct_only",
+        "use_direct": true,
+        "use_shared": false,
+        "allowed_types": null,
+        "max_df_ratio": 0.2,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 552
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 284,
+        "added_non_gold_candidates@200": 284,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 484,
+        "added_non_gold_candidates@300": 484,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_shared_only",
+        "use_direct": false,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.2,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_concept_cluster": 3586
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 600,
+        "added_non_gold_candidates@200": 600,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 1200,
+        "added_non_gold_candidates@300": 1200,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_disease_gene_only",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.2,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 287,
+        "pubtator_concept_cluster": 1365
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 520,
+        "added_non_gold_candidates@200": 520,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 727,
+        "added_non_gold_candidates@300": 727,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_disease_chemical_gene_only",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.2,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1873
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 540,
+        "added_non_gold_candidates@200": 540,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 940,
+        "added_non_gold_candidates@300": 940,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_medical_filter",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 10,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 762,
+        "filter_mesh_overlap": 80,
+        "filter_mesh_hierarchy_match": 240,
+        "filter_shared_candidate_pubtator_cluster": 383,
+        "combined_filter_mesh_overlap": 80,
+        "combined_filter_mesh_hierarchy_match": 240,
+        "combined_filter_shared_candidate_pubtator_cluster": 383
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 355,
+        "added_non_gold_candidates@200": 355,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 520,
+        "added_non_gold_candidates@300": 520,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_low_df_0.01",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.01,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 2861
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 603,
+        "added_non_gold_candidates@200": 603,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 1152,
+        "added_non_gold_candidates@300": 1152,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_low_df_0.02",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.02,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 2861
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 603,
+        "added_non_gold_candidates@200": 603,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 1152,
+        "added_non_gold_candidates@300": 1152,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_low_df_0.05",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.05,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 552,
+        "pubtator_concept_cluster": 3393
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 603,
+        "added_non_gold_candidates@200": 603,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 1203,
+        "added_non_gold_candidates@300": 1203,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_low_df_0.10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.1,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 552,
+        "pubtator_concept_cluster": 3393
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 603,
+        "added_non_gold_candidates@200": 603,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 1203,
+        "added_non_gold_candidates@300": 1203,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_seed_top_5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.05,
+        "seed_top_n": 5,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 552,
+        "pubtator_concept_cluster": 918
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 455,
+        "added_non_gold_candidates@200": 455,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 855,
+        "added_non_gold_candidates@300": 855,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_seed_top_10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.05,
+        "seed_top_n": 10,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 552,
+        "pubtator_concept_cluster": 1319
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 471,
+        "added_non_gold_candidates@200": 471,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 871,
+        "added_non_gold_candidates@300": 871,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_seed_top_20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.05,
+        "seed_top_n": 20,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 552,
+        "pubtator_concept_cluster": 2659
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 603,
+        "added_non_gold_candidates@200": 603,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 1203,
+        "added_non_gold_candidates@300": 1203,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_seed_top_25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": null,
+        "max_df_ratio": 0.05,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 552,
+        "pubtator_concept_cluster": 3393
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 603,
+        "added_non_gold_candidates@200": 603,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 1203,
+        "added_non_gold_candidates@300": 1203,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.01_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 5,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 391
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 340,
+        "added_non_gold_candidates@200": 340,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 497,
+        "added_non_gold_candidates@300": 497,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.01_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 5,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 391,
+        "filter_mesh_overlap": 74,
+        "filter_mesh_hierarchy_match": 196,
+        "filter_shared_candidate_pubtator_cluster": 264,
+        "combined_filter_mesh_overlap": 74,
+        "combined_filter_mesh_hierarchy_match": 196,
+        "combined_filter_shared_candidate_pubtator_cluster": 264
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 314,
+        "added_non_gold_candidates@200": 314,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 401,
+        "added_non_gold_candidates@300": 401,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.01_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 10,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 762
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 381,
+        "added_non_gold_candidates@200": 381,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 616,
+        "added_non_gold_candidates@300": 616,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.01_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 10,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 762,
+        "filter_mesh_overlap": 80,
+        "filter_mesh_hierarchy_match": 240,
+        "filter_shared_candidate_pubtator_cluster": 383,
+        "combined_filter_mesh_overlap": 80,
+        "combined_filter_mesh_hierarchy_match": 240,
+        "combined_filter_shared_candidate_pubtator_cluster": 383
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 355,
+        "added_non_gold_candidates@200": 355,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 520,
+        "added_non_gold_candidates@300": 520,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.01_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 20,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1435
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 507,
+        "added_non_gold_candidates@200": 507,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 865,
+        "added_non_gold_candidates@300": 865,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.01_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 20,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1459,
+        "filter_shared_candidate_pubtator_cluster": 676,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 271,
+        "combined_filter_shared_candidate_pubtator_cluster": 774,
+        "combined_filter_mesh_overlap": 84,
+        "combined_filter_mesh_hierarchy_match": 285
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 503,
+        "added_non_gold_candidates@200": 503,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 798,
+        "added_non_gold_candidates@300": 798,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.01_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1873
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 540,
+        "added_non_gold_candidates@200": 540,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 940,
+        "added_non_gold_candidates@300": 940,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.01_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.01,
+        "seed_top_n": 25,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1918,
+        "filter_shared_candidate_pubtator_cluster": 751,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 288,
+        "combined_filter_shared_candidate_pubtator_cluster": 912,
+        "combined_filter_mesh_overlap": 87,
+        "combined_filter_mesh_hierarchy_match": 327
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 536,
+        "added_non_gold_candidates@200": 536,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 873,
+        "added_non_gold_candidates@300": 873,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.02_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 5,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 391
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 340,
+        "added_non_gold_candidates@200": 340,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 497,
+        "added_non_gold_candidates@300": 497,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.02_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 5,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 391,
+        "filter_mesh_overlap": 74,
+        "filter_mesh_hierarchy_match": 196,
+        "filter_shared_candidate_pubtator_cluster": 264,
+        "combined_filter_mesh_overlap": 74,
+        "combined_filter_mesh_hierarchy_match": 196,
+        "combined_filter_shared_candidate_pubtator_cluster": 264
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 314,
+        "added_non_gold_candidates@200": 314,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 401,
+        "added_non_gold_candidates@300": 401,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.02_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 10,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 762
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 381,
+        "added_non_gold_candidates@200": 381,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 616,
+        "added_non_gold_candidates@300": 616,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.02_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 10,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 762,
+        "filter_mesh_overlap": 80,
+        "filter_mesh_hierarchy_match": 240,
+        "filter_shared_candidate_pubtator_cluster": 383,
+        "combined_filter_mesh_overlap": 80,
+        "combined_filter_mesh_hierarchy_match": 240,
+        "combined_filter_shared_candidate_pubtator_cluster": 383
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 355,
+        "added_non_gold_candidates@200": 355,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 520,
+        "added_non_gold_candidates@300": 520,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.02_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 20,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1435
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 507,
+        "added_non_gold_candidates@200": 507,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 865,
+        "added_non_gold_candidates@300": 865,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.02_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 20,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1459,
+        "filter_shared_candidate_pubtator_cluster": 676,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 271,
+        "combined_filter_shared_candidate_pubtator_cluster": 774,
+        "combined_filter_mesh_overlap": 84,
+        "combined_filter_mesh_hierarchy_match": 285
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 503,
+        "added_non_gold_candidates@200": 503,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 798,
+        "added_non_gold_candidates@300": 798,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.02_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1873
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 540,
+        "added_non_gold_candidates@200": 540,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 940,
+        "added_non_gold_candidates@300": 940,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.02_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.02,
+        "seed_top_n": 25,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1918,
+        "filter_shared_candidate_pubtator_cluster": 751,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 288,
+        "combined_filter_shared_candidate_pubtator_cluster": 912,
+        "combined_filter_mesh_overlap": 87,
+        "combined_filter_mesh_hierarchy_match": 327
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 536,
+        "added_non_gold_candidates@200": 536,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 873,
+        "added_non_gold_candidates@300": 873,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.05_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 5,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 391
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 340,
+        "added_non_gold_candidates@200": 340,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 497,
+        "added_non_gold_candidates@300": 497,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.05_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 5,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 391,
+        "filter_mesh_overlap": 74,
+        "filter_mesh_hierarchy_match": 196,
+        "filter_shared_candidate_pubtator_cluster": 264,
+        "combined_filter_mesh_overlap": 74,
+        "combined_filter_mesh_hierarchy_match": 196,
+        "combined_filter_shared_candidate_pubtator_cluster": 264
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 314,
+        "added_non_gold_candidates@200": 314,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 401,
+        "added_non_gold_candidates@300": 401,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.05_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 10,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 762
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 381,
+        "added_non_gold_candidates@200": 381,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 616,
+        "added_non_gold_candidates@300": 616,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.05_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 10,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 762,
+        "filter_mesh_overlap": 80,
+        "filter_mesh_hierarchy_match": 240,
+        "filter_shared_candidate_pubtator_cluster": 383,
+        "combined_filter_mesh_overlap": 80,
+        "combined_filter_mesh_hierarchy_match": 240,
+        "combined_filter_shared_candidate_pubtator_cluster": 383
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 355,
+        "added_non_gold_candidates@200": 355,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 520,
+        "added_non_gold_candidates@300": 520,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.05_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 20,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1435
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 507,
+        "added_non_gold_candidates@200": 507,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 865,
+        "added_non_gold_candidates@300": 865,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.05_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 20,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1459,
+        "filter_shared_candidate_pubtator_cluster": 676,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 271,
+        "combined_filter_shared_candidate_pubtator_cluster": 774,
+        "combined_filter_mesh_overlap": 84,
+        "combined_filter_mesh_hierarchy_match": 285
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 503,
+        "added_non_gold_candidates@200": 503,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 798,
+        "added_non_gold_candidates@300": 798,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.05_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1873
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 540,
+        "added_non_gold_candidates@200": 540,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 940,
+        "added_non_gold_candidates@300": 940,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.05_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.05,
+        "seed_top_n": 25,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1918,
+        "filter_shared_candidate_pubtator_cluster": 751,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 288,
+        "combined_filter_shared_candidate_pubtator_cluster": 912,
+        "combined_filter_mesh_overlap": 87,
+        "combined_filter_mesh_hierarchy_match": 327
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 536,
+        "added_non_gold_candidates@200": 536,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 873,
+        "added_non_gold_candidates@300": 873,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.10_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 5,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 391
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 340,
+        "added_non_gold_candidates@200": 340,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 497,
+        "added_non_gold_candidates@300": 497,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.10_seed5",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 5,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 391,
+        "filter_mesh_overlap": 74,
+        "filter_mesh_hierarchy_match": 196,
+        "filter_shared_candidate_pubtator_cluster": 264,
+        "combined_filter_mesh_overlap": 74,
+        "combined_filter_mesh_hierarchy_match": 196,
+        "combined_filter_shared_candidate_pubtator_cluster": 264
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 314,
+        "added_non_gold_candidates@200": 314,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 401,
+        "added_non_gold_candidates@300": 401,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.10_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 10,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 762
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 381,
+        "added_non_gold_candidates@200": 381,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 616,
+        "added_non_gold_candidates@300": 616,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.10_seed10",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 10,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 252,
+        "pubtator_concept_cluster": 762,
+        "filter_mesh_overlap": 80,
+        "filter_mesh_hierarchy_match": 240,
+        "filter_shared_candidate_pubtator_cluster": 383,
+        "combined_filter_mesh_overlap": 80,
+        "combined_filter_mesh_hierarchy_match": 240,
+        "combined_filter_shared_candidate_pubtator_cluster": 383
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 355,
+        "added_non_gold_candidates@200": 355,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 520,
+        "added_non_gold_candidates@300": 520,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.10_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 20,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1435
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 507,
+        "added_non_gold_candidates@200": 507,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 865,
+        "added_non_gold_candidates@300": 865,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.10_seed20",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 20,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1459,
+        "filter_shared_candidate_pubtator_cluster": 676,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 271,
+        "combined_filter_shared_candidate_pubtator_cluster": 774,
+        "combined_filter_mesh_overlap": 84,
+        "combined_filter_mesh_hierarchy_match": 285
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 503,
+        "added_non_gold_candidates@200": 503,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 798,
+        "added_non_gold_candidates@300": 798,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_dcg_lowdf_0.10_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 25,
+        "combined_filter": false
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 350,
+        "pubtator_concept_cluster": 1873
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 540,
+        "added_non_gold_candidates@200": 540,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 940,
+        "added_non_gold_candidates@300": 940,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    },
+    {
+      "setting": {
+        "name": "pubtator_combined_lowdf_0.10_seed25",
+        "use_direct": true,
+        "use_shared": true,
+        "allowed_types": [
+          "chemical",
+          "disease",
+          "gene"
+        ],
+        "max_df_ratio": 0.1,
+        "seed_top_n": 25,
+        "combined_filter": true
+      },
+      "expansion_reason_counts": {
+        "base": 1000,
+        "pubtator_direct_concept": 259,
+        "pubtator_concept_cluster": 1918,
+        "filter_shared_candidate_pubtator_cluster": 751,
+        "filter_mesh_overlap": 82,
+        "filter_mesh_hierarchy_match": 288,
+        "combined_filter_shared_candidate_pubtator_cluster": 912,
+        "combined_filter_mesh_overlap": 87,
+        "combined_filter_mesh_hierarchy_match": 327
+      },
+      "base_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expanded_metrics": {
+        "num_questions_with_qrels": 10,
+        "num_questions_with_predictions": 10,
+        "ks": [
+          100,
+          200,
+          300
+        ],
+        "recall@100": 0.8174007936507935,
+        "hit@100": 1.0,
+        "mrr@100": 0.7025,
+        "ndcg@100": 0.6027087067030987,
+        "recall@200": 0.8174007936507935,
+        "hit@200": 1.0,
+        "mrr@200": 0.7025,
+        "ndcg@200": 0.6027087067030987,
+        "recall@300": 0.8174007936507935,
+        "hit@300": 1.0,
+        "mrr@300": 0.7025,
+        "ndcg@300": 0.6027087067030987
+      },
+      "expansion_quality": {
+        "new_gold_evidence_recovered@100": 0,
+        "queries_with_new_gold_recovered@100": 0,
+        "added_candidates@100": 0,
+        "added_non_gold_candidates@100": 0,
+        "noise_ratio@100": 0.0,
+        "new_gold_reason_counts@100": {},
+        "new_gold_evidence_recovered@200": 0,
+        "queries_with_new_gold_recovered@200": 0,
+        "added_candidates@200": 536,
+        "added_non_gold_candidates@200": 536,
+        "noise_ratio@200": 1.0,
+        "new_gold_reason_counts@200": {},
+        "new_gold_evidence_recovered@300": 0,
+        "queries_with_new_gold_recovered@300": 0,
+        "added_candidates@300": 873,
+        "added_non_gold_candidates@300": 873,
+        "noise_ratio@300": 1.0,
+        "new_gold_reason_counts@300": {}
+      }
+    }
+  ],
+  "question_pubtator_concept_counts": {
+    "questions_with_any": 7,
+    "total_concepts": 16
+  }
+}
