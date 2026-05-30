@@ -85,6 +85,20 @@ HYPERGRAPH_FEATURES = [
     "local_mesh_parent_edges",
     "local_mesh_ancestor_edges",
     "local_primekg_relation_edges",
+    "source_reason_base",
+    "source_reason_direct_mesh",
+    "source_reason_mesh_hierarchy",
+    "source_reason_shared_candidate_concept",
+    "source_reason_direct_entity",
+    "source_reason_primekg_relation",
+    "source_reason_cui_exact",
+    "source_reason_pubtator_concept_cluster",
+    "source_reason_pubtator_direct_concept",
+    "source_reason_total",
+    "source_reason_knowledge_total",
+    "source_reason_shared_x_inverse_rank",
+    "source_reason_hierarchy_x_specificity",
+    "is_hypergraph_expanded_candidate",
 ]
 INTERACTION_FEATURES = [
     "hypergraph_x_inverse_rank",
@@ -292,6 +306,28 @@ def add_enriched_features(
             pid = str(row["passage_id"])
             features = item["features"]
             base_rank = int(item["base_rank"])
+            reason_counts = row.get("metadata", {}).get("reason_counts", {})
+            if not isinstance(reason_counts, dict):
+                reason_counts = {}
+            reason_feature_map = {
+                "source_reason_base": "base",
+                "source_reason_direct_mesh": "direct_mesh",
+                "source_reason_mesh_hierarchy": "mesh_hierarchy",
+                "source_reason_shared_candidate_concept": "shared_candidate_concept",
+                "source_reason_direct_entity": "direct_entity",
+                "source_reason_primekg_relation": "primekg_relation",
+                "source_reason_cui_exact": "cui_exact",
+                "source_reason_pubtator_concept_cluster": "pubtator_concept_cluster",
+                "source_reason_pubtator_direct_concept": "pubtator_direct_concept",
+            }
+            for feature_name, reason_name in reason_feature_map.items():
+                features[feature_name] = float(reason_counts.get(reason_name, 0.0))
+            reason_total = sum(float(value) for value in reason_counts.values() if isinstance(value, (int, float)))
+            base_reason = float(reason_counts.get("base", 0.0))
+            knowledge_total = max(0.0, reason_total - base_reason)
+            features["source_reason_total"] = reason_total
+            features["source_reason_knowledge_total"] = knowledge_total
+            features["is_hypergraph_expanded_candidate"] = 1.0 if base_reason <= 0.0 and knowledge_total > 0.0 else 0.0
             features["hybrid_score"] = float(row.get("score", 0.0))
             features["bm25_score"] = source_feature(row, "bm25_score")
             features["dense_score"] = source_feature(row, "dense_score")
@@ -317,6 +353,12 @@ def add_enriched_features(
             features["hypergraph_x_inverse_rank"] = hg_score * max(0.0, 1.0 - rank_pct)
             features["mesh_cluster_x_inverse_semantic"] = mesh_cluster * max(0.0, 1.0 - sem_rank)
             features["mesh_specificity_x_inverse_rank"] = specificity * max(0.0, 1.0 - rank_pct)
+            features["source_reason_shared_x_inverse_rank"] = float(
+                features.get("source_reason_shared_candidate_concept", 0.0)
+            ) * max(0.0, 1.0 - rank_pct)
+            features["source_reason_hierarchy_x_specificity"] = float(
+                features.get("source_reason_mesh_hierarchy", 0.0)
+            ) * specificity
 
 
 def build_all_feature_rows(

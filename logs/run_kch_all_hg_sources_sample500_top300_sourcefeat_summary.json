@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-05-30T06:44:47.929968+00:00",
+  "metrics": "results\\metrics\\kch_all_hg_sources_sample500_top300_sourcefeat_metrics.json",
+  "table": "results\\tables\\kch_all_hg_sources_sample500_top300_sourcefeat_retrieval.md",
+  "hard_subset_table": "results\\tables\\kch_all_hg_sources_sample500_top300_sourcefeat_hard_subset.md",
+  "semantic_source": "hybrid_metadata.dense_score_fallback",
+  "hybrid_mrr@10": 0.8965608465608466,
+  "semantic_mrr@10": 0.8965608465608466,
+  "main_method": "Full KCH-MedRank",
+  "main_mrr@10": 0.8840187590187589,
+  "hybrid_recall@10": 0.4724628884451078,
+  "main_recall@10": 0.49057130222746365,
+  "hard_subset_qids": 0
+}
