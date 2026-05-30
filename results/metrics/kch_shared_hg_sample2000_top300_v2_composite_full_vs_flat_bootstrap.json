@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-05-30T08:56:58.047846+00:00",
+  "dataset": "bioasq_shared_hg_sample2000_top300_v2_composite",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_composite_semantic_no_hypergraph_ltr_test_top300.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_composite_full_kch_medrank_test_top300.jsonl",
+  "baseline_label": "Flat_Knowledge_LTR",
+  "candidate_label": "Full_KCH",
+  "num_paired_questions": 400,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 400,
+  "num_candidate_questions": 400,
+  "num_bootstrap": 5000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8718541666666667,
+      "candidate_mean": 0.8561517857142857,
+      "delta": -0.015702380952380954,
+      "relative_delta_percent": -1.8010329654574442,
+      "ci_lower": -0.026765476190476194,
+      "ci_upper": -0.005190327380952383,
+      "p_value_two_sided": 0.003199360127974405
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.5173011515270315,
+      "candidate_mean": 0.513613235713154,
+      "delta": -0.0036879158138776484,
+      "relative_delta_percent": -0.7129146732017156,
+      "ci_lower": -0.00941372587893891,
+      "ci_upper": 0.0026928296597123766,
+      "p_value_two_sided": 0.2375524895020996
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 0.9625,
+      "candidate_mean": 0.965,
+      "delta": 0.0025,
+      "relative_delta_percent": 0.2597402597402597,
+      "ci_lower": -0.005,
+      "ci_upper": 0.01,
+      "p_value_two_sided": 0.7758448310337932
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.6958298274698145,
+      "candidate_mean": 0.6885299882446745,
+      "delta": -0.007299839225139893,
+      "relative_delta_percent": -1.0490839767078775,
+      "ci_lower": -0.012083222806127936,
+      "ci_upper": -0.0025058852565365162,
+      "p_value_two_sided": 0.0027994401119776045
+    }
+  ]
+}

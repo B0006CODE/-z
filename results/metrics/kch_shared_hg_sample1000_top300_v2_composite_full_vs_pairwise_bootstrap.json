@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-05-30T07:45:19.471646+00:00",
+  "dataset": "bioasq_shared_hg_sample1000_top300_v2_composite",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/rerank/kch_shared_hg_sample1000_top300_v2_composite_pairwise_graph_ltr_test_top300.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample1000_top300_v2_composite_full_kch_medrank_test_top300.jsonl",
+  "baseline_label": "Pairwise_Graph_LTR",
+  "candidate_label": "Full_KCH",
+  "num_paired_questions": 200,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 200,
+  "num_candidate_questions": 200,
+  "num_bootstrap": 5000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.865859126984127,
+      "candidate_mean": 0.8840952380952382,
+      "delta": 0.01823611111111111,
+      "relative_delta_percent": 2.1061291083954137,
+      "ci_lower": 0.003680357142857142,
+      "ci_upper": 0.03498045634920634,
+      "p_value_two_sided": 0.012397520495900819
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.5097060161478509,
+      "candidate_mean": 0.5065558513830707,
+      "delta": -0.0031501647647802526,
+      "relative_delta_percent": -0.618035625435208,
+      "ci_lower": -0.008830168877952802,
+      "ci_upper": 0.00252079940177214,
+      "p_value_two_sided": 0.28074385122975404
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 0.98,
+      "candidate_mean": 0.98,
+      "delta": 0.0,
+      "relative_delta_percent": 0.0,
+      "ci_lower": -0.015,
+      "ci_upper": 0.015,
+      "p_value_two_sided": 1.0
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.6767211376682212,
+      "candidate_mean": 0.676204197474337,
+      "delta": -0.0005169401938842122,
+      "relative_delta_percent": -0.07638895330880806,
+      "ci_lower": -0.007570824404812339,
+      "ci_upper": 0.005548695520193886,
+      "p_value_two_sided": 0.874625074985003
+    }
+  ]
+}

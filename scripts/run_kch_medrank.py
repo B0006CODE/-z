@@ -30,13 +30,17 @@ RETRIEVAL_FEATURES = [
     "hybrid_score",
     "bm25_score",
     "dense_score",
+    "fielded_bm25_score",
     "bm25_rank_score",
     "dense_rank_score",
+    "fielded_bm25_rank_score",
     "rank_percentile",
 ]
 SEMANTIC_FEATURES = [
     "biomedical_semantic_score",
     "biomedical_semantic_rank_score",
+    "medcpt_score",
+    "medcpt_rank_score",
 ]
 ENTITY_FEATURES = [
     "entity_overlap_count",
@@ -73,7 +77,7 @@ PRIMEKG_FEATURES = [
     "question_relation_coverage",
     "local_primekg_relation_edges",
 ]
-HYPERGRAPH_FEATURES = [
+STRUCTURAL_HYPERGRAPH_FEATURES = [
     "hypergraph_score_norm",
     "hypergraph_degree_centrality",
     "hypergraph_degree_centrality_norm",
@@ -85,6 +89,8 @@ HYPERGRAPH_FEATURES = [
     "local_mesh_parent_edges",
     "local_mesh_ancestor_edges",
     "local_primekg_relation_edges",
+]
+SOURCE_REASON_FEATURES = [
     "source_reason_base",
     "source_reason_direct_mesh",
     "source_reason_mesh_hierarchy",
@@ -96,9 +102,35 @@ HYPERGRAPH_FEATURES = [
     "source_reason_pubtator_direct_concept",
     "source_reason_total",
     "source_reason_knowledge_total",
+    "source_reason_direct_anchor_total",
+    "source_reason_cluster_total",
+    "source_reason_cluster_to_direct_ratio",
     "source_reason_shared_x_inverse_rank",
     "source_reason_hierarchy_x_specificity",
     "is_hypergraph_expanded_candidate",
+]
+HYPERGRAPH_FEATURES = [
+    *STRUCTURAL_HYPERGRAPH_FEATURES,
+    *SOURCE_REASON_FEATURES,
+]
+NOISE_AND_ACTIVATION_FEATURES = [
+    "direct_mesh_and_entity_both_active",
+    "direct_mesh_and_pubtator_both_active",
+    "shared_cluster_and_semantic_agree",
+    "hierarchy_only_candidate",
+    "hierarchy_without_direct_anchor",
+    "multiple_source_activation_count",
+    "rare_concept_activation_count",
+    "noisy_broad_concept_activation_count",
+    "broad_mesh_ancestor_penalty",
+    "high_df_concept_penalty",
+    "hierarchy_only_penalty",
+    "passage_mesh_overgeneral_penalty",
+    "excessive_shared_cluster_penalty",
+    "direct_mesh_x_semantic_score",
+    "entity_overlap_x_semantic_score",
+    "rare_concept_x_semantic_score",
+    "hierarchy_only_x_semantic_penalty",
 ]
 INTERACTION_FEATURES = [
     "hypergraph_x_inverse_rank",
@@ -113,6 +145,7 @@ ALL_FEATURES = [
     *MESH_HIERARCHY_FEATURES,
     *PRIMEKG_FEATURES,
     *HYPERGRAPH_FEATURES,
+    *NOISE_AND_ACTIVATION_FEATURES,
     *INTERACTION_FEATURES,
 ]
 
@@ -195,9 +228,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--blend-grid", type=parse_float_grid, default=parse_float_grid("0,0.1,0.2,0.35"))
     parser.add_argument(
         "--selection-primary",
-        choices=["mrr", "recall", "ndcg"],
+        choices=["mrr", "recall", "ndcg", "composite", "constrained_recall", "hard_weighted"],
         default="mrr",
-        help="Primary validation metric for hyperparameter selection at k=10.",
+        help=(
+            "Validation objective at k=10. composite = recall + 0.5*ndcg + 0.2*mrr; "
+            "constrained_recall maximizes recall with mrr no more than 0.002 below Hybrid; "
+            "hard_weighted = recall + 0.5*hard_recall + 0.3*ndcg."
+        ),
     )
     parser.add_argument(
         "--settings",
@@ -237,18 +274,43 @@ def qid_sort_key(qid: str, order: str) -> tuple[int, int | str]:
     return (1, qid)
 
 
-def source_feature(row: dict[str, Any], name: str, default: float = 0.0) -> float:
+def metadata_candidates(row: dict[str, Any]) -> list[dict[str, Any]]:
     metadata = row.get("metadata", {})
-    if name == "bm25_score":
-        return float(metadata.get("source_scores", {}).get("bm25", default))
-    if name == "dense_score":
-        return float(metadata.get("source_scores", {}).get("dense", default))
-    if name == "bm25_rank_score":
-        rank = metadata.get("source_ranks", {}).get("bm25")
-        return 0.0 if rank is None else 1.0 / (60.0 + float(rank))
-    if name == "dense_rank_score":
-        rank = metadata.get("source_ranks", {}).get("dense")
-        return 0.0 if rank is None else 1.0 / (60.0 + float(rank))
+    candidates = [metadata] if isinstance(metadata, dict) else []
+    for key in ["source_metadata", "base_source_metadata"]:
+        nested = metadata.get(key, {}) if isinstance(metadata, dict) else {}
+        if isinstance(nested, dict):
+            candidates.append(nested)
+    return candidates
+
+
+def source_feature(row: dict[str, Any], name: str, default: float = 0.0) -> float:
+    score_sources = {
+        "bm25_score": "bm25",
+        "dense_score": "dense",
+        "fielded_bm25_score": "fielded_bm25",
+        "medcpt_score": "medcpt",
+    }
+    rank_sources = {
+        "bm25_rank_score": "bm25",
+        "dense_rank_score": "dense",
+        "fielded_bm25_rank_score": "fielded_bm25",
+        "medcpt_rank_score": "medcpt",
+    }
+    if name in score_sources:
+        source = score_sources[name]
+        for metadata in metadata_candidates(row):
+            value = metadata.get("source_scores", {}).get(source)
+            if value is not None:
+                return float(value)
+        return default
+    if name in rank_sources:
+        source = rank_sources[name]
+        for metadata in metadata_candidates(row):
+            rank = metadata.get("source_ranks", {}).get(source)
+            if rank is not None:
+                return 1.0 / (60.0 + float(rank))
+        return 0.0
     raise KeyError(name)
 
 
@@ -276,7 +338,7 @@ def semantic_score(row: dict[str, Any], score_lookup: dict[tuple[str, str], floa
     pid = str(row["passage_id"])
     if (qid, pid) in score_lookup:
         return score_lookup[(qid, pid)]
-    return source_feature(row, "dense_score")
+    return source_feature(row, "medcpt_score", source_feature(row, "dense_score"))
 
 
 def add_enriched_features(
@@ -316,12 +378,14 @@ def add_enriched_features(
                 "source_reason_shared_candidate_concept": "shared_candidate_concept",
                 "source_reason_direct_entity": "direct_entity",
                 "source_reason_primekg_relation": "primekg_relation",
-                "source_reason_cui_exact": "cui_exact",
                 "source_reason_pubtator_concept_cluster": "pubtator_concept_cluster",
                 "source_reason_pubtator_direct_concept": "pubtator_direct_concept",
             }
             for feature_name, reason_name in reason_feature_map.items():
                 features[feature_name] = float(reason_counts.get(reason_name, 0.0))
+            features["source_reason_cui_exact"] = float(
+                reason_counts.get("cui_exact", reason_counts.get("direct_cui", 0.0))
+            )
             reason_total = sum(float(value) for value in reason_counts.values() if isinstance(value, (int, float)))
             base_reason = float(reason_counts.get("base", 0.0))
             knowledge_total = max(0.0, reason_total - base_reason)
@@ -331,8 +395,12 @@ def add_enriched_features(
             features["hybrid_score"] = float(row.get("score", 0.0))
             features["bm25_score"] = source_feature(row, "bm25_score")
             features["dense_score"] = source_feature(row, "dense_score")
+            features["fielded_bm25_score"] = source_feature(row, "fielded_bm25_score")
+            features["medcpt_score"] = source_feature(row, "medcpt_score")
             features["bm25_rank_score"] = source_feature(row, "bm25_rank_score")
             features["dense_rank_score"] = source_feature(row, "dense_rank_score")
+            features["fielded_bm25_rank_score"] = source_feature(row, "fielded_bm25_rank_score")
+            features["medcpt_rank_score"] = source_feature(row, "medcpt_rank_score")
             features["rank_percentile"] = 1.0 - ((base_rank - 1) / max(top_k - 1, 1))
             features["biomedical_semantic_score"] = float(sem_value)
             features["biomedical_semantic_rank_score"] = float(sem_rank)
@@ -359,6 +427,82 @@ def add_enriched_features(
             features["source_reason_hierarchy_x_specificity"] = float(
                 features.get("source_reason_mesh_hierarchy", 0.0)
             ) * specificity
+            direct_mesh = float(features.get("source_reason_direct_mesh", 0.0))
+            direct_entity = float(features.get("source_reason_direct_entity", 0.0))
+            pubtator_direct = float(features.get("source_reason_pubtator_direct_concept", 0.0))
+            pubtator_cluster = float(features.get("source_reason_pubtator_concept_cluster", 0.0))
+            shared_cluster = float(features.get("source_reason_shared_candidate_concept", 0.0))
+            hierarchy_reason = float(features.get("source_reason_mesh_hierarchy", 0.0))
+            primekg_reason = float(features.get("source_reason_primekg_relation", 0.0))
+            cui_reason = float(features.get("source_reason_cui_exact", 0.0))
+            direct_anchor_count = sum(
+                value > 0.0
+                for value in [
+                    direct_mesh,
+                    direct_entity,
+                    pubtator_direct,
+                    cui_reason,
+                ]
+            )
+            activation_count = sum(
+                value > 0.0
+                for value in [
+                    direct_mesh,
+                    hierarchy_reason,
+                    shared_cluster,
+                    direct_entity,
+                    primekg_reason,
+                    cui_reason,
+                    pubtator_cluster,
+                    pubtator_direct,
+                ]
+            )
+            cluster_ratio = max(
+                float(features.get("shared_mesh_term_cluster_ratio", 0.0)),
+                float(features.get("shared_mesh_parent_cluster_ratio", 0.0)),
+            )
+            hierarchy_only = hierarchy_reason > 0.0 and direct_anchor_count == 0 and shared_cluster <= 0.0 and primekg_reason <= 0.0
+            hierarchy_without_direct = hierarchy_reason > 0.0 and direct_anchor_count == 0
+            rare_activation = sum(
+                value > 0.0
+                for value in [
+                    direct_mesh,
+                    direct_entity,
+                    pubtator_direct,
+                    cui_reason,
+                    primekg_reason,
+                ]
+            )
+            broad_activation = sum(
+                value > 0.0
+                for value in [
+                    hierarchy_reason,
+                    shared_cluster,
+                    pubtator_cluster,
+                ]
+            )
+            direct_anchor_total = direct_mesh + direct_entity + pubtator_direct + cui_reason + primekg_reason
+            cluster_total = hierarchy_reason + shared_cluster + pubtator_cluster
+            features["source_reason_direct_anchor_total"] = direct_anchor_total
+            features["source_reason_cluster_total"] = cluster_total
+            features["source_reason_cluster_to_direct_ratio"] = cluster_total / (1.0 + direct_anchor_total)
+            features["direct_mesh_and_entity_both_active"] = 1.0 if direct_mesh > 0.0 and direct_entity > 0.0 else 0.0
+            features["direct_mesh_and_pubtator_both_active"] = 1.0 if direct_mesh > 0.0 and (pubtator_direct > 0.0 or pubtator_cluster > 0.0) else 0.0
+            features["shared_cluster_and_semantic_agree"] = 1.0 if shared_cluster > 0.0 and sem_rank >= 0.75 else 0.0
+            features["hierarchy_only_candidate"] = 1.0 if hierarchy_only else 0.0
+            features["hierarchy_without_direct_anchor"] = 1.0 if hierarchy_without_direct else 0.0
+            features["multiple_source_activation_count"] = float(activation_count)
+            features["rare_concept_activation_count"] = float(rare_activation)
+            features["noisy_broad_concept_activation_count"] = float(broad_activation)
+            features["broad_mesh_ancestor_penalty"] = hierarchy_reason * max(0.0, 1.0 - float(features.get("mesh_tree_similarity_max", 0.0)))
+            features["high_df_concept_penalty"] = cluster_ratio
+            features["hierarchy_only_penalty"] = 1.0 if hierarchy_only else 0.0
+            features["passage_mesh_overgeneral_penalty"] = float(features.get("mesh_fallback_count", 0.0)) * max(0.0, 1.0 - min(specificity / 6.0, 1.0))
+            features["excessive_shared_cluster_penalty"] = max(0.0, cluster_ratio - 0.25)
+            features["direct_mesh_x_semantic_score"] = direct_mesh * float(sem_value)
+            features["entity_overlap_x_semantic_score"] = float(features.get("entity_overlap_count", 0.0)) * float(sem_value)
+            features["rare_concept_x_semantic_score"] = float(rare_activation) * float(sem_value)
+            features["hierarchy_only_x_semantic_penalty"] = (1.0 if hierarchy_only else 0.0) * max(0.0, 1.0 - sem_rank)
 
 
 def build_all_feature_rows(
@@ -429,7 +573,7 @@ def feature_names_for(setting: str) -> list[str]:
     elif setting == "remove_entity":
         selected = set(ALL_FEATURES) - set(ENTITY_FEATURES)
     elif setting == "remove_hypergraph":
-        selected = set(ALL_FEATURES) - set(HYPERGRAPH_FEATURES) - set(INTERACTION_FEATURES)
+        selected = set(ALL_FEATURES) - set(STRUCTURAL_HYPERGRAPH_FEATURES) - set(INTERACTION_FEATURES)
     elif setting == "remove_primekg":
         selected = set(ALL_FEATURES) - set(PRIMEKG_FEATURES)
     else:
@@ -661,6 +805,57 @@ def paired_bootstrap(
     }
 
 
+def trial_selection_key(trial: dict[str, Any], mode: str, *, constrained_mrr_threshold: float | None) -> tuple[float, ...]:
+    blend_tiebreak = -float(trial["blend_weight"])
+    if mode == "recall":
+        return (
+            float(trial["validation_recall@10"]),
+            float(trial["validation_mrr@10"]),
+            float(trial["validation_ndcg@10"]),
+            blend_tiebreak,
+        )
+    if mode == "ndcg":
+        return (
+            float(trial["validation_ndcg@10"]),
+            float(trial["validation_mrr@10"]),
+            float(trial["validation_recall@10"]),
+            blend_tiebreak,
+        )
+    if mode == "composite":
+        return (
+            float(trial["validation_composite@10"]),
+            float(trial["validation_recall@10"]),
+            float(trial["validation_ndcg@10"]),
+            float(trial["validation_mrr@10"]),
+            blend_tiebreak,
+        )
+    if mode == "constrained_recall":
+        if constrained_mrr_threshold is None:
+            raise ValueError("constrained_recall requires a validation Hybrid MRR threshold.")
+        feasible = float(trial["validation_mrr@10"]) >= constrained_mrr_threshold
+        return (
+            1.0 if feasible else 0.0,
+            float(trial["validation_recall@10"]) if feasible else float(trial["validation_mrr@10"]),
+            float(trial["validation_mrr@10"]),
+            float(trial["validation_ndcg@10"]),
+            blend_tiebreak,
+        )
+    if mode == "hard_weighted":
+        return (
+            float(trial["validation_hard_weighted@10"]),
+            float(trial["validation_hard_recall@10"]),
+            float(trial["validation_recall@10"]),
+            float(trial["validation_mrr@10"]),
+            blend_tiebreak,
+        )
+    return (
+        float(trial["validation_mrr@10"]),
+        float(trial["validation_recall@10"]),
+        float(trial["validation_ndcg@10"]),
+        blend_tiebreak,
+    )
+
+
 def hard_subset_qids(qrels: list[dict[str, Any]], hybrid_predictions: list[dict[str, Any]], qids: set[str]) -> set[str]:
     qrels_by_qid = group_qrels(qrels)
     preds_by_qid = group_predictions(hybrid_predictions)
@@ -711,12 +906,20 @@ def train_setting(
     splits: dict[str, set[str]],
     qrels_by_qid: dict[str, dict[str, float]],
     validation_qrels: list[dict[str, Any]],
+    validation_hard_qids: set[str],
+    validation_hard_qrels: list[dict[str, Any]],
+    validation_hybrid_metrics: dict[str, Any],
     args: argparse.Namespace,
     seed: int,
 ) -> tuple[LGBMRanker, dict[str, Any]]:
     train_x, train_y, train_group, _ = matrix_for_qids(features_by_qid, splits["train"], qrels_by_qid, feature_names)
     if int(train_y.sum()) == 0:
         raise ValueError(f"No positive labels in train split for {label}.")
+    if args.selection_primary == "hard_weighted" and not validation_hard_qids:
+        raise ValueError("--selection-primary hard_weighted requires a non-empty validation hard subset.")
+    constrained_mrr_threshold = None
+    if args.selection_primary == "constrained_recall":
+        constrained_mrr_threshold = float(validation_hybrid_metrics.get("mrr@10", 0.0)) - 0.002
     best: dict[str, Any] | None = None
     trials: list[dict[str, Any]] = []
     for num_leaves in args.num_leaves_grid:
@@ -736,22 +939,41 @@ def train_setting(
                         retriever_name=f"{label}_validation",
                     )
                     val_metrics = evaluate_retrieval(validation_qrels, val_predictions, sorted(set(args.ks)))
+                    if validation_hard_qids:
+                        val_hard_predictions = filter_predictions(val_predictions, validation_hard_qids, args.top_k)
+                        val_hard_metrics = evaluate_retrieval(validation_hard_qrels, val_hard_predictions, [10])
+                    else:
+                        val_hard_metrics = {}
+                    validation_recall = float(val_metrics.get("recall@10", 0.0))
+                    validation_mrr = float(val_metrics.get("mrr@10", 0.0))
+                    validation_ndcg = float(val_metrics.get("ndcg@10", 0.0))
+                    validation_hard_recall = float(val_hard_metrics.get("recall@10", 0.0))
                     trial = {
                         "num_leaves": int(num_leaves),
                         "learning_rate": float(learning_rate),
                         "n_estimators": int(n_estimators),
                         "blend_weight": float(blend_weight),
-                        "validation_mrr@10": float(val_metrics.get("mrr@10", 0.0)),
-                        "validation_recall@10": float(val_metrics.get("recall@10", 0.0)),
-                        "validation_ndcg@10": float(val_metrics.get("ndcg@10", 0.0)),
+                        "validation_mrr@10": validation_mrr,
+                        "validation_recall@10": validation_recall,
+                        "validation_ndcg@10": validation_ndcg,
+                        "validation_composite@10": validation_recall + 0.5 * validation_ndcg + 0.2 * validation_mrr,
+                        "validation_hard_mrr@10": float(val_hard_metrics.get("mrr@10", 0.0)),
+                        "validation_hard_recall@10": validation_hard_recall,
+                        "validation_hard_ndcg@10": float(val_hard_metrics.get("ndcg@10", 0.0)),
                     }
+                    trial["validation_hard_weighted@10"] = (
+                        trial["validation_recall@10"]
+                        + 0.5 * trial["validation_hard_recall@10"]
+                        + 0.3 * trial["validation_ndcg@10"]
+                    )
+                    key = trial_selection_key(
+                        trial,
+                        args.selection_primary,
+                        constrained_mrr_threshold=constrained_mrr_threshold,
+                    )
+                    trial["selection_key"] = [float(value) for value in key]
+                    trial["selection_score"] = float(key[0])
                     trials.append(trial)
-                    if args.selection_primary == "recall":
-                        key = (trial["validation_recall@10"], trial["validation_mrr@10"], trial["validation_ndcg@10"], -trial["blend_weight"])
-                    elif args.selection_primary == "ndcg":
-                        key = (trial["validation_ndcg@10"], trial["validation_mrr@10"], trial["validation_recall@10"], -trial["blend_weight"])
-                    else:
-                        key = (trial["validation_mrr@10"], trial["validation_recall@10"], trial["validation_ndcg@10"], -trial["blend_weight"])
                     if best is None or key > best["key"]:
                         best = {"key": key, "trial": trial}
     assert best is not None
@@ -770,8 +992,14 @@ def train_setting(
         "feature_names": feature_names,
         "num_features": len(feature_names),
         "selection_primary": args.selection_primary,
+        "validation_hybrid_mrr@10": float(validation_hybrid_metrics.get("mrr@10", 0.0)),
+        "constrained_mrr_threshold": constrained_mrr_threshold,
+        "validation_hard_qids": len(validation_hard_qids),
         "selected": selected,
-        "top_trials": sorted(trials, key=lambda row: (-row["validation_mrr@10"], -row["validation_recall@10"], -row["validation_ndcg@10"]))[:10],
+        "top_trials": sorted(
+            trials,
+            key=lambda row: tuple(-float(value) for value in row["selection_key"]),
+        )[:10],
         "train_rows": int(train_x.shape[0]),
         "train_positive_rows": int(train_y.sum()),
         "final_train_rows": int(final_x.shape[0]),
@@ -982,6 +1210,29 @@ def main() -> None:
             raise ValueError("Hard-test split produced an empty train, validation, or test partition.")
     validation_qrels = filter_qrels(qrels, splits["validation"])
     test_qrels = filter_qrels(qrels, splits["test"])
+    validation_hybrid_predictions = filter_predictions(hybrid_predictions, splits["validation"], args.top_k)
+    validation_hybrid_metrics = add_evidence_coverage(
+        evaluate_retrieval(validation_qrels, validation_hybrid_predictions, sorted(set(args.ks))),
+        sorted(set(args.ks)),
+    )
+    validation_hard_reference = (
+        read_jsonl(args.hard_reference_predictions)
+        if args.hard_reference_predictions
+        else list(hybrid_predictions)
+    )
+    validation_hard_expanded = (
+        read_jsonl(args.hard_expanded_predictions)
+        if args.hard_expanded_predictions
+        else list(hybrid_predictions)
+    )
+    validation_hard_qids = expanded_hard_subset_qids(
+        qrels,
+        validation_hard_reference,
+        validation_hard_expanded,
+        splits["validation"],
+        mode="hybrid_top100_or_expanded_top300",
+    )
+    validation_hard_qrels = filter_qrels(qrels, validation_hard_qids)
     hard_qids = set(hard_split_qids) if hard_split_qids else hard_subset_qids(qrels, hybrid_predictions, splits["test"])
     hard_qrels = filter_qrels(qrels, hard_qids)
 
@@ -1028,6 +1279,9 @@ def main() -> None:
             splits,
             qrels_by_qid,
             validation_qrels,
+            validation_hard_qids,
+            validation_hard_qrels,
+            validation_hybrid_metrics,
             args,
             seed,
         )
@@ -1128,6 +1382,8 @@ def main() -> None:
             "max_qids": args.max_qids,
         },
         "baseline_metrics": baseline_metrics,
+        "validation_hybrid_metrics": validation_hybrid_metrics,
+        "validation_hard_qids": len(validation_hard_qids),
         "biomedical_semantic_reranker_only": semantic_metrics,
         "setting_metrics": setting_metrics,
         "diagnostics": setting_diagnostics,

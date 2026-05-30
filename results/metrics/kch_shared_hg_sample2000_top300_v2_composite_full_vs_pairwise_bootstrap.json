@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-05-30T08:56:58.046832+00:00",
+  "dataset": "bioasq_shared_hg_sample2000_top300_v2_composite",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_composite_pairwise_graph_ltr_test_top300.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_composite_full_kch_medrank_test_top300.jsonl",
+  "baseline_label": "Pairwise_Graph_LTR",
+  "candidate_label": "Full_KCH",
+  "num_paired_questions": 400,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 400,
+  "num_candidate_questions": 400,
+  "num_bootstrap": 5000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8675277777777778,
+      "candidate_mean": 0.8561517857142857,
+      "delta": -0.011375992063492064,
+      "relative_delta_percent": -1.3113115631446777,
+      "ci_lower": -0.021250024801587303,
+      "ci_upper": -0.001706423611111124,
+      "p_value_two_sided": 0.022395520895820836
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.5180209062151341,
+      "candidate_mean": 0.513613235713154,
+      "delta": -0.004407670501980141,
+      "relative_delta_percent": -0.8508673007397186,
+      "ci_lower": -0.010242502380382375,
+      "ci_upper": 0.0016145338387603227,
+      "p_value_two_sided": 0.13797240551889622
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 0.9675,
+      "candidate_mean": 0.965,
+      "delta": -0.0025,
+      "relative_delta_percent": -0.2583979328165375,
+      "ci_lower": -0.0075,
+      "ci_upper": 0.0,
+      "p_value_two_sided": 0.7414517096580684
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.6962022242485468,
+      "candidate_mean": 0.6885299882446745,
+      "delta": -0.007672236003872424,
+      "relative_delta_percent": -1.1020125671321335,
+      "ci_lower": -0.012657589198832017,
+      "ci_upper": -0.0028563021151223715,
+      "p_value_two_sided": 0.0007998400319936012
+    }
+  ]
+}

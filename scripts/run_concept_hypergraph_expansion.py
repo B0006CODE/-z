@@ -520,6 +520,7 @@ def main() -> None:
                 )
 
         base_pid_set = {str(row["passage_id"]) for row in base_rows}
+        base_metadata_by_pid = {str(row["passage_id"]): row.get("metadata", {}) for row in base_rows}
         if args.preserve_base_ranks:
             base_ranked = [(str(row["passage_id"]), float(scores[str(row["passage_id"])])) for row in base_rows]
             expansion_ranked = [
@@ -550,6 +551,7 @@ def main() -> None:
                         "source_scores": {"concept_hypergraph_expansion": float(score)},
                         "source_ranks": {"concept_hypergraph_expansion": rank},
                         "source_retrievers": {"concept_hypergraph_expansion": "concept_hypergraph_expansion"},
+                        "base_source_metadata": base_metadata_by_pid.get(pid, {}),
                     },
                 }
             )

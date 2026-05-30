@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-05-30T08:57:00.021434+00:00",
+  "dataset": "bioasq_shared_hg_sample2000_top300_v2_composite",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/retrieval/concept_hg_shared_clusters_sample2000_top300_v2.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_composite_full_kch_medrank_test_top300.jsonl",
+  "baseline_label": "Hybrid_RRF",
+  "candidate_label": "Full_KCH",
+  "num_paired_questions": 400,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 2000,
+  "num_candidate_questions": 400,
+  "num_bootstrap": 5000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8508968253968254,
+      "candidate_mean": 0.8561517857142857,
+      "delta": 0.005254960317460318,
+      "relative_delta_percent": 0.6175790249316782,
+      "ci_lower": -0.012635962301587299,
+      "ci_upper": 0.022964781746031743,
+      "p_value_two_sided": 0.5642871425714857
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.44853412528761,
+      "candidate_mean": 0.513613235713154,
+      "delta": 0.06507911042554387,
+      "relative_delta_percent": 14.509288537146134,
+      "ci_lower": 0.051059133349616995,
+      "ci_upper": 0.08026833010296987,
+      "p_value_two_sided": 0.0003999200159968006
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 0.95,
+      "candidate_mean": 0.965,
+      "delta": 0.015,
+      "relative_delta_percent": 1.5789473684210527,
+      "ci_lower": 0.0,
+      "ci_upper": 0.0325,
+      "p_value_two_sided": 0.059988002399520096
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.6336993823377015,
+      "candidate_mean": 0.6885299882446745,
+      "delta": 0.05483060590697288,
+      "relative_delta_percent": 8.652463208138869,
+      "ci_lower": 0.04294020424091287,
+      "ci_upper": 0.06704525091750672,
+      "p_value_two_sided": 0.0003999200159968006
+    }
+  ]
+}

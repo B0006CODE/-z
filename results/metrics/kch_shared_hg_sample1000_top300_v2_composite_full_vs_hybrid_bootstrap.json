@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-05-30T07:45:20.820328+00:00",
+  "dataset": "bioasq_shared_hg_sample1000_top300_v2_composite",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/retrieval/concept_hg_shared_clusters_sample1000_top300_v2.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample1000_top300_v2_composite_full_kch_medrank_test_top300.jsonl",
+  "baseline_label": "Hybrid_RRF",
+  "candidate_label": "Full_KCH",
+  "num_paired_questions": 200,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 1000,
+  "num_candidate_questions": 200,
+  "num_bootstrap": 5000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8493174603174602,
+      "candidate_mean": 0.8840952380952382,
+      "delta": 0.034777777777777776,
+      "relative_delta_percent": 4.094791335713084,
+      "ci_lower": 0.002904910714285713,
+      "ci_upper": 0.06622916666666664,
+      "p_value_two_sided": 0.028394321135772844
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.4387791939306409,
+      "candidate_mean": 0.5065558513830707,
+      "delta": 0.06777665745242975,
+      "relative_delta_percent": 15.446643411980787,
+      "ci_lower": 0.04748901444730544,
+      "ci_upper": 0.08870602417000926,
+      "p_value_two_sided": 0.0003999200159968006
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 0.955,
+      "candidate_mean": 0.98,
+      "delta": 0.025,
+      "relative_delta_percent": 2.617801047120419,
+      "ci_lower": 0.0,
+      "ci_upper": 0.05,
+      "p_value_two_sided": 0.07478504299140172
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.609461743713832,
+      "candidate_mean": 0.676204197474337,
+      "delta": 0.06674245376050499,
+      "relative_delta_percent": 10.95104892947036,
+      "ci_lower": 0.049799376440389585,
+      "ci_upper": 0.08466482466204296,
+      "p_value_two_sided": 0.0003999200159968006
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-05-30T07:45:19.493678+00:00",
+  "dataset": "bioasq_shared_hg_sample1000_top300_v2_composite",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/rerank/kch_shared_hg_sample1000_top300_v2_composite_semantic_no_hypergraph_ltr_test_top300.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample1000_top300_v2_composite_full_kch_medrank_test_top300.jsonl",
+  "baseline_label": "Flat_Knowledge_LTR",
+  "candidate_label": "Full_KCH",
+  "num_paired_questions": 200,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 200,
+  "num_candidate_questions": 200,
+  "num_bootstrap": 5000,
+  "seed": 42,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8786388888888887,
+      "candidate_mean": 0.8840952380952382,
+      "delta": 0.005456349206349207,
+      "relative_delta_percent": 0.6210001942036972,
+      "ci_lower": -0.0048895833333333335,
+      "ci_upper": 0.016651686507936494,
+      "p_value_two_sided": 0.2891421715656869
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.5101111534869409,
+      "candidate_mean": 0.5065558513830707,
+      "delta": -0.0035553021038702156,
+      "relative_delta_percent": -0.6969661571928819,
+      "ci_lower": -0.01282457369628422,
+      "ci_upper": 0.006596564677224505,
+      "p_value_two_sided": 0.4543091381723655
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 0.98,
+      "candidate_mean": 0.98,
+      "delta": 0.0,
+      "relative_delta_percent": 0.0,
+      "ci_lower": -0.015,
+      "ci_upper": 0.015,
+      "p_value_two_sided": 1.0
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.680920151735325,
+      "candidate_mean": 0.676204197474337,
+      "delta": -0.004715954260988114,
+      "relative_delta_percent": -0.692585503449928,
+      "ci_lower": -0.012678088388679294,
+      "ci_upper": 0.00282396072849308,
+      "p_value_two_sided": 0.22155568886222757
+    }
+  ]
+}
