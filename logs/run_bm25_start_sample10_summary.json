@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-05-30T07:07:42.783114+00:00",
+  "index_action": "loaded",
+  "index_path": "indexes\\bm25\\bioasq_bm25.pkl",
+  "num_questions": 10,
+  "num_corpus_passages": 40221,
+  "top_k": 100,
+  "num_predictions": 1000,
+  "output": "outputs\\retrieval\\bm25_start_sample10.jsonl"
+}

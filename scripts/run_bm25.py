@@ -19,6 +19,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--questions", default=None, help="Override questions JSONL path.")
     parser.add_argument("--output", default=None, help="Override predictions JSONL path.")
     parser.add_argument("--index-path", default=None, help="Override BM25 index path.")
+    parser.add_argument("--log-output", default=None, help="Override run summary JSON path.")
     parser.add_argument("--top-k", type=int, default=None, help="Number of candidates per question.")
     parser.add_argument("--sample-limit", type=int, default=None, help="Limit questions for sanity runs.")
     parser.add_argument("--rebuild-index", action="store_true", help="Force rebuilding BM25 index.")
@@ -82,7 +83,8 @@ def main() -> None:
         "num_predictions": len(predictions),
         "output": output_path,
     }
-    write_json(Path(paths["logs_dir"]) / "run_bm25_summary.json", summary)
+    log_path = Path(args.log_output) if args.log_output else Path(paths["logs_dir"]) / "run_bm25_summary.json"
+    write_json(log_path, summary)
     print(summary)
 
 
