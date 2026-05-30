@@ -1,0 +1,4 @@
+method,recall@5,recall@10,mrr@10,ndcg@10,recall@100,mrr@100,ndcg@100
+Flat biomedical knowledge LTR,0.3694,0.5173,0.8719,0.6958,0.8813,0.8731,0.7760
+Strict KCH no global counts,0.3680,0.5171,0.8693,0.6942,0.8773,0.8704,0.7743
+Validation RRF fusion a=0.25,0.3666,0.5160,0.8691,0.6937,0.8787,0.8703,0.7745

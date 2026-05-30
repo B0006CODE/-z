@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-05-30T14:50:45.481468+00:00",
+  "dataset": "bioasq_shared_hg_sample2000_top300_v2_fusion_sources",
+  "baseline_label": "Hybrid RRF",
+  "candidate_label": "Flat biomedical knowledge LambdaMART without graph structure",
+  "num_paired_questions": 400,
+  "num_bootstrap": 100,
+  "seed": 42,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8508968253968254,
+      "candidate_mean": 0.8718541666666667,
+      "delta": 0.020957341269841265,
+      "relative_delta_percent": 2.4629709083786473,
+      "ci_lower": 0.007569890873015873,
+      "ci_upper": 0.040005654761904756,
+      "p_value_two_sided": 0.019801980198019802
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.44853412528761,
+      "candidate_mean": 0.5173011515270315,
+      "delta": 0.0687670262394215,
+      "relative_delta_percent": 15.331503750205533,
+      "ci_lower": 0.05134858406360006,
+      "ci_upper": 0.08328779950897455,
+      "p_value_two_sided": 0.019801980198019802
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.6336993823377015,
+      "candidate_mean": 0.6958298274698145,
+      "delta": 0.06213044513211278,
+      "relative_delta_percent": 9.804403612153619,
+      "ci_lower": 0.05031371609383724,
+      "ci_upper": 0.07185156305878414,
+      "p_value_two_sided": 0.019801980198019802
+    },
+    {
+      "metric": "evidence_coverage",
+      "k": 10,
+      "baseline_mean": 0.44853412528761,
+      "candidate_mean": 0.5173011515270315,
+      "delta": 0.0687670262394215,
+      "relative_delta_percent": 15.331503750205533,
+      "ci_lower": 0.054348965243266115,
+      "ci_upper": 0.08032170217698122,
+      "p_value_two_sided": 0.019801980198019802
+    }
+  ]
+}

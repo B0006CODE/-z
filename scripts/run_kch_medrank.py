@@ -90,6 +90,17 @@ STRUCTURAL_HYPERGRAPH_FEATURES = [
     "local_mesh_ancestor_edges",
     "local_primekg_relation_edges",
 ]
+STRUCTURAL_GLOBAL_COUNT_FEATURES = [
+    "hypergraph_degree_centrality",
+    "local_num_nodes",
+    "local_num_hyperedges",
+    "local_shared_entity_edges",
+    "local_document_mesh_edges",
+    "local_mesh_hierarchy_edges",
+    "local_mesh_parent_edges",
+    "local_mesh_ancestor_edges",
+    "local_primekg_relation_edges",
+]
 SOURCE_REASON_FEATURES = [
     "source_reason_base",
     "source_reason_direct_mesh",
@@ -108,6 +119,20 @@ SOURCE_REASON_FEATURES = [
     "source_reason_shared_x_inverse_rank",
     "source_reason_hierarchy_x_specificity",
     "is_hypergraph_expanded_candidate",
+]
+RAW_SOURCE_REASON_SCALE_FEATURES = [
+    "source_reason_shared_candidate_concept",
+    "source_reason_total",
+    "source_reason_knowledge_total",
+    "source_reason_cluster_total",
+    "source_reason_cluster_to_direct_ratio",
+    "source_reason_shared_x_inverse_rank",
+]
+CAPPED_SOURCE_REASON_FEATURES = [
+    "source_reason_shared_candidate_concept_capped",
+    "source_reason_total_capped",
+    "source_reason_knowledge_total_capped",
+    "source_reason_cluster_to_direct_ratio_capped",
 ]
 HYPERGRAPH_FEATURES = [
     *STRUCTURAL_HYPERGRAPH_FEATURES,
@@ -136,6 +161,15 @@ INTERACTION_FEATURES = [
     "hypergraph_x_inverse_rank",
     "mesh_cluster_x_inverse_semantic",
     "mesh_specificity_x_inverse_rank",
+]
+RANK_GATED_HYPERGRAPH_FEATURES = [
+    "hypergraph_x_base_rank",
+    "hypergraph_x_semantic_rank",
+    "hypergraph_x_base_x_semantic_rank",
+    "source_reason_shared_x_base_rank",
+    "source_reason_shared_x_semantic_rank",
+    "source_reason_shared_capped_x_base_rank",
+    "source_reason_shared_capped_x_semantic_rank",
 ]
 ALL_FEATURES = [
     *RETRIEVAL_FEATURES,
@@ -191,6 +225,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rrf-k", type=int, default=60)
     parser.add_argument("--iterations", type=int, default=5)
     parser.add_argument("--damping", type=float, default=0.85)
+    parser.add_argument(
+        "--strict-hyperedge-specificity-mode",
+        choices=["sqrt", "linear"],
+        default="linear",
+        help="Specificity mode for optional strict hypergraph feature sources; default keeps broad hyperedges strongly downweighted.",
+    )
     parser.add_argument("--max-passage-entities", type=int, default=48)
     parser.add_argument("--max-passage-mesh", type=int, default=32)
     parser.add_argument("--split-modulo", type=int, default=5)
@@ -486,6 +526,14 @@ def add_enriched_features(
             features["source_reason_direct_anchor_total"] = direct_anchor_total
             features["source_reason_cluster_total"] = cluster_total
             features["source_reason_cluster_to_direct_ratio"] = cluster_total / (1.0 + direct_anchor_total)
+            shared_capped = min(shared_cluster, 100.0) / 100.0
+            total_capped = min(reason_total, 100.0) / 100.0
+            knowledge_capped = min(knowledge_total, 100.0) / 100.0
+            cluster_ratio_capped = min(features["source_reason_cluster_to_direct_ratio"], 100.0) / 100.0
+            features["source_reason_shared_candidate_concept_capped"] = shared_capped
+            features["source_reason_total_capped"] = total_capped
+            features["source_reason_knowledge_total_capped"] = knowledge_capped
+            features["source_reason_cluster_to_direct_ratio_capped"] = cluster_ratio_capped
             features["direct_mesh_and_entity_both_active"] = 1.0 if direct_mesh > 0.0 and direct_entity > 0.0 else 0.0
             features["direct_mesh_and_pubtator_both_active"] = 1.0 if direct_mesh > 0.0 and (pubtator_direct > 0.0 or pubtator_cluster > 0.0) else 0.0
             features["shared_cluster_and_semantic_agree"] = 1.0 if shared_cluster > 0.0 and sem_rank >= 0.75 else 0.0
@@ -503,6 +551,13 @@ def add_enriched_features(
             features["entity_overlap_x_semantic_score"] = float(features.get("entity_overlap_count", 0.0)) * float(sem_value)
             features["rare_concept_x_semantic_score"] = float(rare_activation) * float(sem_value)
             features["hierarchy_only_x_semantic_penalty"] = (1.0 if hierarchy_only else 0.0) * max(0.0, 1.0 - sem_rank)
+            features["hypergraph_x_base_rank"] = hg_score * rank_pct
+            features["hypergraph_x_semantic_rank"] = hg_score * sem_rank
+            features["hypergraph_x_base_x_semantic_rank"] = hg_score * rank_pct * sem_rank
+            features["source_reason_shared_x_base_rank"] = shared_cluster * rank_pct
+            features["source_reason_shared_x_semantic_rank"] = shared_cluster * sem_rank
+            features["source_reason_shared_capped_x_base_rank"] = shared_capped * rank_pct
+            features["source_reason_shared_capped_x_semantic_rank"] = shared_capped * sem_rank
 
 
 def build_all_feature_rows(
@@ -523,6 +578,7 @@ def build_all_feature_rows(
     damping: float,
     max_passage_entities: int,
     max_passage_mesh: int,
+    hyperedge_specificity_mode: str = "log",
 ) -> dict[str, list[dict[str, Any]]]:
     rows = build_feature_rows(
         predictions,
@@ -539,6 +595,7 @@ def build_all_feature_rows(
         damping=damping,
         max_passage_entities=max_passage_entities,
         max_passage_mesh=max_passage_mesh,
+        hyperedge_specificity_mode=hyperedge_specificity_mode,
     )
     add_enriched_features(
         rows,
@@ -564,7 +621,7 @@ def feature_names_for(setting: str) -> list[str]:
         selected = set(ALL_FEATURES)
     elif setting == "hypergraph_no_medical_knowledge_ltr":
         selected = set(RETRIEVAL_FEATURES + SEMANTIC_FEATURES + HYPERGRAPH_FEATURES)
-    elif setting == "full_kch_medrank":
+    elif setting in {"full_kch_medrank", "strict_kch_medrank"}:
         selected = set(ALL_FEATURES)
     elif setting == "remove_semantic":
         selected = set(ALL_FEATURES) - set(SEMANTIC_FEATURES)
@@ -576,9 +633,32 @@ def feature_names_for(setting: str) -> list[str]:
         selected = set(ALL_FEATURES) - set(STRUCTURAL_HYPERGRAPH_FEATURES) - set(INTERACTION_FEATURES)
     elif setting == "remove_primekg":
         selected = set(ALL_FEATURES) - set(PRIMEKG_FEATURES)
+    elif setting in {"full_kch_no_global_counts", "strict_kch_no_global_counts"}:
+        selected = set(ALL_FEATURES) - set(STRUCTURAL_GLOBAL_COUNT_FEATURES)
+    elif setting == "full_kch_capped_source_reason":
+        selected = (
+            (set(ALL_FEATURES) - set(RAW_SOURCE_REASON_SCALE_FEATURES))
+            | set(CAPPED_SOURCE_REASON_FEATURES)
+        )
+    elif setting in {"full_kch_rank_gated_structural", "strict_kch_rank_gated_structural"}:
+        selected = (
+            (
+                set(ALL_FEATURES)
+                - set(STRUCTURAL_GLOBAL_COUNT_FEATURES)
+                - {"hypergraph_x_inverse_rank", "source_reason_shared_x_inverse_rank"}
+                - set(RAW_SOURCE_REASON_SCALE_FEATURES)
+            )
+            | set(CAPPED_SOURCE_REASON_FEATURES)
+            | set(RANK_GATED_HYPERGRAPH_FEATURES)
+        )
     else:
         raise ValueError(f"Unsupported KCH-MedRank setting: {setting}")
-    return [name for name in ALL_FEATURES if name in selected]
+    ordered_features = [
+        *ALL_FEATURES,
+        *CAPPED_SOURCE_REASON_FEATURES,
+        *RANK_GATED_HYPERGRAPH_FEATURES,
+    ]
+    return [name for name in ordered_features if name in selected]
 
 
 def matrix_for_qids(
@@ -1033,10 +1113,22 @@ def default_settings() -> list[tuple[str, str, str]]:
     ]
 
 
+def experimental_settings() -> list[tuple[str, str, str]]:
+    return [
+        ("Full KCH-MedRank without global structural counts", "full_kch_no_global_counts", "full"),
+        ("Full KCH-MedRank with capped source reasons", "full_kch_capped_source_reason", "full"),
+        ("Full KCH-MedRank rank-gated structural features", "full_kch_rank_gated_structural", "full"),
+        ("Strict-specificity KCH-MedRank", "strict_kch_medrank", "strict_full"),
+        ("Strict-specificity KCH-MedRank without global structural counts", "strict_kch_no_global_counts", "strict_full"),
+        ("Strict-specificity KCH-MedRank rank-gated structural features", "strict_kch_rank_gated_structural", "strict_full"),
+    ]
+
+
 def selected_settings(requested: list[str] | None) -> list[tuple[str, str, str]]:
     settings = default_settings()
     if requested is None:
         return settings
+    settings = settings + experimental_settings()
     requested_set = set(requested)
     available = {setting_name for _display, setting_name, _source in settings}
     missing = requested_set - available
@@ -1112,25 +1204,27 @@ def main() -> None:
     semantic_source = args.biomedical_reranker_predictions or "hybrid_metadata.dense_score_fallback"
     settings = selected_settings(args.settings)
     required_feature_sources = {source for _display_name, _setting_name, source in settings}
-    print(f"[{datetime.now().isoformat(timespec='seconds')}] Building full knowledge-hypergraph features...", flush=True)
-    full_features = build_all_feature_rows(
-        hybrid_predictions,
-        question_entities,
-        passage_entities,
-        question_mesh,
-        passage_mesh,
-        mesh_hierarchy,
-        entity_relations,
-        semantic_scores,
-        enable_mesh_hierarchy_graph_edges=args.enable_mesh_hierarchy_graph_edges,
-        structure="knowledge_hypergraph",
-        top_k=args.top_k,
-        rrf_k=args.rrf_k,
-        iterations=args.iterations,
-        damping=args.damping,
-        max_passage_entities=args.max_passage_entities,
-        max_passage_mesh=args.max_passage_mesh,
-    )
+    full_features: dict[str, list[dict[str, Any]]] = {}
+    if "full" in required_feature_sources:
+        print(f"[{datetime.now().isoformat(timespec='seconds')}] Building full knowledge-hypergraph features...", flush=True)
+        full_features = build_all_feature_rows(
+            hybrid_predictions,
+            question_entities,
+            passage_entities,
+            question_mesh,
+            passage_mesh,
+            mesh_hierarchy,
+            entity_relations,
+            semantic_scores,
+            enable_mesh_hierarchy_graph_edges=args.enable_mesh_hierarchy_graph_edges,
+            structure="knowledge_hypergraph",
+            top_k=args.top_k,
+            rrf_k=args.rrf_k,
+            iterations=args.iterations,
+            damping=args.damping,
+            max_passage_entities=args.max_passage_entities,
+            max_passage_mesh=args.max_passage_mesh,
+        )
     pairwise_features: dict[str, list[dict[str, Any]]] = {}
     if "pairwise" in required_feature_sources:
         print(f"[{datetime.now().isoformat(timespec='seconds')}] Building pairwise graph features...", flush=True)
@@ -1173,9 +1267,39 @@ def main() -> None:
             max_passage_entities=args.max_passage_entities,
             max_passage_mesh=args.max_passage_mesh,
         )
+    strict_features: dict[str, list[dict[str, Any]]] = {}
+    if "strict_full" in required_feature_sources:
+        print(
+            f"[{datetime.now().isoformat(timespec='seconds')}] "
+            f"Building strict-specificity knowledge-hypergraph features ({args.strict_hyperedge_specificity_mode})...",
+            flush=True,
+        )
+        strict_features = build_all_feature_rows(
+            hybrid_predictions,
+            question_entities,
+            passage_entities,
+            question_mesh,
+            passage_mesh,
+            mesh_hierarchy,
+            entity_relations,
+            semantic_scores,
+            enable_mesh_hierarchy_graph_edges=args.enable_mesh_hierarchy_graph_edges,
+            structure="knowledge_hypergraph",
+            top_k=args.top_k,
+            rrf_k=args.rrf_k,
+            iterations=args.iterations,
+            damping=args.damping,
+            max_passage_entities=args.max_passage_entities,
+            max_passage_mesh=args.max_passage_mesh,
+            hyperedge_specificity_mode=args.strict_hyperedge_specificity_mode,
+        )
     print(f"[{datetime.now().isoformat(timespec='seconds')}] Feature construction complete.", flush=True)
 
-    all_qids = sorted(full_features)
+    primary_features = full_features or strict_features or pairwise_features or no_knowledge_features
+    if not primary_features:
+        raise ValueError("No feature source was built. Check requested settings.")
+
+    all_qids = sorted(primary_features)
     splits = split_qids(
         all_qids,
         args.split_modulo,
@@ -1253,7 +1377,7 @@ def main() -> None:
         for name, rows in baseline_predictions.items()
     }
 
-    semantic_predictions = semantic_only_predictions(full_features, splits["test"], top_k=args.top_k)
+    semantic_predictions = semantic_only_predictions(primary_features, splits["test"], top_k=args.top_k)
     semantic_output = output_dir / f"{args.output_prefix}_semantic_only_test_top{args.top_k}.jsonl"
     write_jsonl(semantic_output, semantic_predictions)
     semantic_metrics = add_evidence_coverage(evaluate_retrieval(test_qrels, semantic_predictions, sorted(set(args.ks))), sorted(set(args.ks)))
@@ -1262,6 +1386,7 @@ def main() -> None:
         "full": full_features,
         "pairwise": pairwise_features,
         "no_knowledge": no_knowledge_features,
+        "strict_full": strict_features,
     }
     setting_metrics: dict[str, dict[str, Any]] = {}
     setting_predictions: dict[str, list[dict[str, Any]]] = {}
@@ -1364,6 +1489,7 @@ def main() -> None:
         "semantic_source": semantic_source,
         "mesh_hierarchy": args.mesh_hierarchy,
         "enable_mesh_hierarchy_graph_edges": args.enable_mesh_hierarchy_graph_edges,
+        "strict_hyperedge_specificity_mode": args.strict_hyperedge_specificity_mode,
         "top_k": args.top_k,
         "selection_primary": args.selection_primary,
         "settings": [setting_name for _display_name, setting_name, _source in settings],

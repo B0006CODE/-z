@@ -54,6 +54,7 @@ def build_feature_rows(
     damping: float = 0.85,
     max_passage_entities: int = 48,
     max_passage_mesh: int = 32,
+    hyperedge_specificity_mode: str = "log",
 ) -> dict[str, list[dict[str, Any]]]:
     preds_by_qid = group_predictions(predictions)
     features_by_qid: dict[str, list[dict[str, Any]]] = {}
@@ -78,6 +79,7 @@ def build_feature_rows(
             damping=damping,
             max_passage_entities=max_passage_entities,
             max_passage_mesh=max_passage_mesh,
+            hyperedge_specificity_mode=hyperedge_specificity_mode,
         )
         base_rank_scores = [1.0 / (rrf_k + int(row["rank"])) for row in candidates]
         base_norm = minmax(base_rank_scores)

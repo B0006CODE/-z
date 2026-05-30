@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-05-30T14:12:04.729792+00:00",
+  "dataset": "bioasq_shared_hg_sample2000_top300_v2",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/retrieval/concept_hg_shared_clusters_sample2000_top300_v2.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_strict_linear_strict_kch_no_global_counts_test_top300.jsonl",
+  "baseline_label": "Hybrid RRF",
+  "candidate_label": "Strict KCH no global counts",
+  "num_paired_questions": 400,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 2000,
+  "num_candidate_questions": 400,
+  "num_bootstrap": 5000,
+  "seed": 44,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8508968253968254,
+      "candidate_mean": 0.8693184523809524,
+      "delta": 0.018421626984126985,
+      "relative_delta_percent": 2.164966002257189,
+      "ci_lower": -4.109623015872989e-05,
+      "ci_upper": 0.038000124007936495,
+      "p_value_two_sided": 0.05078984203159368
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.44853412528761,
+      "candidate_mean": 0.5170765304255183,
+      "delta": 0.06854240513790828,
+      "relative_delta_percent": 15.281424817778888,
+      "ci_lower": 0.054468003191172495,
+      "ci_upper": 0.08384209129617243,
+      "p_value_two_sided": 0.0003999200159968006
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.6336993823377015,
+      "candidate_mean": 0.6941913954977161,
+      "delta": 0.06049201316001454,
+      "relative_delta_percent": 9.545853261977468,
+      "ci_lower": 0.048190690389345744,
+      "ci_upper": 0.07312042885144544,
+      "p_value_two_sided": 0.0003999200159968006
+    }
+  ]
+}

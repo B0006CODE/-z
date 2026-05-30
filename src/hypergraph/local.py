@@ -312,7 +312,11 @@ def diffuse(
     *,
     iterations: int = 5,
     damping: float = 0.85,
+    hyperedge_specificity_mode: str = "log",
 ) -> dict[str, float]:
+    if hyperedge_specificity_mode not in {"log", "sqrt", "linear"}:
+        raise ValueError(f"Unsupported hyperedge specificity mode: {hyperedge_specificity_mode}")
+
     node_index = {node_id: idx for idx, node_id in enumerate(graph.nodes)}
     n = len(graph.nodes)
 
@@ -333,7 +337,12 @@ def diffuse(
         indices = [node_index[node] for node in edge.nodes if node in node_index]
         if len(indices) < 2:
             continue
-        specificity = 1.0 / np.log1p(len(indices))
+        if hyperedge_specificity_mode == "sqrt":
+            specificity = 1.0 / np.sqrt(len(indices))
+        elif hyperedge_specificity_mode == "linear":
+            specificity = 1.0 / len(indices)
+        else:
+            specificity = 1.0 / np.log1p(len(indices))
         edge_w = max(float(edge.weight), 0.0) * specificity
         deg = max(len(indices) - 1, 1)
         for i in indices:
@@ -378,6 +387,7 @@ def hypergraph_features(
     damping: float = 0.85,
     max_passage_entities: int = 48,
     max_passage_mesh: int = 32,
+    hyperedge_specificity_mode: str = "log",
 ) -> dict[str, dict[str, float]]:
     graph = build_local_hypergraph(
         question_id,
@@ -399,7 +409,13 @@ def hypergraph_features(
         *(_entity_node(entity_id) for entity_id in q_entity_ids),
         *(_mesh_node(mesh_ui) for mesh_ui in q_mesh_ids),
     ]
-    node_scores = diffuse(graph, seed_nodes, iterations=iterations, damping=damping)
+    node_scores = diffuse(
+        graph,
+        seed_nodes,
+        iterations=iterations,
+        damping=damping,
+        hyperedge_specificity_mode=hyperedge_specificity_mode,
+    )
     node_centrality = weighted_degree_centrality(graph)
     passage_centrality_values = [
         node_centrality.get(p_node, 0.0)

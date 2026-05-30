@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-05-30T14:56:52.920872+00:00",
+  "dataset": "bioasq_shared_hg_sample2000_top300_v2",
+  "qrels": "data/processed/bioasq_qrels.jsonl",
+  "baseline_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_fusion_sources_semantic_no_hypergraph_ltr_test_top300.jsonl",
+  "candidate_predictions": "outputs/rerank/kch_shared_hg_sample2000_top300_v2_flat_strict_rrf_fusion_ndcgsel_test_top300.jsonl",
+  "baseline_label": "Flat biomedical knowledge LTR",
+  "candidate_label": "NDCG-selected flat+strict KCH RRF",
+  "num_paired_questions": 400,
+  "num_qrels_questions": 4719,
+  "num_baseline_questions": 400,
+  "num_candidate_questions": 400,
+  "num_bootstrap": 5000,
+  "seed": 45,
+  "alpha": 0.05,
+  "results": [
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8718541666666667,
+      "candidate_mean": 0.8726041666666666,
+      "delta": 0.00075,
+      "relative_delta_percent": 0.0860235608975125,
+      "ci_lower": -0.0006250000000000001,
+      "ci_upper": 0.0022083333333333334,
+      "p_value_two_sided": 0.3083383323335333
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.5173011515270315,
+      "candidate_mean": 0.5200543412040645,
+      "delta": 0.002753189677032839,
+      "relative_delta_percent": 0.5322218342073363,
+      "ci_lower": -0.0003256548534160872,
+      "ci_upper": 0.006473137683472076,
+      "p_value_two_sided": 0.08318336332733453
+    },
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.6958298274698145,
+      "candidate_mean": 0.6971710721855904,
+      "delta": 0.0013412447157759538,
+      "relative_delta_percent": 0.19275470277740253,
+      "ci_lower": -0.0006551196580363735,
+      "ci_upper": 0.003324449954878469,
+      "p_value_two_sided": 0.1851629674065187
+    }
+  ]
+}
