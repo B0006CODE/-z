@@ -45,6 +45,7 @@ def evaluate_retrieval(
 
     for k in ks:
         recall_values: list[float] = []
+        precision_values: list[float] = []
         hit_values: list[float] = []
         reciprocal_ranks: list[float] = []
         ndcg_values: list[float] = []
@@ -59,6 +60,7 @@ def evaluate_retrieval(
             hits = gold_ids & retrieved_set
 
             recall_values.append(len(hits) / len(gold_ids) if gold_ids else 0.0)
+            precision_values.append(len(hits) / k if k else 0.0)
             hit_values.append(1.0 if hits else 0.0)
 
             rr = 0.0
@@ -83,6 +85,7 @@ def evaluate_retrieval(
             average_precision_values.append(sum(precisions) / denominator if denominator else 0.0)
 
         metrics[f"recall@{k}"] = sum(recall_values) / len(recall_values)
+        metrics[f"precision@{k}"] = sum(precision_values) / len(precision_values)
         metrics[f"hit@{k}"] = sum(hit_values) / len(hit_values)
         metrics[f"mrr@{k}"] = sum(reciprocal_ranks) / len(reciprocal_ranks)
         metrics[f"ndcg@{k}"] = sum(ndcg_values) / len(ndcg_values)
