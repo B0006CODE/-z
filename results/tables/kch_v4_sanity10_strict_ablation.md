@@ -1,0 +1,12 @@
+| method | ndcg@10 | mrr@10 | recall@10 | map@10 | hit@10 | delta_ndcg@10 | delta_mrr@10 | delta_recall@10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| KCH-MedRank v4 full | 0.3205 | 0.5000 | 0.3278 | 0.1841 | 1.0000 | +0.0000 | +0.0000 | +0.0000 |
+| Full without selective gate | 0.3366 | 0.3500 | 0.3778 | 0.1942 | 1.0000 | +0.0161 | -0.1500 | +0.0500 |
+| Full without counterfactual hyperedge features | 0.3142 | 0.5000 | 0.3278 | 0.1765 | 1.0000 | -0.0062 | +0.0000 | +0.0000 |
+| Full without hypergraph slate optimizer | 0.3609 | 0.6667 | 0.3278 | 0.2227 | 1.0000 | +0.0404 | +0.1667 | +0.0000 |
+| Full without MeSH hierarchy hyperedges | 0.3205 | 0.5000 | 0.3278 | 0.1841 | 1.0000 | +0.0000 | +0.0000 | +0.0000 |
+| Full without rare entity hyperedges | 0.3123 | 0.5000 | 0.3278 | 0.1748 | 1.0000 | -0.0081 | +0.0000 | +0.0000 |
+| Full without shared seed support hyperedges | 0.3292 | 0.5000 | 0.3278 | 0.1979 | 1.0000 | +0.0088 | +0.0000 | +0.0000 |
+| Full without semantic-graph agreement | 0.3106 | 0.5000 | 0.3278 | 0.1709 | 1.0000 | -0.0098 | +0.0000 | +0.0000 |
+| Full without broad/high-frequency concept penalties | 0.2952 | 0.4167 | 0.3278 | 0.1617 | 1.0000 | -0.0252 | -0.0833 | +0.0000 |
+| Full without PrimeKG relation features | 0.3072 | 0.5000 | 0.3278 | 0.1692 | 1.0000 | -0.0133 | +0.0000 | +0.0000 |

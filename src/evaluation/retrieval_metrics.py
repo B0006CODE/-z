@@ -48,6 +48,7 @@ def evaluate_retrieval(
         hit_values: list[float] = []
         reciprocal_ranks: list[float] = []
         ndcg_values: list[float] = []
+        average_precision_values: list[float] = []
 
         for qid in qids:
             gold = qrels_by_qid[qid]
@@ -72,9 +73,19 @@ def evaluate_retrieval(
             ideal = dcg(ideal_gains)
             ndcg_values.append(dcg(gains) / ideal if ideal > 0 else 0.0)
 
+            precisions: list[float] = []
+            running_hits = 0
+            for rank, passage_id in enumerate(retrieved_ids, start=1):
+                if passage_id in gold_ids:
+                    running_hits += 1
+                    precisions.append(running_hits / rank)
+            denominator = min(len(gold_ids), k)
+            average_precision_values.append(sum(precisions) / denominator if denominator else 0.0)
+
         metrics[f"recall@{k}"] = sum(recall_values) / len(recall_values)
         metrics[f"hit@{k}"] = sum(hit_values) / len(hit_values)
         metrics[f"mrr@{k}"] = sum(reciprocal_ranks) / len(reciprocal_ranks)
         metrics[f"ndcg@{k}"] = sum(ndcg_values) / len(ndcg_values)
+        metrics[f"map@{k}"] = sum(average_precision_values) / len(average_precision_values)
 
     return metrics

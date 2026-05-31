@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-05-31T02:14:33.959289+00:00",
+  "baseline_label": "Full without counterfactual hyperedge features",
+  "candidate_label": "KCH-MedRank v4 full",
+  "num_paired_questions": 20,
+  "num_bootstrap": 500,
+  "seed": 5027,
+  "results": [
+    {
+      "metric": "ndcg",
+      "k": 10,
+      "baseline_mean": 0.5136551251299308,
+      "candidate_mean": 0.5182820111168442,
+      "delta": 0.0046268859869134605,
+      "relative_delta_percent": 0.9007767586750105,
+      "ci_lower": -0.0032187003118410882,
+      "ci_upper": 0.014602281169596523,
+      "p_value_two_sided": 0.4151696606786427
+    },
+    {
+      "metric": "mrr",
+      "k": 10,
+      "baseline_mean": 0.8591666666666666,
+      "candidate_mean": 0.8591666666666666,
+      "delta": 0.0,
+      "relative_delta_percent": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.0,
+      "p_value_two_sided": 1.0
+    },
+    {
+      "metric": "recall",
+      "k": 10,
+      "baseline_mean": 0.3725803548442229,
+      "candidate_mean": 0.38212580938967744,
+      "delta": 0.009545454545454543,
+      "relative_delta_percent": 2.561985467388781,
+      "ci_lower": 0.0,
+      "ci_upper": 0.023874999999999983,
+      "p_value_two_sided": 0.23552894211576847
+    },
+    {
+      "metric": "map",
+      "k": 10,
+      "baseline_mean": 0.3581543839758125,
+      "candidate_mean": 0.3602972411186697,
+      "delta": 0.002142857142857141,
+      "relative_delta_percent": 0.5983054343966527,
+      "ci_lower": -0.005071428571428569,
+      "ci_upper": 0.010666666666666658,
+      "p_value_two_sided": 0.718562874251497
+    },
+    {
+      "metric": "hit",
+      "k": 10,
+      "baseline_mean": 1.0,
+      "candidate_mean": 1.0,
+      "delta": 0.0,
+      "relative_delta_percent": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.0,
+      "p_value_two_sided": 1.0
+    }
+  ]
+}
