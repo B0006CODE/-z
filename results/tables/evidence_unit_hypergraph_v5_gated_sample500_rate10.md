@@ -1,0 +1,20 @@
+| method | split | recall@10 | mrr@10 | ndcg@10 | recall@100 | delta_recall@10 | delta_mrr@10 | delta_ndcg@10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Source candidate order | all_selected | 0.4592 | 0.8142 | 0.6126 | 0.7790 |  |  |  |
+| Source candidate order | held_out_test | 0.4698 | 0.8128 | 0.6000 | 0.8016 |  |  |  |
+| retrieval_ltr | all_selected | 0.4613 | 0.8142 | 0.6131 | 0.7790 | +0.0021 | +0.0000 | +0.0004 |
+| retrieval_ltr | held_out_test | 0.4706 | 0.8128 | 0.6000 | 0.8016 | +0.0008 | +0.0000 | +0.0000 |
+| flat_evidence_unit_ltr | all_selected | 0.4622 | 0.8143 | 0.6132 | 0.7790 | +0.0030 | +0.0001 | +0.0006 |
+| flat_evidence_unit_ltr | held_out_test | 0.4648 | 0.8128 | 0.5964 | 0.8016 | -0.0050 | +0.0000 | -0.0036 |
+| evidence_unit_hypergraph_ltr | all_selected | 0.4621 | 0.8201 | 0.6158 | 0.7790 | +0.0029 | +0.0059 | +0.0031 |
+| evidence_unit_hypergraph_ltr | held_out_test | 0.4633 | 0.8128 | 0.5953 | 0.8016 | -0.0065 | +0.0000 | -0.0047 |
+| without_evidence_quality | all_selected | 0.4621 | 0.8201 | 0.6158 | 0.7790 | +0.0029 | +0.0059 | +0.0031 |
+| without_evidence_quality | held_out_test | 0.4633 | 0.8128 | 0.5953 | 0.8016 | -0.0065 | +0.0000 | -0.0047 |
+| without_major_mesh | all_selected | 0.4631 | 0.8145 | 0.6140 | 0.7790 | +0.0039 | +0.0003 | +0.0014 |
+| without_major_mesh | held_out_test | 0.4643 | 0.8128 | 0.5956 | 0.8016 | -0.0055 | +0.0000 | -0.0043 |
+| without_cluster_support | all_selected | 0.4623 | 0.8142 | 0.6137 | 0.7790 | +0.0031 | +0.0000 | +0.0010 |
+| without_cluster_support | held_out_test | 0.4690 | 0.8128 | 0.5994 | 0.8016 | -0.0008 | +0.0000 | -0.0005 |
+| gated_evidence_unit_hypergraph | all_selected | 0.4591 | 0.8150 | 0.6129 | 0.7790 | -0.0000 | +0.0008 | +0.0003 |
+| gated_evidence_unit_hypergraph | held_out_test | 0.4698 | 0.8128 | 0.6000 | 0.8016 | +0.0000 | +0.0000 | +0.0000 |
+| hyperpath_score_only | all_selected | 0.2797 | 0.4487 | 0.3391 | 0.7790 | -0.1794 | -0.3655 | -0.2735 |
+| hyperpath_score_only | held_out_test | 0.2970 | 0.4936 | 0.3514 | 0.8016 | -0.1728 | -0.3192 | -0.2486 |
