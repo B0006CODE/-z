@@ -27,7 +27,6 @@ from run_evidence_unit_hypergraph_v5 import (  # noqa: E402
     qid_sort_key,
     score_model,
     select_prediction_rows,
-    split_qids,
     load_pubtator_entity_map,
 )
 from src.evaluation.retrieval_metrics import evaluate_retrieval, group_qrels  # noqa: E402
@@ -161,6 +160,45 @@ def hard_subset_qids(
     return hard
 
 
+def _partition_ordered_qids(qids: list[str]) -> tuple[set[str], set[str], set[str]]:
+    if not qids:
+        return set(), set(), set()
+    if len(qids) == 1:
+        return {qids[0]}, set(), set()
+    if len(qids) == 2:
+        return {qids[0]}, {qids[1]}, set()
+    train_end = max(1, math.ceil(0.6 * len(qids)))
+    validation_end = max(train_end + 1, math.ceil(0.8 * len(qids)))
+    validation_end = min(validation_end, len(qids) - 1)
+    return set(qids[:train_end]), set(qids[train_end:validation_end]), set(qids[validation_end:])
+
+
+def stratified_split_qids(qids: list[str], hard_qids: set[str]) -> dict[str, set[str]]:
+    if len(qids) < 5:
+        raise ValueError("Need at least 5 qids for v6 diagnostics.")
+    hard_order = [qid for qid in qids if qid in hard_qids]
+    easy_order = [qid for qid in qids if qid not in hard_qids]
+    hard_train, hard_validation, hard_test = _partition_ordered_qids(hard_order)
+    easy_train, easy_validation, easy_test = _partition_ordered_qids(easy_order)
+    splits = {
+        "train": hard_train | easy_train,
+        "validation": hard_validation | easy_validation,
+        "test": hard_test | easy_test,
+    }
+    if not splits["validation"] or not splits["test"]:
+        ordered = list(qids)
+        train_end = max(3, math.ceil(0.6 * len(ordered)))
+        validation_end = max(train_end + 1, math.ceil(0.8 * len(ordered)))
+        validation_end = min(validation_end, len(ordered) - 1)
+        splits = {
+            "train": set(ordered[:train_end]),
+            "validation": set(ordered[train_end:validation_end]),
+            "test": set(ordered[validation_end:]),
+        }
+    splits["all"] = set(qids)
+    return splits
+
+
 def row_weights(
     meta: list[dict[str, Any]],
     labels: np.ndarray,
@@ -212,6 +250,8 @@ def train_and_eval_v6(
     test_qrels = [row for row in qrels if str(row["question_id"]) in splits["test"]]
     all_qrels = [row for row in qrels if str(row["question_id"]) in splits["all"]]
     hard_qrels = [row for row in qrels if str(row["question_id"]) in hard_qids]
+    hard_test_qids = hard_qids & splits["test"]
+    hard_test_qrels = [row for row in qrels if str(row["question_id"]) in hard_test_qids]
 
     trials: list[dict[str, Any]] = []
     best: dict[str, Any] | None = None
@@ -302,6 +342,7 @@ def train_and_eval_v6(
     )
     test_predictions = [row for row in all_predictions if str(row["question_id"]) in splits["test"]]
     hard_predictions = [row for row in all_predictions if str(row["question_id"]) in hard_qids]
+    hard_test_predictions = [row for row in all_predictions if str(row["question_id"]) in hard_test_qids]
 
     diagnostics = {
         "label": label,
@@ -320,6 +361,11 @@ def train_and_eval_v6(
         "all_sample_metrics": evaluate_retrieval(all_qrels, all_predictions, sorted(set(args.ks))),
         "test_metrics": evaluate_retrieval(test_qrels, test_predictions, sorted(set(args.ks))),
         "hard_subset_metrics": evaluate_retrieval(hard_qrels, hard_predictions, sorted(set(args.ks))) if hard_qrels else {},
+        "hard_test_metrics": (
+            evaluate_retrieval(hard_test_qrels, hard_test_predictions, sorted(set(args.ks)))
+            if hard_test_qrels
+            else {}
+        ),
         "feature_importance": sorted(
             [
                 {"feature": name, "importance": float(value)}
@@ -354,15 +400,23 @@ def write_markdown(path: str | Path, rows: list[dict[str, Any]], columns: list[s
     Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def metric_row(method: str, metrics: dict[str, Any], base: dict[str, Any], hard: dict[str, Any]) -> dict[str, str]:
+def metric_row(
+    method: str,
+    metrics: dict[str, Any],
+    base: dict[str, Any],
+    hard: dict[str, Any],
+    hard_test: dict[str, Any],
+) -> dict[str, str]:
     return {
         "method": method,
         "recall@10": f"{float(metrics.get('recall@10', 0.0)):.4f}",
         "mrr@10": f"{float(metrics.get('mrr@10', 0.0)):.4f}",
         "ndcg@10": f"{float(metrics.get('ndcg@10', 0.0)):.4f}",
         "recall@100": f"{float(metrics.get('recall@100', 0.0)):.4f}",
-        "hard_recall@10": f"{float(hard.get('recall@10', 0.0)):.4f}" if hard else "",
-        "hard_ndcg@10": f"{float(hard.get('ndcg@10', 0.0)):.4f}" if hard else "",
+        "hard_all_recall@10": f"{float(hard.get('recall@10', 0.0)):.4f}" if hard else "",
+        "hard_all_ndcg@10": f"{float(hard.get('ndcg@10', 0.0)):.4f}" if hard else "",
+        "hard_test_recall@10": f"{float(hard_test.get('recall@10', 0.0)):.4f}" if hard_test else "",
+        "hard_test_ndcg@10": f"{float(hard_test.get('ndcg@10', 0.0)):.4f}" if hard_test else "",
         "delta_recall@10": f"{float(metrics.get('recall@10', 0.0)) - float(base.get('recall@10', 0.0)):+.4f}",
         "delta_ndcg@10": f"{float(metrics.get('ndcg@10', 0.0)) - float(base.get('ndcg@10', 0.0)):+.4f}",
     }
@@ -396,15 +450,25 @@ def main() -> None:
     )
     if len(qids) < 5:
         raise RuntimeError("Need at least 5 qids for v6 diagnostics.")
-    splits = split_qids(qids)
     selected_qids = set(qids)
     selected_qrels = [row for row in qrels if str(row["question_id"]) in selected_qids]
     base_predictions_all = flatten_predictions(predictions_by_qid, selected_qids, args.top_k)
     base_metrics = evaluate_retrieval(selected_qrels, base_predictions_all, sorted(set(args.ks)))
     hard_qids = hard_subset_qids(predictions_by_qid, qrels_by_qid, pool_k=min(args.top_k, 100))
+    splits = stratified_split_qids(qids, hard_qids)
     hard_qrels = [row for row in qrels if str(row["question_id"]) in hard_qids]
     hard_base_predictions = [row for row in base_predictions_all if str(row["question_id"]) in hard_qids]
     hard_base_metrics = evaluate_retrieval(hard_qrels, hard_base_predictions, sorted(set(args.ks))) if hard_qrels else {}
+    hard_test_qids = hard_qids & splits["test"]
+    hard_test_qrels = [row for row in qrels if str(row["question_id"]) in hard_test_qids]
+    hard_test_base_predictions = [
+        row for row in base_predictions_all if str(row["question_id"]) in hard_test_qids
+    ]
+    hard_test_base_metrics = (
+        evaluate_retrieval(hard_test_qrels, hard_test_base_predictions, sorted(set(args.ks)))
+        if hard_test_qrels
+        else {}
+    )
 
     question_entities = entity_map(read_jsonl(question_entities_path), "question_id")
     passage_entities = entity_map(read_jsonl(passage_entities_path), "passage_id")
@@ -474,7 +538,7 @@ def main() -> None:
     write_jsonl(args.predictions_output, full_predictions)
 
     rows = [
-        metric_row("Source candidate order", base_metrics, base_metrics, hard_base_metrics),
+        metric_row("Source candidate order", base_metrics, base_metrics, hard_base_metrics, hard_test_base_metrics),
     ]
     for label in [
         "retrieval_ltr",
@@ -491,6 +555,7 @@ def main() -> None:
                 diagnostics.get("all_sample_metrics", {}),
                 base_metrics,
                 diagnostics.get("hard_subset_metrics", {}),
+                diagnostics.get("hard_test_metrics", {}),
             )
         )
     columns = [
@@ -499,8 +564,10 @@ def main() -> None:
         "mrr@10",
         "ndcg@10",
         "recall@100",
-        "hard_recall@10",
-        "hard_ndcg@10",
+        "hard_all_recall@10",
+        "hard_all_ndcg@10",
+        "hard_test_recall@10",
+        "hard_test_ndcg@10",
         "delta_recall@10",
         "delta_ndcg@10",
     ]
@@ -539,6 +606,7 @@ def main() -> None:
         "pubtator": pubtator_stats,
         "base_metrics": base_metrics,
         "hard_base_metrics": hard_base_metrics,
+        "hard_test_base_metrics": hard_test_base_metrics,
         "method_diagnostics": method_diagnostics,
         "outputs": {
             "metrics": args.metrics_output,

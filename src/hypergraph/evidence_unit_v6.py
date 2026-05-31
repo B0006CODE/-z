@@ -28,12 +28,23 @@ def _topic_tokens(mesh_rows: list[dict[str, Any]], hierarchy: dict[str, MeshDesc
             parts = [part for part in tree_number.split(".") if part]
             if not parts:
                 continue
-            tokens.add("mesh_root:" + parts[0])
             if len(parts) >= 2:
                 tokens.add("mesh_topic:" + ".".join(parts[:2]))
             if len(parts) >= 3:
                 tokens.add("mesh_topic3:" + ".".join(parts[:3]))
     return tokens
+
+
+def _weighted_topic_score(tokens: set[str]) -> float:
+    score = 0.0
+    for token in tokens:
+        if token.startswith("mesh:"):
+            score += 1.0
+        elif token.startswith("mesh_topic3:"):
+            score += 0.55
+        elif token.startswith("mesh_topic:"):
+            score += 0.25
+    return score
 
 
 def _evidence_tokens(item: dict[str, Any]) -> set[str]:
@@ -68,10 +79,14 @@ def _add_two_layer_hyperedge_features(
             p_topics = _topic_tokens(passage_mesh.get(pid, []), mesh_hierarchy)
             evidence_tokens = _evidence_tokens(item)
             topic_overlap = q_topics & p_topics
-            item["details"]["topic_tokens"] = sorted(topic_overlap or p_topics)
+            # Topic hyperedges are query anchored. Passage-only topics are kept
+            # for inspection but do not create support because they caused broad
+            # ungrounded clusters in earlier v6 diagnostics.
+            item["details"]["topic_tokens"] = sorted(topic_overlap)
+            item["details"]["passage_topic_tokens"] = sorted(p_topics)
             item["details"]["evidence_tokens"] = sorted(evidence_tokens)
             item["details"]["topic_overlap"] = sorted(topic_overlap)
-            topic_counts.update(topic_overlap or p_topics)
+            topic_counts.update(topic_overlap)
             evidence_counts.update(evidence_tokens)
             categories = tuple(sorted(item.get("details", {}).get("matched_categories", [])))
             if categories:
@@ -110,10 +125,12 @@ def _add_two_layer_hyperedge_features(
                 + 0.16 * pico
                 - 0.20 * float(features.get("broad_concept_penalty", 0.0))
             )
+            weighted_overlap = _weighted_topic_score(topic_overlap)
+            weighted_query = _weighted_topic_score(q_topics)
             topic_layer_support = _clip(
-                0.45 * _safe_ratio(max((topic_counts[token] for token in topic_tokens), default=0), max_topic_cluster)
-                + 0.35 * _safe_ratio(len(topic_overlap), max(len(q_topics), 1))
-                + 0.20 * _clip(math.log1p(len(topic_tokens)) / math.log(16.0))
+                0.40 * _safe_ratio(max((topic_counts[token] for token in topic_tokens), default=0), max_topic_cluster)
+                + 0.45 * _safe_ratio(weighted_overlap, max(weighted_query, 1.0))
+                + 0.15 * _clip(math.log1p(len(topic_tokens)) / math.log(12.0))
             )
             evidence_cluster_support = _clip(
                 0.60 * _safe_ratio(max((evidence_counts[token] for token in evidence_tokens), default=0), max_evidence_cluster)
@@ -122,14 +139,18 @@ def _add_two_layer_hyperedge_features(
 
             sufficiency_gain = _clip(
                 0.50 * _safe_ratio(len(evidence_tokens - top10_evidence_union), max(len(evidence_tokens), 1))
-                + 0.30 * _safe_ratio(len(topic_tokens - top10_topic_union), max(len(topic_tokens), 1))
+                + 0.30
+                * _safe_ratio(
+                    _weighted_topic_score(topic_tokens - top10_topic_union),
+                    max(_weighted_topic_score(topic_tokens), 1.0),
+                )
                 + 0.20 * pico
             )
             unique_evidence = {token for token in evidence_tokens if evidence_counts[token] == 1}
             unique_topic = {token for token in topic_tokens if topic_counts[token] == 1}
             necessity_gain = _clip(
                 0.45 * _safe_ratio(len(unique_evidence), max(len(evidence_tokens), 1))
-                + 0.35 * _safe_ratio(len(unique_topic), max(len(topic_tokens), 1))
+                + 0.35 * _safe_ratio(_weighted_topic_score(unique_topic), max(_weighted_topic_score(topic_tokens), 1.0))
                 + 0.20 * float(features.get("counterfactual_drop", 0.0))
             )
             minimal_support_score = _clip(
@@ -166,7 +187,7 @@ def _add_two_layer_hyperedge_features(
                     "top10_evidence_quality_gap": _clip(evidence_layer_quality - top10_evidence_quality, -1.0, 1.0),
                     "topic_token_count": float(len(topic_tokens)),
                     "evidence_token_count": float(len(evidence_tokens)),
-                    "query_topic_coverage": _safe_ratio(len(topic_overlap), max(len(q_topics), 1)),
+                    "query_topic_coverage": _safe_ratio(weighted_overlap, max(weighted_query, 1.0)),
                 }
             )
 
