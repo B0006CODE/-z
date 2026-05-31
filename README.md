@@ -43,9 +43,9 @@ python -m pip install -r requirements.txt
 ## First Sanity Run
 
 ```powershell
-python scripts/prepare_bioasq.py --config configs/default.yaml --sample-size 10
-python scripts/run_bm25.py --config configs/default.yaml --sample-limit 10 --top-k 100
-python scripts/evaluate_retrieval.py --config configs/default.yaml --ks 1 3 5 10 20 50 100 --only-predicted-qids
+python scripts/prepare_bioasq.py --config configs/sanity_bioasq.yaml --sample-size 10
+python scripts/run_bm25.py --config configs/sanity_bioasq.yaml --sample-limit 10 --top-k 100
+python scripts/evaluate_retrieval.py --config configs/sanity_bioasq.yaml --ks 1 3 5 10 20 50 100 --only-predicted-qids
 ```
 
 ## Dense And Hybrid Retrieval

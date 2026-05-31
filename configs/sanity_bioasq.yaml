@@ -1,0 +1,23 @@
+seed: 42
+
+dataset:
+  name: rag-datasets/rag-mini-bioasq
+  qa_config: question-answer-passages
+  corpus_config: text-corpus
+  split: null
+
+paths:
+  processed_dir: data/processed/codex_sanity_run
+  logs_dir: logs/codex_sanity_run
+  bm25_index: indexes/bm25/bioasq_sanity_bm25.pkl
+  questions: data/processed/codex_sanity_run/bioasq_questions.jsonl
+  corpus: data/processed/codex_sanity_run/bioasq_corpus.jsonl
+  qrels: data/processed/codex_sanity_run/bioasq_qrels.jsonl
+  bm25_predictions: outputs/retrieval/bm25_sanity10.jsonl
+  bm25_metrics: results/metrics/bm25_sanity10_metrics.json
+
+retrieval:
+  top_k: 100
+  bm25:
+    k1: 1.5
+    b: 0.75
